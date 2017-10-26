@@ -1,2 +1,12 @@
 *.pyc
 *.DS_Store
+*idea*
+
+# TF output...
+*LOGS*
+
+# Data files...
+*.h5
+*.tif
+*.tiff
+*kasthuri_data*
