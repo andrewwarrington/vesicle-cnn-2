@@ -50,7 +50,7 @@ group.add_argument('--deploy_pretrained', help='File location of classifier to b
 
 parser.add_argument('--gpu', help='GPU ID to run computations on.', default=False)
 parser.add_argument('--train_fraction', help='Fraction of training batches that are positive instances.', default=0.1)
-parser.add_argument('--positive_weight', help='The balancing with used in weighted cross entropy calculations.', default=0.1)
+parser.add_argument('--positive_weight', help='The balancing with used in weighted cross entropy calculations.', default=10)
 parser.add_argument('--deploy_train', help='Deploy network to train data set?', action='store_true')
 parser.add_argument('--deploy_validation', help='Deploy network to validation dataset', action='store_true')
 parser.add_argument('--deploy_test', help='Deploy network to test data set', action='store_true')
@@ -67,21 +67,21 @@ if args.gpu:
 # Configure network architecture parameters.
 patchSize = [67, 67]
 imSizeFC = [5, 5]
-convolutionalFilters = 4#8
+convolutionalFilters = 48
 firstLayerDimensions = [5, 5, 1, convolutionalFilters]
 secondLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 thirdLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
-fcNeurons = 10#24
+fcNeurons = 1024
 fcLayerDimensions = [imSizeFC[0], imSizeFC[1], convolutionalFilters, fcNeurons]
-dropoutProb = 1
+# dropoutProb = 1  # TODO - Not using dropout. 
 
 # Configure training parameters.
-trainingSteps = 30#0000
-batch_size = 10#0
+trainingSteps = 300000
+batch_size = 100
 pos_frac = float(args.train_fraction)
 pos_weight = float(args.positive_weight)
 learningRate = 1e-04
-valRegularity = 10#00
+valRegularity = 1000
 
 # Define data locations.
 dataLocations = ['./kasthuri_data/train/train.h5', './kasthuri_data/validation/validation.h5', './kasthuri_data/test/test.h5']
@@ -130,12 +130,12 @@ if not args.deploy_pretrained:
 	fileOutputName = "Results/VCNN-2_" + time.strftime("%Y_%m_%d") + "_" + time.strftime("%H_%M_%S")
 else:
 	fileOutputName = args.deploy_pretrained
+
+if not os.path.exists(fileOutputName):
+        os.makedirs(fileOutputName)
 	
 reportLocation = fileOutputName + "/report.txt"
 util.echo_to_file(reportLocation, "\n-- VESICLE-CNN-2 synapse detector. --\n")
-
-if not os.path.exists(fileOutputName):
-	os.makedirs(fileOutputName)
 
 util.echo_to_file(reportLocation, "Experiment to train VESICLE-CNN-2 to predict synapses.\n")
 util.echo_to_file(reportLocation, "Experiment conducted at:" + time.strftime("%d/%m/%Y") + " " + time.strftime("%H:%M:%S") + ".\n\n")
@@ -147,8 +147,8 @@ else:
 	# Copy current version of this script, as well as the makefile just to make sure we capture the experiment.
 	if not os.path.exists(fileOutputName + "/backup"):
 		os.makedirs(fileOutputName + "/backup")
-	copyfile('./vesicle-cnn-2.py', fileOutputName + "/backup")
-	copyfile('./Makefile', fileOutputName + "/backup")
+	copyfile('./vesicle-cnn-2.py', fileOutputName + "/backup/vesicle-cnn-2.py")
+	copyfile('./Makefile', fileOutputName + "/backup/Makefile")
 
 util.echo_to_file(reportLocation, "Experimental setup:\n")
 util.echo_to_file(reportLocation, "Training settings:\n")
@@ -166,7 +166,7 @@ util.echo_to_file(reportLocation, "\tConvolution layer 1: %s\n" % firstLayerDime
 util.echo_to_file(reportLocation, "\tConvolution layer 2: %s\n" % secondLayerDimensions)
 util.echo_to_file(reportLocation, "\tConvolution layer 3: %s\n" % thirdLayerDimensions)
 util.echo_to_file(reportLocation, "\tFC units: %f\n" % fcNeurons)
-util.echo_to_file(reportLocation, "\tDropout prob: %f\n" % dropoutProb)
+util.echo_to_file(reportLocation, "\tDropout prob: CURRENTLY DISABLED")  #%f\n" % dropoutProb)  # TODO - disabled dropout.
 util.echo_to_file(reportLocation, "\tInput patch size: %s\n" % patchSize)
 
 ''' Configure TensorFlow graph -------------------------------------------------------------------------------------'''
@@ -192,7 +192,7 @@ with tf.name_scope('First_Layer'):
 	W_conv1 = util.weight_variable(firstLayerDimensions, "w_conv_1")                            # Weights in first layer.
 	b_conv1 = util.bias_variable([firstLayerDimensions[3]], "b_conv_1")                         # Biases in first layer.
 	h_conv1 = tf.nn.relu(util.conv2d(x, W_conv1, valid=True, stride=1) + b_conv1)               # Perform convolution (with zero padding) and apply ReLU.
-	h_pool1 = util.max_pool(h_conv1, 1, kernelWidth=2)
+	h_pool1 = util.max_pool(h_conv1, 1)  # NOTE removed in acordance with paper model. # , kernelWidth=2)
 
 with tf.name_scope('Second_Layer'):
 	# Create first convolutional layer.
@@ -215,14 +215,14 @@ with tf.name_scope('Fccnn_Layer'):
 	h_fccnn4 = tf.nn.relu(util.atrous_conv2d(h_pool3, W_fccnn1, valid=True, rate=8))            # Perform atrous convolution (with zero padding) and apply ReLU.
 	
 	# Throw some dropout in there for good measure.
-	keep_prob = tf.placeholder(tf.float32)
-	h_cnnfc1_drop = tf.nn.dropout(h_fccnn4, keep_prob)
+#	keep_prob = tf.placeholder(tf.float32)  # TODO - removed droupout.
+#	h_cnnfc1_drop = tf.nn.dropout(h_fccnn4, keep_prob)  # TODO - removed dropout.
 
 with tf.name_scope('Output_Layer'):
 	# Now add a final output layer.
 	W_fccnn5 = util.weight_variable([1, 1, fcLayerDimensions[3], 2], "w_fccnn_2")
 	b_fccnn5 = util.bias_variable([2], "b_fccnn_2")
-	y_syn_logit = tf.nn.relu(util.conv2d(h_cnnfc1_drop, W_fccnn5, valid=True) + b_fccnn5)
+	y_syn_logit = tf.nn.relu(util.conv2d(h_fccnn4, W_fccnn5, valid=True) + b_fccnn5)
 	y_syn_soft = tf.nn.softmax(y_syn_logit)
 	y_syn_logit_flat = tf.reshape(y_syn_logit, [-1, 2])
 	y_syn_soft_flat = tf.reshape(y_syn_soft, [-1, 2])
@@ -232,7 +232,7 @@ saver = tf.train.Saver()
 
 # Define cross entropy as loss function.
 with tf.name_scope('XEnt'):
-	cross_entropy = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(targets=y_syn, logits=y_syn_logit_flat, pos_weight=(1 / pos_weight), name='syn_Loss'))
+	cross_entropy = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(targets=y_syn, logits=y_syn_logit_flat, pos_weight=pos_weight, name='syn_Loss'))
 
 # Calculate accuracy as an average across vector.
 with tf.name_scope('Acc'):
@@ -287,7 +287,7 @@ def validate_network(_f1s=[], _accs=[], _xents=[], final_val=False):
 		for k in range(8):
 			val_batch = util.get_minibatch_image(validateImage, validateLabels, batch_size=1, valN=j, orientation=k, border=border)
 			reshaped = np.reshape(val_batch[0], [-1, windowSize[0], windowSize[1], 1])
-			val_cross_entropy[j, k], val_accuracy[j, k], val_fmeasure[j, k] = sess.run([cross_entropy, accuracy, fmeasure], feed_dict={x: reshaped, y_syn: val_batch[1]['SYN'], keep_prob: 1.0})
+			val_cross_entropy[j, k], val_accuracy[j, k], val_fmeasure[j, k] = sess.run([cross_entropy, accuracy, fmeasure], feed_dict={x: reshaped, y_syn: val_batch[1]['SYN']})  # , keep_prob: 1.0}) # TODO - removed droupout.
 	
 	validation_accuracy = np.average(np.average(val_accuracy))
 	validation_cross_entropy = np.average(np.average(val_cross_entropy))
@@ -322,7 +322,7 @@ if training:
 			
 		startTime = timeit.default_timer()
 		batch = util.get_minibatch_patch(trainImage, trainLabels['SYN'], batch_size, patchSize, pos_frac=pos_frac, pos_locs=positive_locations, neg_locs=negative_locations)
-		_, summary = sess.run([train_step, summary_op], feed_dict={x: batch[0], y_syn: batch[1], keep_prob: dropoutProb})
+		_, summary = sess.run([train_step, summary_op], feed_dict={x: batch[0], y_syn: batch[1]})  # TODO - removed droupout., keep_prob: dropoutProb})
 		writer.add_summary(summary, i)
 		elapsed = timeit.default_timer() - startTime
 		trainTimes[i] = elapsed
@@ -421,7 +421,7 @@ def application_speed_test(_func, _image):
 	for i in range(_image.size[0]):
 		_single_im = np.expand_dims(trainImage[i, :, :].astype(np.float32), axis=0)
 		startTime = timeit.default_timer()
-		_ = sess.run(_func, feed_dict={x: _single_im, keep_prob: 1.0})
+		_ = sess.run(_func, feed_dict={x: _single_im})  # , keep_prob: 1.0}) # TODO - removed dropout.
 		elapsed = timeit.default_timer() - startTime
 		_application_times[i] = elapsed
 	
