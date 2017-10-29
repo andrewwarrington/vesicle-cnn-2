@@ -5,8 +5,13 @@
 # TF output...
 *LOGS*
 
+# Caffe output.
+*.caffemodel
+
 # Data files...
 *.h5
 *.tif
 *.tiff
 *kasthuri_data*
+*.npy
+*.mat
