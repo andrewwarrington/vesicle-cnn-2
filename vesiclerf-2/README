@@ -1,0 +1,2 @@
+This folder contains the scripts required for running VESICLE-RF as a multithread implementation using the .h5 format used in other works.
+Incremental improvements will also be made to this script, as opposed to the VESICLE-RF example in Prior_art which is a link to the current implementation, (slightly) reworked to be compatible.

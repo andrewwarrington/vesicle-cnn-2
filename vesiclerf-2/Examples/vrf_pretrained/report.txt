@@ -1,0 +1,6 @@
+Training VESICLE-RF classifier.
+Conducted at2017-10-28--17-11-11.
+Training complete, time elapsed: 410.88.
+Classification complete, time elapsed (including feature extraction): 782.24.
+Classification complete, time elapsed (including feature extraction): 225.53.
+Classification complete, time elapsed (including feature extraction): 1059.57.
