@@ -1,5 +1,5 @@
 
-GPU := "1"
+GPU := "0"
 
 default: 
 	@echo "Please specify a target to make."
@@ -13,7 +13,7 @@ train-deploy-all:
 				--gpu ${GPU} \
 				--deploy_train \
 				--deploy_validation \
-				--deploy_test
+				--deploy_test \
 
 pretrained-deploy-all:
 	python vesicle-cnn-2.py --deploy_pretrained "VCNN-2_train_2017_10_19_16_17_25_0" \

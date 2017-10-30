@@ -1,0 +1,2452 @@
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1023 10:51:02.064474    11 solver.cpp:44] Initializing solver from parameters: 
+base_lr: 1e-05
+display: 200
+max_iter: 200000
+lr_policy: "step"
+gamma: 0.5
+momentum: 0
+stepsize: 30000
+snapshot: 2000
+snapshot_prefix: "./"
+solver_mode: GPU
+device_id: 1
+net: "n3-net.prototxt"
+I1023 10:51:02.064565    11 solver.cpp:87] Creating training net from net file: n3-net.prototxt
+I1023 10:51:02.064666    11 upgrade_proto.cpp:53] Attempting to upgrade input file specified using deprecated V1LayerParameter: n3-net.prototxt
+I1023 10:51:02.064705    11 upgrade_proto.cpp:61] Successfully upgraded file specified using deprecated V1LayerParameter
+I1023 10:51:02.064817    11 net.cpp:53] Initializing net from parameters: 
+name: "CiresanN3"
+state {
+  phase: TRAIN
+}
+layer {
+  name: "data"
+  type: "MemoryData"
+  top: "data"
+  top: "label"
+  memory_data_param {
+    batch_size: 100
+    channels: 1
+    height: 65
+    width: 65
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 48
+    pad: 0
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.0001
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "relu1"
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "relu1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 1
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 48
+    pad: 0
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "relu2"
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "relu2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 1
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "pool2"
+  top: "conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 48
+    pad: 0
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "relu3"
+}
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "relu3"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 1
+  }
+}
+layer {
+  name: "ip1"
+  type: "InnerProduct"
+  bottom: "pool3"
+  top: "ip1"
+  param {
+    lr_mult: 1
+    decay_mult: 250
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
+  inner_product_param {
+    num_output: 200
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "ip1"
+  top: "relu4"
+}
+layer {
+  name: "ip2"
+  type: "InnerProduct"
+  bottom: "relu4"
+  top: "ip2"
+  param {
+    lr_mult: 1
+    decay_mult: 250
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "ip2"
+  bottom: "label"
+  top: "accuracy"
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "ip2"
+  bottom: "label"
+  top: "loss"
+}
+layer {
+  name: "prob"
+  type: "Softmax"
+  bottom: "ip2"
+  top: "prob"
+}
+I1023 10:51:02.064899    11 layer_factory.hpp:77] Creating layer data
+I1023 10:51:02.064913    11 net.cpp:86] Creating Layer data
+I1023 10:51:02.064924    11 net.cpp:382] data -> data
+I1023 10:51:02.064935    11 net.cpp:382] data -> label
+I1023 10:51:02.065562    11 net.cpp:124] Setting up data
+I1023 10:51:02.065575    11 net.cpp:131] Top shape: 100 1 65 65 (422500)
+I1023 10:51:02.065579    11 net.cpp:131] Top shape: 100 (100)
+I1023 10:51:02.065582    11 net.cpp:139] Memory required for data: 1690400
+I1023 10:51:02.065584    11 layer_factory.hpp:77] Creating layer label_data_1_split
+I1023 10:51:02.065594    11 net.cpp:86] Creating Layer label_data_1_split
+I1023 10:51:02.065599    11 net.cpp:408] label_data_1_split <- label
+I1023 10:51:02.065605    11 net.cpp:382] label_data_1_split -> label_data_1_split_0
+I1023 10:51:02.065613    11 net.cpp:382] label_data_1_split -> label_data_1_split_1
+I1023 10:51:02.065619    11 net.cpp:124] Setting up label_data_1_split
+I1023 10:51:02.065623    11 net.cpp:131] Top shape: 100 (100)
+I1023 10:51:02.065625    11 net.cpp:131] Top shape: 100 (100)
+I1023 10:51:02.065626    11 net.cpp:139] Memory required for data: 1691200
+I1023 10:51:02.065629    11 layer_factory.hpp:77] Creating layer conv1
+I1023 10:51:02.065635    11 net.cpp:86] Creating Layer conv1
+I1023 10:51:02.065639    11 net.cpp:408] conv1 <- data
+I1023 10:51:02.065642    11 net.cpp:382] conv1 -> conv1
+I1023 10:51:06.825064    11 net.cpp:124] Setting up conv1
+I1023 10:51:06.825088    11 net.cpp:131] Top shape: 100 48 61 61 (17860800)
+I1023 10:51:06.825091    11 net.cpp:139] Memory required for data: 73134400
+I1023 10:51:06.825103    11 layer_factory.hpp:77] Creating layer relu1
+I1023 10:51:06.825111    11 net.cpp:86] Creating Layer relu1
+I1023 10:51:06.825114    11 net.cpp:408] relu1 <- conv1
+I1023 10:51:06.825119    11 net.cpp:382] relu1 -> relu1
+I1023 10:51:06.825276    11 net.cpp:124] Setting up relu1
+I1023 10:51:06.825286    11 net.cpp:131] Top shape: 100 48 61 61 (17860800)
+I1023 10:51:06.825289    11 net.cpp:139] Memory required for data: 144577600
+I1023 10:51:06.825291    11 layer_factory.hpp:77] Creating layer pool1
+I1023 10:51:06.825299    11 net.cpp:86] Creating Layer pool1
+I1023 10:51:06.825300    11 net.cpp:408] pool1 <- relu1
+I1023 10:51:06.825304    11 net.cpp:382] pool1 -> pool1
+I1023 10:51:06.825314    11 net.cpp:124] Setting up pool1
+I1023 10:51:06.825331    11 net.cpp:131] Top shape: 100 48 60 60 (17280000)
+I1023 10:51:06.825335    11 net.cpp:139] Memory required for data: 213697600
+I1023 10:51:06.825337    11 layer_factory.hpp:77] Creating layer conv2
+I1023 10:51:06.825346    11 net.cpp:86] Creating Layer conv2
+I1023 10:51:06.825352    11 net.cpp:408] conv2 <- pool1
+I1023 10:51:06.825356    11 net.cpp:382] conv2 -> conv2
+I1023 10:51:06.826478    11 net.cpp:124] Setting up conv2
+I1023 10:51:06.826489    11 net.cpp:131] Top shape: 100 48 56 56 (15052800)
+I1023 10:51:06.826493    11 net.cpp:139] Memory required for data: 273908800
+I1023 10:51:06.826499    11 layer_factory.hpp:77] Creating layer relu2
+I1023 10:51:06.826503    11 net.cpp:86] Creating Layer relu2
+I1023 10:51:06.826506    11 net.cpp:408] relu2 <- conv2
+I1023 10:51:06.826511    11 net.cpp:382] relu2 -> relu2
+I1023 10:51:06.826652    11 net.cpp:124] Setting up relu2
+I1023 10:51:06.826661    11 net.cpp:131] Top shape: 100 48 56 56 (15052800)
+I1023 10:51:06.826663    11 net.cpp:139] Memory required for data: 334120000
+I1023 10:51:06.826666    11 layer_factory.hpp:77] Creating layer pool2
+I1023 10:51:06.826670    11 net.cpp:86] Creating Layer pool2
+I1023 10:51:06.826673    11 net.cpp:408] pool2 <- relu2
+I1023 10:51:06.826678    11 net.cpp:382] pool2 -> pool2
+I1023 10:51:06.826684    11 net.cpp:124] Setting up pool2
+I1023 10:51:06.826687    11 net.cpp:131] Top shape: 100 48 55 55 (14520000)
+I1023 10:51:06.826690    11 net.cpp:139] Memory required for data: 392200000
+I1023 10:51:06.826694    11 layer_factory.hpp:77] Creating layer conv3
+I1023 10:51:06.826706    11 net.cpp:86] Creating Layer conv3
+I1023 10:51:06.826710    11 net.cpp:408] conv3 <- pool2
+I1023 10:51:06.826717    11 net.cpp:382] conv3 -> conv3
+I1023 10:51:06.827864    11 net.cpp:124] Setting up conv3
+I1023 10:51:06.827877    11 net.cpp:131] Top shape: 100 48 51 51 (12484800)
+I1023 10:51:06.827879    11 net.cpp:139] Memory required for data: 442139200
+I1023 10:51:06.827885    11 layer_factory.hpp:77] Creating layer relu3
+I1023 10:51:06.827891    11 net.cpp:86] Creating Layer relu3
+I1023 10:51:06.827894    11 net.cpp:408] relu3 <- conv3
+I1023 10:51:06.827899    11 net.cpp:382] relu3 -> relu3
+I1023 10:51:06.828039    11 net.cpp:124] Setting up relu3
+I1023 10:51:06.828050    11 net.cpp:131] Top shape: 100 48 51 51 (12484800)
+I1023 10:51:06.828052    11 net.cpp:139] Memory required for data: 492078400
+I1023 10:51:06.828054    11 layer_factory.hpp:77] Creating layer pool3
+I1023 10:51:06.828059    11 net.cpp:86] Creating Layer pool3
+I1023 10:51:06.828061    11 net.cpp:408] pool3 <- relu3
+I1023 10:51:06.828066    11 net.cpp:382] pool3 -> pool3
+I1023 10:51:06.828075    11 net.cpp:124] Setting up pool3
+I1023 10:51:06.828080    11 net.cpp:131] Top shape: 100 48 50 50 (12000000)
+I1023 10:51:06.828083    11 net.cpp:139] Memory required for data: 540078400
+I1023 10:51:06.828088    11 layer_factory.hpp:77] Creating layer ip1
+I1023 10:51:06.828094    11 net.cpp:86] Creating Layer ip1
+I1023 10:51:06.828095    11 net.cpp:408] ip1 <- pool3
+I1023 10:51:06.828104    11 net.cpp:382] ip1 -> ip1
+I1023 10:51:07.000407    11 net.cpp:124] Setting up ip1
+I1023 10:51:07.000432    11 net.cpp:131] Top shape: 100 200 (20000)
+I1023 10:51:07.000434    11 net.cpp:139] Memory required for data: 540158400
+I1023 10:51:07.000440    11 layer_factory.hpp:77] Creating layer relu4
+I1023 10:51:07.000448    11 net.cpp:86] Creating Layer relu4
+I1023 10:51:07.000452    11 net.cpp:408] relu4 <- ip1
+I1023 10:51:07.000457    11 net.cpp:382] relu4 -> relu4
+I1023 10:51:07.000708    11 net.cpp:124] Setting up relu4
+I1023 10:51:07.000720    11 net.cpp:131] Top shape: 100 200 (20000)
+I1023 10:51:07.000722    11 net.cpp:139] Memory required for data: 540238400
+I1023 10:51:07.000725    11 layer_factory.hpp:77] Creating layer ip2
+I1023 10:51:07.000731    11 net.cpp:86] Creating Layer ip2
+I1023 10:51:07.000741    11 net.cpp:408] ip2 <- relu4
+I1023 10:51:07.000746    11 net.cpp:382] ip2 -> ip2
+I1023 10:51:07.000766    11 net.cpp:124] Setting up ip2
+I1023 10:51:07.000772    11 net.cpp:131] Top shape: 100 2 (200)
+I1023 10:51:07.000777    11 net.cpp:139] Memory required for data: 540239200
+I1023 10:51:07.000788    11 layer_factory.hpp:77] Creating layer ip2_ip2_0_split
+I1023 10:51:07.000794    11 net.cpp:86] Creating Layer ip2_ip2_0_split
+I1023 10:51:07.000797    11 net.cpp:408] ip2_ip2_0_split <- ip2
+I1023 10:51:07.000800    11 net.cpp:382] ip2_ip2_0_split -> ip2_ip2_0_split_0
+I1023 10:51:07.000809    11 net.cpp:382] ip2_ip2_0_split -> ip2_ip2_0_split_1
+I1023 10:51:07.000816    11 net.cpp:382] ip2_ip2_0_split -> ip2_ip2_0_split_2
+I1023 10:51:07.000821    11 net.cpp:124] Setting up ip2_ip2_0_split
+I1023 10:51:07.000825    11 net.cpp:131] Top shape: 100 2 (200)
+I1023 10:51:07.000828    11 net.cpp:131] Top shape: 100 2 (200)
+I1023 10:51:07.000830    11 net.cpp:131] Top shape: 100 2 (200)
+I1023 10:51:07.000831    11 net.cpp:139] Memory required for data: 540241600
+I1023 10:51:07.000834    11 layer_factory.hpp:77] Creating layer accuracy
+I1023 10:51:07.000840    11 net.cpp:86] Creating Layer accuracy
+I1023 10:51:07.000844    11 net.cpp:408] accuracy <- ip2_ip2_0_split_0
+I1023 10:51:07.000849    11 net.cpp:408] accuracy <- label_data_1_split_0
+I1023 10:51:07.000856    11 net.cpp:382] accuracy -> accuracy
+I1023 10:51:07.000871    11 net.cpp:124] Setting up accuracy
+I1023 10:51:07.000877    11 net.cpp:131] Top shape: (1)
+I1023 10:51:07.000881    11 net.cpp:139] Memory required for data: 540241604
+I1023 10:51:07.000885    11 layer_factory.hpp:77] Creating layer loss
+I1023 10:51:07.000893    11 net.cpp:86] Creating Layer loss
+I1023 10:51:07.000898    11 net.cpp:408] loss <- ip2_ip2_0_split_1
+I1023 10:51:07.000902    11 net.cpp:408] loss <- label_data_1_split_1
+I1023 10:51:07.000910    11 net.cpp:382] loss -> loss
+I1023 10:51:07.000917    11 layer_factory.hpp:77] Creating layer loss
+I1023 10:51:07.001399    11 net.cpp:124] Setting up loss
+I1023 10:51:07.001410    11 net.cpp:131] Top shape: (1)
+I1023 10:51:07.001413    11 net.cpp:134]     with loss weight 1
+I1023 10:51:07.001420    11 net.cpp:139] Memory required for data: 540241608
+I1023 10:51:07.001423    11 layer_factory.hpp:77] Creating layer prob
+I1023 10:51:07.001430    11 net.cpp:86] Creating Layer prob
+I1023 10:51:07.001432    11 net.cpp:408] prob <- ip2_ip2_0_split_2
+I1023 10:51:07.001436    11 net.cpp:382] prob -> prob
+I1023 10:51:07.001566    11 net.cpp:124] Setting up prob
+I1023 10:51:07.001574    11 net.cpp:131] Top shape: 100 2 (200)
+I1023 10:51:07.001576    11 net.cpp:139] Memory required for data: 540242408
+I1023 10:51:07.001579    11 net.cpp:202] prob does not need backward computation.
+I1023 10:51:07.001582    11 net.cpp:200] loss needs backward computation.
+I1023 10:51:07.001585    11 net.cpp:202] accuracy does not need backward computation.
+I1023 10:51:07.001587    11 net.cpp:200] ip2_ip2_0_split needs backward computation.
+I1023 10:51:07.001590    11 net.cpp:200] ip2 needs backward computation.
+I1023 10:51:07.001592    11 net.cpp:200] relu4 needs backward computation.
+I1023 10:51:07.001595    11 net.cpp:200] ip1 needs backward computation.
+I1023 10:51:07.001596    11 net.cpp:200] pool3 needs backward computation.
+I1023 10:51:07.001598    11 net.cpp:200] relu3 needs backward computation.
+I1023 10:51:07.001601    11 net.cpp:200] conv3 needs backward computation.
+I1023 10:51:07.001605    11 net.cpp:200] pool2 needs backward computation.
+I1023 10:51:07.001606    11 net.cpp:200] relu2 needs backward computation.
+I1023 10:51:07.001608    11 net.cpp:200] conv2 needs backward computation.
+I1023 10:51:07.001610    11 net.cpp:200] pool1 needs backward computation.
+I1023 10:51:07.001612    11 net.cpp:200] relu1 needs backward computation.
+I1023 10:51:07.001615    11 net.cpp:200] conv1 needs backward computation.
+I1023 10:51:07.001617    11 net.cpp:202] label_data_1_split does not need backward computation.
+I1023 10:51:07.001621    11 net.cpp:202] data does not need backward computation.
+I1023 10:51:07.001623    11 net.cpp:244] This network produces output accuracy
+I1023 10:51:07.001626    11 net.cpp:244] This network produces output loss
+I1023 10:51:07.001627    11 net.cpp:244] This network produces output prob
+I1023 10:51:07.001639    11 net.cpp:257] Network initialization done.
+I1023 10:51:07.001685    11 solver.cpp:56] Solver scaffolding done.
+[train]: batch shape: [100   1  65  65]
+[train]: loading file: SynapseData/X_train.tif
+[train]: loading file: SynapseData/Y_train2.tif
+[train]: yAll is [0, 1]
+[train]: 0 pixels will be omitted
+
+[train]: training data shape: (100, 1088, 1088)
+[train]: validation data shape: (0, 1088, 1088)
+[train]: mask shape: (100, 1088, 1088)
+conv1[0] : (48, 1, 5, 5)
+conv1[1] : (48,)
+conv2[0] : (48, 48, 5, 5)
+conv2[1] : (48,)
+conv3[0] : (48, 48, 5, 5)
+conv3[1] : (48,)
+ip1[0] : (200, 120000)
+ip1[1] : (200,)
+ip2[0] : (2, 200)
+ip2[1] : (2,)
+[emlib]: num. pixels per class label is: [103911440, 946160]
+[emlib]: will draw 946160 samples from each class
+[train]: completed iteration 1 (of 200000; 1.33 min elapsed; 0.00 CNN min)
+[train]:    epoch: 1 (0.00), loss: 0.693, acc: 0.440, learn rate: 1.000e-05
+[train]: completed iteration 201 (of 200000; 1.81 min elapsed; 0.48 CNN min)
+[train]:    epoch: 1 (1.06), loss: 0.693, acc: 0.515, learn rate: 1.000e-05
+[train]: completed iteration 401 (of 200000; 2.28 min elapsed; 0.95 CNN min)
+[train]:    epoch: 1 (2.11), loss: 0.693, acc: 0.540, learn rate: 1.000e-05
+[train]: completed iteration 601 (of 200000; 2.76 min elapsed; 1.43 CNN min)
+[train]:    epoch: 1 (3.17), loss: 0.693, acc: 0.500, learn rate: 1.000e-05
+[train]: completed iteration 801 (of 200000; 3.25 min elapsed; 1.91 CNN min)
+[train]:    epoch: 1 (4.23), loss: 0.693, acc: 0.478, learn rate: 1.000e-05
+[train]: completed iteration 1001 (of 200000; 3.74 min elapsed; 2.39 CNN min)
+[train]:    epoch: 1 (5.28), loss: 0.693, acc: 0.478, learn rate: 1.000e-05
+[train]: completed iteration 1201 (of 200000; 4.22 min elapsed; 2.88 CNN min)
+[train]:    epoch: 1 (6.34), loss: 0.693, acc: 0.473, learn rate: 1.000e-05
+[train]: completed iteration 1401 (of 200000; 4.70 min elapsed; 3.35 CNN min)
+[train]:    epoch: 1 (7.40), loss: 0.693, acc: 0.498, learn rate: 1.000e-05
+[train]: completed iteration 1601 (of 200000; 5.18 min elapsed; 3.83 CNN min)
+[train]:    epoch: 1 (8.46), loss: 0.693, acc: 0.511, learn rate: 1.000e-05
+[train]: completed iteration 1801 (of 200000; 5.67 min elapsed; 4.31 CNN min)
+[train]:    epoch: 1 (9.51), loss: 0.693, acc: 0.515, learn rate: 1.000e-05
+[train]: completed iteration 2001 (of 200000; 6.15 min elapsed; 4.79 CNN min)
+[train]:    epoch: 1 (10.57), loss: 0.693, acc: 0.514, learn rate: 1.000e-05
+[train]: completed iteration 2201 (of 200000; 6.63 min elapsed; 5.27 CNN min)
+[train]:    epoch: 1 (11.63), loss: 0.693, acc: 0.512, learn rate: 1.000e-05
+[train]: completed iteration 2401 (of 200000; 7.11 min elapsed; 5.75 CNN min)
+[train]:    epoch: 1 (12.68), loss: 0.693, acc: 0.513, learn rate: 1.000e-05
+[train]: completed iteration 2601 (of 200000; 7.59 min elapsed; 6.22 CNN min)
+[train]:    epoch: 1 (13.74), loss: 0.693, acc: 0.506, learn rate: 1.000e-05
+[train]: completed iteration 2801 (of 200000; 8.08 min elapsed; 6.70 CNN min)
+[train]:    epoch: 1 (14.80), loss: 0.693, acc: 0.514, learn rate: 1.000e-05
+[train]: completed iteration 3001 (of 200000; 8.56 min elapsed; 7.18 CNN min)
+[train]:    epoch: 1 (15.85), loss: 0.693, acc: 0.499, learn rate: 1.000e-05
+[train]: completed iteration 3201 (of 200000; 9.04 min elapsed; 7.66 CNN min)
+[train]:    epoch: 1 (16.91), loss: 0.693, acc: 0.515, learn rate: 1.000e-05
+[train]: completed iteration 3401 (of 200000; 9.52 min elapsed; 8.14 CNN min)
+[train]:    epoch: 1 (17.97), loss: 0.693, acc: 0.516, learn rate: 1.000e-05
+[train]: completed iteration 3601 (of 200000; 10.00 min elapsed; 8.61 CNN min)
+[train]:    epoch: 1 (19.02), loss: 0.692, acc: 0.663, learn rate: 1.000e-05
+[train]: completed iteration 3801 (of 200000; 10.50 min elapsed; 9.11 CNN min)
+[train]:    epoch: 1 (20.08), loss: 0.693, acc: 0.484, learn rate: 1.000e-05
+[train]: completed iteration 4001 (of 200000; 11.00 min elapsed; 9.60 CNN min)
+[train]:    epoch: 1 (21.14), loss: 0.691, acc: 0.573, learn rate: 1.000e-05
+[train]: completed iteration 4201 (of 200000; 11.50 min elapsed; 10.09 CNN min)
+[train]:    epoch: 1 (22.19), loss: 0.690, acc: 0.477, learn rate: 1.000e-05
+[train]: completed iteration 4401 (of 200000; 11.99 min elapsed; 10.59 CNN min)
+[train]:    epoch: 1 (23.25), loss: 0.689, acc: 0.466, learn rate: 1.000e-05
+[train]: completed iteration 4601 (of 200000; 12.49 min elapsed; 11.08 CNN min)
+[train]:    epoch: 1 (24.31), loss: 0.682, acc: 0.658, learn rate: 1.000e-05
+[train]: completed iteration 4801 (of 200000; 12.98 min elapsed; 11.57 CNN min)
+[train]:    epoch: 1 (25.37), loss: 0.651, acc: 0.745, learn rate: 1.000e-05
+[train]: completed iteration 5001 (of 200000; 13.48 min elapsed; 12.06 CNN min)
+[train]:    epoch: 1 (26.42), loss: 0.583, acc: 0.699, learn rate: 1.000e-05
+[train]: completed iteration 5201 (of 200000; 13.98 min elapsed; 12.56 CNN min)
+[train]:    epoch: 1 (27.48), loss: 0.657, acc: 0.707, learn rate: 1.000e-05
+[train]: completed iteration 5401 (of 200000; 14.48 min elapsed; 13.05 CNN min)
+[train]:    epoch: 1 (28.54), loss: 0.591, acc: 0.720, learn rate: 1.000e-05
+[train]: completed iteration 5601 (of 200000; 14.97 min elapsed; 13.55 CNN min)
+[train]:    epoch: 1 (29.59), loss: 0.635, acc: 0.653, learn rate: 1.000e-05
+[train]: completed iteration 5801 (of 200000; 15.47 min elapsed; 14.04 CNN min)
+[train]:    epoch: 1 (30.65), loss: 0.631, acc: 0.699, learn rate: 1.000e-05
+[train]: completed iteration 6001 (of 200000; 15.97 min elapsed; 14.53 CNN min)
+[train]:    epoch: 1 (31.71), loss: 0.595, acc: 0.721, learn rate: 1.000e-05
+[train]: completed iteration 6201 (of 200000; 16.47 min elapsed; 15.03 CNN min)
+[train]:    epoch: 1 (32.76), loss: 0.578, acc: 0.726, learn rate: 1.000e-05
+[train]: completed iteration 6401 (of 200000; 16.97 min elapsed; 15.52 CNN min)
+[train]:    epoch: 1 (33.82), loss: 0.593, acc: 0.705, learn rate: 1.000e-05
+[train]: completed iteration 6601 (of 200000; 17.46 min elapsed; 16.01 CNN min)
+[train]:    epoch: 1 (34.88), loss: 0.582, acc: 0.709, learn rate: 1.000e-05
+[train]: completed iteration 6801 (of 200000; 17.96 min elapsed; 16.51 CNN min)
+[train]:    epoch: 1 (35.93), loss: 0.543, acc: 0.761, learn rate: 1.000e-05
+[train]: completed iteration 7001 (of 200000; 18.46 min elapsed; 17.00 CNN min)
+[train]:    epoch: 1 (36.99), loss: 0.552, acc: 0.759, learn rate: 1.000e-05
+[train]: completed iteration 7201 (of 200000; 18.95 min elapsed; 17.49 CNN min)
+[train]:    epoch: 1 (38.05), loss: 0.500, acc: 0.791, learn rate: 1.000e-05
+[train]: completed iteration 7401 (of 200000; 19.45 min elapsed; 17.99 CNN min)
+[train]:    epoch: 1 (39.11), loss: 0.541, acc: 0.757, learn rate: 1.000e-05
+[train]: completed iteration 7601 (of 200000; 19.95 min elapsed; 18.48 CNN min)
+[train]:    epoch: 1 (40.16), loss: 0.523, acc: 0.783, learn rate: 1.000e-05
+[train]: completed iteration 7801 (of 200000; 20.45 min elapsed; 18.98 CNN min)
+[train]:    epoch: 1 (41.22), loss: 0.501, acc: 0.788, learn rate: 1.000e-05
+[train]: completed iteration 8001 (of 200000; 20.95 min elapsed; 19.47 CNN min)
+[train]:    epoch: 1 (42.28), loss: 0.492, acc: 0.773, learn rate: 1.000e-05
+[train]: completed iteration 8201 (of 200000; 21.45 min elapsed; 19.97 CNN min)
+[train]:    epoch: 1 (43.33), loss: 0.488, acc: 0.797, learn rate: 1.000e-05
+[train]: completed iteration 8401 (of 200000; 21.95 min elapsed; 20.46 CNN min)
+[train]:    epoch: 1 (44.39), loss: 0.505, acc: 0.781, learn rate: 1.000e-05
+[train]: completed iteration 8601 (of 200000; 22.44 min elapsed; 20.95 CNN min)
+[train]:    epoch: 1 (45.45), loss: 0.524, acc: 0.776, learn rate: 1.000e-05
+[train]: completed iteration 8801 (of 200000; 22.94 min elapsed; 21.45 CNN min)
+[train]:    epoch: 1 (46.50), loss: 0.439, acc: 0.811, learn rate: 1.000e-05
+[train]: completed iteration 9001 (of 200000; 23.44 min elapsed; 21.94 CNN min)
+[train]:    epoch: 1 (47.56), loss: 0.479, acc: 0.794, learn rate: 1.000e-05
+[train]: completed iteration 9201 (of 200000; 23.93 min elapsed; 22.44 CNN min)
+[train]:    epoch: 1 (48.62), loss: 0.437, acc: 0.820, learn rate: 1.000e-05
+[train]: completed iteration 9401 (of 200000; 24.43 min elapsed; 22.93 CNN min)
+[train]:    epoch: 1 (49.67), loss: 0.459, acc: 0.809, learn rate: 1.000e-05
+[train]: completed iteration 9601 (of 200000; 24.93 min elapsed; 23.42 CNN min)
+[train]:    epoch: 1 (50.73), loss: 0.418, acc: 0.823, learn rate: 1.000e-05
+[train]: completed iteration 9801 (of 200000; 25.42 min elapsed; 23.92 CNN min)
+[train]:    epoch: 1 (51.79), loss: 0.444, acc: 0.817, learn rate: 1.000e-05
+[train]: completed iteration 10001 (of 200000; 25.92 min elapsed; 24.41 CNN min)
+[train]:    epoch: 1 (52.85), loss: 0.432, acc: 0.831, learn rate: 1.000e-05
+[train]: completed iteration 10201 (of 200000; 26.42 min elapsed; 24.90 CNN min)
+[train]:    epoch: 1 (53.90), loss: 0.402, acc: 0.823, learn rate: 1.000e-05
+[train]: completed iteration 10401 (of 200000; 26.92 min elapsed; 25.40 CNN min)
+[train]:    epoch: 1 (54.96), loss: 0.422, acc: 0.818, learn rate: 1.000e-05
+[train]: completed iteration 10601 (of 200000; 27.41 min elapsed; 25.89 CNN min)
+[train]:    epoch: 1 (56.02), loss: 0.424, acc: 0.811, learn rate: 1.000e-05
+[train]: completed iteration 10801 (of 200000; 27.90 min elapsed; 26.38 CNN min)
+[train]:    epoch: 1 (57.07), loss: 0.349, acc: 0.861, learn rate: 1.000e-05
+[train]: completed iteration 11001 (of 200000; 28.40 min elapsed; 26.87 CNN min)
+[train]:    epoch: 1 (58.13), loss: 0.366, acc: 0.851, learn rate: 1.000e-05
+[train]: completed iteration 11201 (of 200000; 28.90 min elapsed; 27.36 CNN min)
+[train]:    epoch: 1 (59.19), loss: 0.395, acc: 0.822, learn rate: 1.000e-05
+[train]: completed iteration 11401 (of 200000; 29.39 min elapsed; 27.85 CNN min)
+[train]:    epoch: 1 (60.24), loss: 0.361, acc: 0.857, learn rate: 1.000e-05
+[train]: completed iteration 11601 (of 200000; 29.88 min elapsed; 28.34 CNN min)
+[train]:    epoch: 1 (61.30), loss: 0.346, acc: 0.863, learn rate: 1.000e-05
+[train]: completed iteration 11801 (of 200000; 30.38 min elapsed; 28.83 CNN min)
+[train]:    epoch: 1 (62.36), loss: 0.381, acc: 0.836, learn rate: 1.000e-05
+[train]: completed iteration 12001 (of 200000; 30.87 min elapsed; 29.32 CNN min)
+[train]:    epoch: 1 (63.41), loss: 0.368, acc: 0.843, learn rate: 1.000e-05
+[train]: completed iteration 12201 (of 200000; 31.37 min elapsed; 29.81 CNN min)
+[train]:    epoch: 1 (64.47), loss: 0.345, acc: 0.866, learn rate: 1.000e-05
+[train]: completed iteration 12401 (of 200000; 31.86 min elapsed; 30.30 CNN min)
+[train]:    epoch: 1 (65.53), loss: 0.402, acc: 0.847, learn rate: 1.000e-05
+[train]: completed iteration 12601 (of 200000; 32.36 min elapsed; 30.79 CNN min)
+[train]:    epoch: 1 (66.58), loss: 0.313, acc: 0.878, learn rate: 1.000e-05
+[train]: completed iteration 12801 (of 200000; 32.85 min elapsed; 31.28 CNN min)
+[train]:    epoch: 1 (67.64), loss: 0.370, acc: 0.859, learn rate: 1.000e-05
+[train]: completed iteration 13001 (of 200000; 33.34 min elapsed; 31.77 CNN min)
+[train]:    epoch: 1 (68.70), loss: 0.353, acc: 0.855, learn rate: 1.000e-05
+[train]: completed iteration 13201 (of 200000; 33.83 min elapsed; 32.26 CNN min)
+[train]:    epoch: 1 (69.76), loss: 0.376, acc: 0.851, learn rate: 1.000e-05
+[train]: completed iteration 13401 (of 200000; 34.33 min elapsed; 32.75 CNN min)
+[train]:    epoch: 1 (70.81), loss: 0.358, acc: 0.853, learn rate: 1.000e-05
+[train]: completed iteration 13601 (of 200000; 34.82 min elapsed; 33.24 CNN min)
+[train]:    epoch: 1 (71.87), loss: 0.363, acc: 0.851, learn rate: 1.000e-05
+[train]: completed iteration 13801 (of 200000; 35.32 min elapsed; 33.73 CNN min)
+[train]:    epoch: 1 (72.93), loss: 0.385, acc: 0.829, learn rate: 1.000e-05
+[train]: completed iteration 14001 (of 200000; 35.81 min elapsed; 34.22 CNN min)
+[train]:    epoch: 1 (73.98), loss: 0.420, acc: 0.852, learn rate: 1.000e-05
+[train]: completed iteration 14201 (of 200000; 36.30 min elapsed; 34.71 CNN min)
+[train]:    epoch: 1 (75.04), loss: 0.377, acc: 0.845, learn rate: 1.000e-05
+[train]: completed iteration 14401 (of 200000; 36.80 min elapsed; 35.20 CNN min)
+[train]:    epoch: 1 (76.10), loss: 0.331, acc: 0.870, learn rate: 1.000e-05
+[train]: completed iteration 14601 (of 200000; 37.29 min elapsed; 35.69 CNN min)
+[train]:    epoch: 1 (77.15), loss: 0.361, acc: 0.856, learn rate: 1.000e-05
+[train]: completed iteration 14801 (of 200000; 37.79 min elapsed; 36.18 CNN min)
+[train]:    epoch: 1 (78.21), loss: 0.379, acc: 0.852, learn rate: 1.000e-05
+[train]: completed iteration 15001 (of 200000; 38.28 min elapsed; 36.67 CNN min)
+[train]:    epoch: 1 (79.27), loss: 0.368, acc: 0.858, learn rate: 1.000e-05
+[train]: completed iteration 15201 (of 200000; 38.77 min elapsed; 37.16 CNN min)
+[train]:    epoch: 1 (80.32), loss: 0.416, acc: 0.832, learn rate: 1.000e-05
+[train]: completed iteration 15401 (of 200000; 39.26 min elapsed; 37.65 CNN min)
+[train]:    epoch: 1 (81.38), loss: 0.359, acc: 0.875, learn rate: 1.000e-05
+[train]: completed iteration 15601 (of 200000; 39.76 min elapsed; 38.14 CNN min)
+[train]:    epoch: 1 (82.44), loss: 0.376, acc: 0.839, learn rate: 1.000e-05
+[train]: completed iteration 15801 (of 200000; 40.25 min elapsed; 38.63 CNN min)
+[train]:    epoch: 1 (83.50), loss: 0.368, acc: 0.874, learn rate: 1.000e-05
+[train]: completed iteration 16001 (of 200000; 40.75 min elapsed; 39.12 CNN min)
+[train]:    epoch: 1 (84.55), loss: 0.379, acc: 0.836, learn rate: 1.000e-05
+[train]: completed iteration 16201 (of 200000; 41.24 min elapsed; 39.61 CNN min)
+[train]:    epoch: 1 (85.61), loss: 0.387, acc: 0.846, learn rate: 1.000e-05
+[train]: completed iteration 16401 (of 200000; 41.73 min elapsed; 40.10 CNN min)
+[train]:    epoch: 1 (86.67), loss: 0.384, acc: 0.846, learn rate: 1.000e-05
+[train]: completed iteration 16601 (of 200000; 42.23 min elapsed; 40.59 CNN min)
+[train]:    epoch: 1 (87.72), loss: 0.310, acc: 0.878, learn rate: 1.000e-05
+[train]: completed iteration 16801 (of 200000; 42.72 min elapsed; 41.08 CNN min)
+[train]:    epoch: 1 (88.78), loss: 0.341, acc: 0.870, learn rate: 1.000e-05
+[train]: completed iteration 17001 (of 200000; 43.22 min elapsed; 41.57 CNN min)
+[train]:    epoch: 1 (89.84), loss: 0.348, acc: 0.855, learn rate: 1.000e-05
+[train]: completed iteration 17201 (of 200000; 43.71 min elapsed; 42.06 CNN min)
+[train]:    epoch: 1 (90.89), loss: 0.377, acc: 0.858, learn rate: 1.000e-05
+[train]: completed iteration 17401 (of 200000; 44.20 min elapsed; 42.54 CNN min)
+[train]:    epoch: 1 (91.95), loss: 0.373, acc: 0.852, learn rate: 1.000e-05
+[train]: completed iteration 17601 (of 200000; 44.69 min elapsed; 43.04 CNN min)
+[train]:    epoch: 1 (93.01), loss: 0.396, acc: 0.840, learn rate: 1.000e-05
+[train]: completed iteration 17801 (of 200000; 45.19 min elapsed; 43.53 CNN min)
+[train]:    epoch: 1 (94.06), loss: 0.381, acc: 0.840, learn rate: 1.000e-05
+[train]: completed iteration 18001 (of 200000; 45.68 min elapsed; 44.02 CNN min)
+[train]:    epoch: 1 (95.12), loss: 0.326, acc: 0.860, learn rate: 1.000e-05
+[train]: completed iteration 18201 (of 200000; 46.18 min elapsed; 44.51 CNN min)
+[train]:    epoch: 1 (96.18), loss: 0.339, acc: 0.859, learn rate: 1.000e-05
+[train]: completed iteration 18401 (of 200000; 46.67 min elapsed; 44.99 CNN min)
+[train]:    epoch: 1 (97.24), loss: 0.345, acc: 0.861, learn rate: 1.000e-05
+[train]: completed iteration 18601 (of 200000; 47.16 min elapsed; 45.48 CNN min)
+[train]:    epoch: 1 (98.29), loss: 0.342, acc: 0.870, learn rate: 1.000e-05
+[train]: completed iteration 18801 (of 200000; 47.65 min elapsed; 45.97 CNN min)
+[train]:    epoch: 1 (99.35), loss: 0.321, acc: 0.866, learn rate: 1.000e-05
+[train]: Not using a validation data set
+[emlib]: num. pixels per class label is: [103911440, 946160]
+[emlib]: will draw 946160 samples from each class
+[train]: completed iteration 19001 (of 200000; 49.52 min elapsed; 46.46 CNN min)
+[train]:    epoch: 2 (0.40), loss: 0.317, acc: 0.860, learn rate: 1.000e-05
+[train]: completed iteration 19201 (of 200000; 50.01 min elapsed; 46.95 CNN min)
+[train]:    epoch: 2 (1.46), loss: 0.315, acc: 0.879, learn rate: 1.000e-05
+[train]: completed iteration 19401 (of 200000; 50.50 min elapsed; 47.44 CNN min)
+[train]:    epoch: 2 (2.52), loss: 0.368, acc: 0.854, learn rate: 1.000e-05
+[train]: completed iteration 19601 (of 200000; 51.00 min elapsed; 47.93 CNN min)
+[train]:    epoch: 2 (3.57), loss: 0.347, acc: 0.855, learn rate: 1.000e-05
+[train]: completed iteration 19801 (of 200000; 51.49 min elapsed; 48.42 CNN min)
+[train]:    epoch: 2 (4.63), loss: 0.351, acc: 0.861, learn rate: 1.000e-05
+[train]: completed iteration 20001 (of 200000; 51.98 min elapsed; 48.91 CNN min)
+[train]:    epoch: 2 (5.69), loss: 0.392, acc: 0.841, learn rate: 1.000e-05
+[train]: completed iteration 20201 (of 200000; 52.48 min elapsed; 49.40 CNN min)
+[train]:    epoch: 2 (6.74), loss: 0.350, acc: 0.854, learn rate: 1.000e-05
+[train]: completed iteration 20401 (of 200000; 52.97 min elapsed; 49.89 CNN min)
+[train]:    epoch: 2 (7.80), loss: 0.331, acc: 0.861, learn rate: 1.000e-05
+[train]: completed iteration 20601 (of 200000; 53.47 min elapsed; 50.38 CNN min)
+[train]:    epoch: 2 (8.86), loss: 0.397, acc: 0.832, learn rate: 1.000e-05
+[train]: completed iteration 20801 (of 200000; 53.96 min elapsed; 50.87 CNN min)
+[train]:    epoch: 2 (9.91), loss: 0.329, acc: 0.868, learn rate: 1.000e-05
+[train]: completed iteration 21001 (of 200000; 54.45 min elapsed; 51.36 CNN min)
+[train]:    epoch: 2 (10.97), loss: 0.387, acc: 0.842, learn rate: 1.000e-05
+[train]: completed iteration 21201 (of 200000; 54.95 min elapsed; 51.85 CNN min)
+[train]:    epoch: 2 (12.03), loss: 0.410, acc: 0.823, learn rate: 1.000e-05
+[train]: completed iteration 21401 (of 200000; 55.44 min elapsed; 52.34 CNN min)
+[train]:    epoch: 2 (13.08), loss: 0.365, acc: 0.864, learn rate: 1.000e-05
+[train]: completed iteration 21601 (of 200000; 55.93 min elapsed; 52.83 CNN min)
+[train]:    epoch: 2 (14.14), loss: 0.403, acc: 0.839, learn rate: 1.000e-05
+[train]: completed iteration 21801 (of 200000; 56.43 min elapsed; 53.32 CNN min)
+[train]:    epoch: 2 (15.20), loss: 0.395, acc: 0.833, learn rate: 1.000e-05
+[train]: completed iteration 22001 (of 200000; 56.92 min elapsed; 53.81 CNN min)
+[train]:    epoch: 2 (16.26), loss: 0.312, acc: 0.874, learn rate: 1.000e-05
+[train]: completed iteration 22201 (of 200000; 57.41 min elapsed; 54.30 CNN min)
+[train]:    epoch: 2 (17.31), loss: 0.358, acc: 0.852, learn rate: 1.000e-05
+[train]: completed iteration 22401 (of 200000; 57.91 min elapsed; 54.79 CNN min)
+[train]:    epoch: 2 (18.37), loss: 0.355, acc: 0.868, learn rate: 1.000e-05
+[train]: completed iteration 22601 (of 200000; 58.40 min elapsed; 55.28 CNN min)
+[train]:    epoch: 2 (19.43), loss: 0.400, acc: 0.832, learn rate: 1.000e-05
+[train]: completed iteration 22801 (of 200000; 58.90 min elapsed; 55.77 CNN min)
+[train]:    epoch: 2 (20.48), loss: 0.337, acc: 0.872, learn rate: 1.000e-05
+[train]: completed iteration 23001 (of 200000; 59.39 min elapsed; 56.26 CNN min)
+[train]:    epoch: 2 (21.54), loss: 0.389, acc: 0.840, learn rate: 1.000e-05
+[train]: completed iteration 23201 (of 200000; 59.88 min elapsed; 56.74 CNN min)
+[train]:    epoch: 2 (22.60), loss: 0.351, acc: 0.866, learn rate: 1.000e-05
+[train]: completed iteration 23401 (of 200000; 60.37 min elapsed; 57.23 CNN min)
+[train]:    epoch: 2 (23.65), loss: 0.340, acc: 0.861, learn rate: 1.000e-05
+[train]: completed iteration 23601 (of 200000; 60.87 min elapsed; 57.73 CNN min)
+[train]:    epoch: 2 (24.71), loss: 0.313, acc: 0.876, learn rate: 1.000e-05
+[train]: completed iteration 23801 (of 200000; 61.36 min elapsed; 58.22 CNN min)
+[train]:    epoch: 2 (25.77), loss: 0.383, acc: 0.859, learn rate: 1.000e-05
+[train]: completed iteration 24001 (of 200000; 61.86 min elapsed; 58.71 CNN min)
+[train]:    epoch: 2 (26.82), loss: 0.430, acc: 0.848, learn rate: 1.000e-05
+[train]: completed iteration 24201 (of 200000; 62.34 min elapsed; 59.19 CNN min)
+[train]:    epoch: 2 (27.88), loss: 0.369, acc: 0.848, learn rate: 1.000e-05
+[train]: completed iteration 24401 (of 200000; 62.83 min elapsed; 59.67 CNN min)
+[train]:    epoch: 2 (28.94), loss: 0.399, acc: 0.848, learn rate: 1.000e-05
+[train]: completed iteration 24601 (of 200000; 63.32 min elapsed; 60.16 CNN min)
+[train]:    epoch: 2 (29.99), loss: 0.383, acc: 0.842, learn rate: 1.000e-05
+[train]: completed iteration 24801 (of 200000; 63.82 min elapsed; 60.65 CNN min)
+[train]:    epoch: 2 (31.05), loss: 0.413, acc: 0.854, learn rate: 1.000e-05
+[train]: completed iteration 25001 (of 200000; 64.31 min elapsed; 61.14 CNN min)
+[train]:    epoch: 2 (32.11), loss: 0.376, acc: 0.837, learn rate: 1.000e-05
+[train]: completed iteration 25201 (of 200000; 64.79 min elapsed; 61.62 CNN min)
+[train]:    epoch: 2 (33.17), loss: 0.451, acc: 0.819, learn rate: 1.000e-05
+[train]: completed iteration 25401 (of 200000; 65.28 min elapsed; 62.11 CNN min)
+[train]:    epoch: 2 (34.22), loss: 0.414, acc: 0.844, learn rate: 1.000e-05
+[train]: completed iteration 25601 (of 200000; 65.77 min elapsed; 62.60 CNN min)
+[train]:    epoch: 2 (35.28), loss: 0.362, acc: 0.836, learn rate: 1.000e-05
+[train]: completed iteration 25801 (of 200000; 66.27 min elapsed; 63.09 CNN min)
+[train]:    epoch: 2 (36.34), loss: 0.402, acc: 0.849, learn rate: 1.000e-05
+[train]: completed iteration 26001 (of 200000; 66.77 min elapsed; 63.58 CNN min)
+[train]:    epoch: 2 (37.39), loss: 0.415, acc: 0.830, learn rate: 1.000e-05
+[train]: completed iteration 26201 (of 200000; 67.26 min elapsed; 64.07 CNN min)
+[train]:    epoch: 2 (38.45), loss: 0.383, acc: 0.850, learn rate: 1.000e-05
+[train]: completed iteration 26401 (of 200000; 67.75 min elapsed; 64.55 CNN min)
+[train]:    epoch: 2 (39.51), loss: 0.415, acc: 0.828, learn rate: 1.000e-05
+[train]: completed iteration 26601 (of 200000; 68.24 min elapsed; 65.04 CNN min)
+[train]:    epoch: 2 (40.56), loss: 0.440, acc: 0.804, learn rate: 1.000e-05
+[train]: completed iteration 26801 (of 200000; 68.74 min elapsed; 65.53 CNN min)
+[train]:    epoch: 2 (41.62), loss: 0.390, acc: 0.851, learn rate: 1.000e-05
+[train]: completed iteration 27001 (of 200000; 69.23 min elapsed; 66.02 CNN min)
+[train]:    epoch: 2 (42.68), loss: 0.406, acc: 0.843, learn rate: 1.000e-05
+[train]: completed iteration 27201 (of 200000; 69.72 min elapsed; 66.51 CNN min)
+[train]:    epoch: 2 (43.73), loss: 0.370, acc: 0.845, learn rate: 1.000e-05
+[train]: completed iteration 27401 (of 200000; 70.21 min elapsed; 67.00 CNN min)
+[train]:    epoch: 2 (44.79), loss: 0.429, acc: 0.816, learn rate: 1.000e-05
+[train]: completed iteration 27601 (of 200000; 70.70 min elapsed; 67.49 CNN min)
+[train]:    epoch: 2 (45.85), loss: 0.389, acc: 0.822, learn rate: 1.000e-05
+[train]: completed iteration 27801 (of 200000; 71.20 min elapsed; 67.98 CNN min)
+[train]:    epoch: 2 (46.91), loss: 0.434, acc: 0.782, learn rate: 1.000e-05
+[train]: completed iteration 28001 (of 200000; 71.69 min elapsed; 68.47 CNN min)
+[train]:    epoch: 2 (47.96), loss: 0.476, acc: 0.781, learn rate: 1.000e-05
+[train]: completed iteration 28201 (of 200000; 72.19 min elapsed; 68.96 CNN min)
+[train]:    epoch: 2 (49.02), loss: 0.473, acc: 0.802, learn rate: 1.000e-05
+[train]: completed iteration 28401 (of 200000; 72.68 min elapsed; 69.45 CNN min)
+[train]:    epoch: 2 (50.08), loss: 0.473, acc: 0.813, learn rate: 1.000e-05
+[train]: completed iteration 28601 (of 200000; 73.17 min elapsed; 69.93 CNN min)
+[train]:    epoch: 2 (51.13), loss: 0.403, acc: 0.848, learn rate: 1.000e-05
+[train]: completed iteration 28801 (of 200000; 73.66 min elapsed; 70.42 CNN min)
+[train]:    epoch: 2 (52.19), loss: 0.397, acc: 0.816, learn rate: 1.000e-05
+[train]: completed iteration 29001 (of 200000; 74.16 min elapsed; 70.91 CNN min)
+[train]:    epoch: 2 (53.25), loss: 0.409, acc: 0.839, learn rate: 1.000e-05
+[train]: completed iteration 29201 (of 200000; 74.65 min elapsed; 71.40 CNN min)
+[train]:    epoch: 2 (54.30), loss: 0.391, acc: 0.840, learn rate: 1.000e-05
+[train]: completed iteration 29401 (of 200000; 75.14 min elapsed; 71.89 CNN min)
+[train]:    epoch: 2 (55.36), loss: 0.406, acc: 0.812, learn rate: 1.000e-05
+[train]: completed iteration 29601 (of 200000; 75.63 min elapsed; 72.38 CNN min)
+[train]:    epoch: 2 (56.42), loss: 0.389, acc: 0.830, learn rate: 1.000e-05
+[train]: completed iteration 29801 (of 200000; 76.12 min elapsed; 72.87 CNN min)
+[train]:    epoch: 2 (57.47), loss: 0.453, acc: 0.827, learn rate: 1.000e-05
+[train]: completed iteration 30001 (of 200000; 76.62 min elapsed; 73.35 CNN min)
+[train]:    epoch: 2 (58.53), loss: 0.452, acc: 0.805, learn rate: 5.000e-06
+[train]: completed iteration 30201 (of 200000; 77.11 min elapsed; 73.84 CNN min)
+[train]:    epoch: 2 (59.59), loss: 0.448, acc: 0.821, learn rate: 5.000e-06
+[train]: completed iteration 30401 (of 200000; 77.60 min elapsed; 74.33 CNN min)
+[train]:    epoch: 2 (60.65), loss: 0.454, acc: 0.791, learn rate: 5.000e-06
+[train]: completed iteration 30601 (of 200000; 78.10 min elapsed; 74.82 CNN min)
+[train]:    epoch: 2 (61.70), loss: 0.451, acc: 0.815, learn rate: 5.000e-06
+[train]: completed iteration 30801 (of 200000; 78.59 min elapsed; 75.31 CNN min)
+[train]:    epoch: 2 (62.76), loss: 0.437, acc: 0.826, learn rate: 5.000e-06
+[train]: completed iteration 31001 (of 200000; 79.07 min elapsed; 75.79 CNN min)
+[train]:    epoch: 2 (63.82), loss: 0.482, acc: 0.786, learn rate: 5.000e-06
+[train]: completed iteration 31201 (of 200000; 79.57 min elapsed; 76.28 CNN min)
+[train]:    epoch: 2 (64.87), loss: 0.488, acc: 0.810, learn rate: 5.000e-06
+[train]: completed iteration 31401 (of 200000; 80.06 min elapsed; 76.78 CNN min)
+[train]:    epoch: 2 (65.93), loss: 0.413, acc: 0.831, learn rate: 5.000e-06
+[train]: completed iteration 31601 (of 200000; 80.56 min elapsed; 77.27 CNN min)
+[train]:    epoch: 2 (66.99), loss: 0.450, acc: 0.808, learn rate: 5.000e-06
+[train]: completed iteration 31801 (of 200000; 81.05 min elapsed; 77.76 CNN min)
+[train]:    epoch: 2 (68.04), loss: 0.452, acc: 0.798, learn rate: 5.000e-06
+[train]: completed iteration 32001 (of 200000; 81.55 min elapsed; 78.24 CNN min)
+[train]:    epoch: 2 (69.10), loss: 0.454, acc: 0.808, learn rate: 5.000e-06
+[train]: completed iteration 32201 (of 200000; 82.04 min elapsed; 78.73 CNN min)
+[train]:    epoch: 2 (70.16), loss: 0.427, acc: 0.793, learn rate: 5.000e-06
+[train]: completed iteration 32401 (of 200000; 82.53 min elapsed; 79.22 CNN min)
+[train]:    epoch: 2 (71.21), loss: 0.475, acc: 0.784, learn rate: 5.000e-06
+[train]: completed iteration 32601 (of 200000; 83.03 min elapsed; 79.72 CNN min)
+[train]:    epoch: 2 (72.27), loss: 0.507, acc: 0.779, learn rate: 5.000e-06
+[train]: completed iteration 32801 (of 200000; 83.52 min elapsed; 80.21 CNN min)
+[train]:    epoch: 2 (73.33), loss: 0.452, acc: 0.803, learn rate: 5.000e-06
+[train]: completed iteration 33001 (of 200000; 84.01 min elapsed; 80.69 CNN min)
+[train]:    epoch: 2 (74.38), loss: 0.499, acc: 0.759, learn rate: 5.000e-06
+[train]: completed iteration 33201 (of 200000; 84.50 min elapsed; 81.18 CNN min)
+[train]:    epoch: 2 (75.44), loss: 0.702, acc: 0.685, learn rate: 5.000e-06
+[train]: completed iteration 33401 (of 200000; 85.00 min elapsed; 81.67 CNN min)
+[train]:    epoch: 2 (76.50), loss: 0.608, acc: 0.676, learn rate: 5.000e-06
+[train]: completed iteration 33601 (of 200000; 85.49 min elapsed; 82.16 CNN min)
+[train]:    epoch: 2 (77.56), loss: 0.703, acc: 0.776, learn rate: 5.000e-06
+[train]: completed iteration 33801 (of 200000; 85.99 min elapsed; 82.65 CNN min)
+[train]:    epoch: 2 (78.61), loss: 0.498, acc: 0.755, learn rate: 5.000e-06
+[train]: completed iteration 34001 (of 200000; 86.48 min elapsed; 83.14 CNN min)
+[train]:    epoch: 2 (79.67), loss: 0.652, acc: 0.758, learn rate: 5.000e-06
+[train]: completed iteration 34201 (of 200000; 86.97 min elapsed; 83.63 CNN min)
+[train]:    epoch: 2 (80.73), loss: 0.757, acc: 0.755, learn rate: 5.000e-06
+[train]: completed iteration 34401 (of 200000; 87.47 min elapsed; 84.12 CNN min)
+[train]:    epoch: 2 (81.78), loss: 0.699, acc: 0.738, learn rate: 5.000e-06
+[train]: completed iteration 34601 (of 200000; 87.96 min elapsed; 84.61 CNN min)
+[train]:    epoch: 2 (82.84), loss: 0.663, acc: 0.699, learn rate: 5.000e-06
+[train]: completed iteration 34801 (of 200000; 88.46 min elapsed; 85.10 CNN min)
+[train]:    epoch: 2 (83.90), loss: 0.760, acc: 0.649, learn rate: 5.000e-06
+[train]: completed iteration 35001 (of 200000; 88.95 min elapsed; 85.59 CNN min)
+[train]:    epoch: 2 (84.95), loss: 0.603, acc: 0.687, learn rate: 5.000e-06
+[train]: completed iteration 35201 (of 200000; 89.44 min elapsed; 86.08 CNN min)
+[train]:    epoch: 2 (86.01), loss: 0.564, acc: 0.709, learn rate: 5.000e-06
+[train]: completed iteration 35401 (of 200000; 89.94 min elapsed; 86.57 CNN min)
+[train]:    epoch: 2 (87.07), loss: 0.633, acc: 0.732, learn rate: 5.000e-06
+[train]: completed iteration 35601 (of 200000; 90.43 min elapsed; 87.06 CNN min)
+[train]:    epoch: 2 (88.12), loss: 0.727, acc: 0.782, learn rate: 5.000e-06
+[train]: completed iteration 35801 (of 200000; 90.92 min elapsed; 87.55 CNN min)
+[train]:    epoch: 2 (89.18), loss: 0.759, acc: 0.623, learn rate: 5.000e-06
+[train]: completed iteration 36001 (of 200000; 91.42 min elapsed; 88.04 CNN min)
+[train]:    epoch: 2 (90.24), loss: 0.713, acc: 0.535, learn rate: 5.000e-06
+[train]: completed iteration 36201 (of 200000; 91.92 min elapsed; 88.53 CNN min)
+[train]:    epoch: 2 (91.30), loss: 0.784, acc: 0.515, learn rate: 5.000e-06
+[train]: completed iteration 36401 (of 200000; 92.41 min elapsed; 89.02 CNN min)
+[train]:    epoch: 2 (92.35), loss: 0.697, acc: 0.665, learn rate: 5.000e-06
+[train]: completed iteration 36601 (of 200000; 92.89 min elapsed; 89.50 CNN min)
+[train]:    epoch: 2 (93.41), loss: 0.828, acc: 0.650, learn rate: 5.000e-06
+[train]: completed iteration 36801 (of 200000; 93.38 min elapsed; 89.99 CNN min)
+[train]:    epoch: 2 (94.47), loss: 0.676, acc: 0.688, learn rate: 5.000e-06
+[train]: completed iteration 37001 (of 200000; 93.88 min elapsed; 90.48 CNN min)
+[train]:    epoch: 2 (95.52), loss: 0.674, acc: 0.634, learn rate: 5.000e-06
+[train]: completed iteration 37201 (of 200000; 94.37 min elapsed; 90.97 CNN min)
+[train]:    epoch: 2 (96.58), loss: 0.763, acc: 0.679, learn rate: 5.000e-06
+[train]: completed iteration 37401 (of 200000; 94.86 min elapsed; 91.46 CNN min)
+[train]:    epoch: 2 (97.64), loss: 0.677, acc: 0.706, learn rate: 5.000e-06
+[train]: completed iteration 37601 (of 200000; 95.35 min elapsed; 91.94 CNN min)
+[train]:    epoch: 2 (98.69), loss: 0.655, acc: 0.685, learn rate: 5.000e-06
+[train]: completed iteration 37801 (of 200000; 95.84 min elapsed; 92.43 CNN min)
+[train]:    epoch: 2 (99.75), loss: 0.700, acc: 0.633, learn rate: 5.000e-06
+[train]: Not using a validation data set
+[emlib]: num. pixels per class label is: [103911440, 946160]
+[emlib]: will draw 946160 samples from each class
+[train]: completed iteration 38001 (of 200000; 97.75 min elapsed; 92.91 CNN min)
+[train]:    epoch: 3 (0.80), loss: 0.750, acc: 0.497, learn rate: 5.000e-06
+[train]: completed iteration 38201 (of 200000; 98.23 min elapsed; 93.40 CNN min)
+[train]:    epoch: 3 (1.86), loss: 0.718, acc: 0.734, learn rate: 5.000e-06
+[train]: completed iteration 38401 (of 200000; 98.72 min elapsed; 93.88 CNN min)
+[train]:    epoch: 3 (2.92), loss: 0.641, acc: 0.667, learn rate: 5.000e-06
+[train]: completed iteration 38601 (of 200000; 99.21 min elapsed; 94.37 CNN min)
+[train]:    epoch: 3 (3.97), loss: 0.694, acc: 0.502, learn rate: 5.000e-06
+[train]: completed iteration 38801 (of 200000; 99.71 min elapsed; 94.86 CNN min)
+[train]:    epoch: 3 (5.03), loss: 0.695, acc: 0.495, learn rate: 5.000e-06
+[train]: completed iteration 39001 (of 200000; 100.20 min elapsed; 95.35 CNN min)
+[train]:    epoch: 3 (6.09), loss: 0.703, acc: 0.501, learn rate: 5.000e-06
+[train]: completed iteration 39201 (of 200000; 100.69 min elapsed; 95.84 CNN min)
+[train]:    epoch: 3 (7.14), loss: 0.729, acc: 0.476, learn rate: 5.000e-06
+[train]: completed iteration 39401 (of 200000; 101.18 min elapsed; 96.32 CNN min)
+[train]:    epoch: 3 (8.20), loss: 0.752, acc: 0.467, learn rate: 5.000e-06
+[train]: completed iteration 39601 (of 200000; 101.66 min elapsed; 96.80 CNN min)
+[train]:    epoch: 3 (9.26), loss: 0.714, acc: 0.544, learn rate: 5.000e-06
+[train]: completed iteration 39801 (of 200000; 102.16 min elapsed; 97.29 CNN min)
+[train]:    epoch: 3 (10.32), loss: 0.733, acc: 0.514, learn rate: 5.000e-06
+[train]: completed iteration 40001 (of 200000; 102.65 min elapsed; 97.78 CNN min)
+[train]:    epoch: 3 (11.37), loss: 0.745, acc: 0.479, learn rate: 5.000e-06
+[train]: completed iteration 40201 (of 200000; 103.14 min elapsed; 98.27 CNN min)
+[train]:    epoch: 3 (12.43), loss: 0.726, acc: 0.483, learn rate: 5.000e-06
+[train]: completed iteration 40401 (of 200000; 103.63 min elapsed; 98.76 CNN min)
+[train]:    epoch: 3 (13.49), loss: 0.708, acc: 0.488, learn rate: 5.000e-06
+[train]: completed iteration 40601 (of 200000; 104.12 min elapsed; 99.24 CNN min)
+[train]:    epoch: 3 (14.54), loss: 0.694, acc: 0.504, learn rate: 5.000e-06
+[train]: completed iteration 40801 (of 200000; 104.61 min elapsed; 99.73 CNN min)
+[train]:    epoch: 3 (15.60), loss: 0.694, acc: 0.503, learn rate: 5.000e-06
+[train]: completed iteration 41001 (of 200000; 105.10 min elapsed; 100.22 CNN min)
+[train]:    epoch: 3 (16.66), loss: 0.700, acc: 0.511, learn rate: 5.000e-06
+[train]: completed iteration 41201 (of 200000; 105.60 min elapsed; 100.71 CNN min)
+[train]:    epoch: 3 (17.71), loss: 0.727, acc: 0.482, learn rate: 5.000e-06
+[train]: completed iteration 41401 (of 200000; 106.09 min elapsed; 101.19 CNN min)
+[train]:    epoch: 3 (18.77), loss: 0.735, acc: 0.497, learn rate: 5.000e-06
+[train]: completed iteration 41601 (of 200000; 106.58 min elapsed; 101.68 CNN min)
+[train]:    epoch: 3 (19.83), loss: 0.750, acc: 0.488, learn rate: 5.000e-06
+[train]: completed iteration 41801 (of 200000; 107.07 min elapsed; 102.16 CNN min)
+[train]:    epoch: 3 (20.88), loss: 0.734, acc: 0.514, learn rate: 5.000e-06
+[train]: completed iteration 42001 (of 200000; 107.56 min elapsed; 102.65 CNN min)
+[train]:    epoch: 3 (21.94), loss: 0.738, acc: 0.493, learn rate: 5.000e-06
+[train]: completed iteration 42201 (of 200000; 108.05 min elapsed; 103.14 CNN min)
+[train]:    epoch: 3 (23.00), loss: 0.702, acc: 0.539, learn rate: 5.000e-06
+[train]: completed iteration 42401 (of 200000; 108.55 min elapsed; 103.63 CNN min)
+[train]:    epoch: 3 (24.06), loss: 0.700, acc: 0.516, learn rate: 5.000e-06
+[train]: completed iteration 42601 (of 200000; 109.04 min elapsed; 104.12 CNN min)
+[train]:    epoch: 3 (25.11), loss: 0.697, acc: 0.477, learn rate: 5.000e-06
+[train]: completed iteration 42801 (of 200000; 109.53 min elapsed; 104.61 CNN min)
+[train]:    epoch: 3 (26.17), loss: 0.692, acc: 0.519, learn rate: 5.000e-06
+[train]: completed iteration 43001 (of 200000; 110.02 min elapsed; 105.09 CNN min)
+[train]:    epoch: 3 (27.23), loss: 0.707, acc: 0.487, learn rate: 5.000e-06
+[train]: completed iteration 43201 (of 200000; 110.51 min elapsed; 105.58 CNN min)
+[train]:    epoch: 3 (28.28), loss: 0.716, acc: 0.505, learn rate: 5.000e-06
+[train]: completed iteration 43401 (of 200000; 111.01 min elapsed; 106.07 CNN min)
+[train]:    epoch: 3 (29.34), loss: 0.729, acc: 0.509, learn rate: 5.000e-06
+[train]: completed iteration 43601 (of 200000; 111.50 min elapsed; 106.56 CNN min)
+[train]:    epoch: 3 (30.40), loss: 0.749, acc: 0.492, learn rate: 5.000e-06
+[train]: completed iteration 43801 (of 200000; 111.99 min elapsed; 107.05 CNN min)
+[train]:    epoch: 3 (31.45), loss: 0.741, acc: 0.506, learn rate: 5.000e-06
+[train]: completed iteration 44001 (of 200000; 112.48 min elapsed; 107.54 CNN min)
+[train]:    epoch: 3 (32.51), loss: 0.730, acc: 0.511, learn rate: 5.000e-06
+[train]: completed iteration 44201 (of 200000; 112.98 min elapsed; 108.02 CNN min)
+[train]:    epoch: 3 (33.57), loss: 0.713, acc: 0.514, learn rate: 5.000e-06
+[train]: completed iteration 44401 (of 200000; 113.47 min elapsed; 108.51 CNN min)
+[train]:    epoch: 3 (34.62), loss: 0.702, acc: 0.511, learn rate: 5.000e-06
+[train]: completed iteration 44601 (of 200000; 113.96 min elapsed; 109.00 CNN min)
+[train]:    epoch: 3 (35.68), loss: 0.693, acc: 0.504, learn rate: 5.000e-06
+[train]: completed iteration 44801 (of 200000; 114.45 min elapsed; 109.49 CNN min)
+[train]:    epoch: 3 (36.74), loss: 0.693, acc: 0.504, learn rate: 5.000e-06
+[train]: completed iteration 45001 (of 200000; 114.94 min elapsed; 109.98 CNN min)
+[train]:    epoch: 3 (37.79), loss: 0.703, acc: 0.497, learn rate: 5.000e-06
+[train]: completed iteration 45201 (of 200000; 115.43 min elapsed; 110.46 CNN min)
+[train]:    epoch: 3 (38.85), loss: 0.707, acc: 0.520, learn rate: 5.000e-06
+[train]: completed iteration 45401 (of 200000; 115.92 min elapsed; 110.95 CNN min)
+[train]:    epoch: 3 (39.91), loss: 0.725, acc: 0.507, learn rate: 5.000e-06
+[train]: completed iteration 45601 (of 200000; 116.42 min elapsed; 111.44 CNN min)
+[train]:    epoch: 3 (40.97), loss: 0.726, acc: 0.516, learn rate: 5.000e-06
+[train]: completed iteration 45801 (of 200000; 116.91 min elapsed; 111.93 CNN min)
+[train]:    epoch: 3 (42.02), loss: 0.735, acc: 0.508, learn rate: 5.000e-06
+[train]: completed iteration 46001 (of 200000; 117.40 min elapsed; 112.41 CNN min)
+[train]:    epoch: 3 (43.08), loss: 0.729, acc: 0.508, learn rate: 5.000e-06
+[train]: completed iteration 46201 (of 200000; 117.89 min elapsed; 112.90 CNN min)
+[train]:    epoch: 3 (44.14), loss: 0.710, acc: 0.521, learn rate: 5.000e-06
+[train]: completed iteration 46401 (of 200000; 118.38 min elapsed; 113.39 CNN min)
+[train]:    epoch: 3 (45.19), loss: 0.704, acc: 0.503, learn rate: 5.000e-06
+[train]: completed iteration 46601 (of 200000; 118.88 min elapsed; 113.88 CNN min)
+[train]:    epoch: 3 (46.25), loss: 0.697, acc: 0.483, learn rate: 5.000e-06
+[train]: completed iteration 46801 (of 200000; 119.37 min elapsed; 114.37 CNN min)
+[train]:    epoch: 3 (47.31), loss: 0.695, acc: 0.474, learn rate: 5.000e-06
+[train]: completed iteration 47001 (of 200000; 119.86 min elapsed; 114.85 CNN min)
+[train]:    epoch: 3 (48.36), loss: 0.710, acc: 0.466, learn rate: 5.000e-06
+[train]: completed iteration 47201 (of 200000; 120.35 min elapsed; 115.34 CNN min)
+[train]:    epoch: 3 (49.42), loss: 0.721, acc: 0.487, learn rate: 5.000e-06
+[train]: completed iteration 47401 (of 200000; 120.84 min elapsed; 115.83 CNN min)
+[train]:    epoch: 3 (50.48), loss: 0.719, acc: 0.520, learn rate: 5.000e-06
+[train]: completed iteration 47601 (of 200000; 121.33 min elapsed; 116.32 CNN min)
+[train]:    epoch: 3 (51.53), loss: 0.749, acc: 0.486, learn rate: 5.000e-06
+[train]: completed iteration 47801 (of 200000; 121.82 min elapsed; 116.81 CNN min)
+[train]:    epoch: 3 (52.59), loss: 0.747, acc: 0.492, learn rate: 5.000e-06
+[train]: completed iteration 48001 (of 200000; 122.32 min elapsed; 117.29 CNN min)
+[train]:    epoch: 3 (53.65), loss: 0.728, acc: 0.512, learn rate: 5.000e-06
+[train]: completed iteration 48201 (of 200000; 122.81 min elapsed; 117.78 CNN min)
+[train]:    epoch: 3 (54.71), loss: 0.722, acc: 0.498, learn rate: 5.000e-06
+[train]: completed iteration 48401 (of 200000; 123.30 min elapsed; 118.27 CNN min)
+[train]:    epoch: 3 (55.76), loss: 0.705, acc: 0.503, learn rate: 5.000e-06
+[train]: completed iteration 48601 (of 200000; 123.79 min elapsed; 118.76 CNN min)
+[train]:    epoch: 3 (56.82), loss: 0.698, acc: 0.484, learn rate: 5.000e-06
+[train]: completed iteration 48801 (of 200000; 124.28 min elapsed; 119.25 CNN min)
+[train]:    epoch: 3 (57.88), loss: 0.693, acc: 0.510, learn rate: 5.000e-06
+[train]: completed iteration 49001 (of 200000; 124.77 min elapsed; 119.73 CNN min)
+[train]:    epoch: 3 (58.93), loss: 0.697, acc: 0.515, learn rate: 5.000e-06
+[train]: completed iteration 49201 (of 200000; 125.26 min elapsed; 120.22 CNN min)
+[train]:    epoch: 3 (59.99), loss: 0.717, acc: 0.492, learn rate: 5.000e-06
+[train]: completed iteration 49401 (of 200000; 125.75 min elapsed; 120.71 CNN min)
+[train]:    epoch: 3 (61.05), loss: 0.728, acc: 0.502, learn rate: 5.000e-06
+[train]: completed iteration 49601 (of 200000; 126.25 min elapsed; 121.20 CNN min)
+[train]:    epoch: 3 (62.10), loss: 0.731, acc: 0.512, learn rate: 5.000e-06
+[train]: completed iteration 49801 (of 200000; 126.74 min elapsed; 121.68 CNN min)
+[train]:    epoch: 3 (63.16), loss: 0.746, acc: 0.490, learn rate: 5.000e-06
+[train]: completed iteration 50001 (of 200000; 127.23 min elapsed; 122.17 CNN min)
+[train]:    epoch: 3 (64.22), loss: 0.731, acc: 0.504, learn rate: 5.000e-06
+[train]: completed iteration 50201 (of 200000; 127.72 min elapsed; 122.66 CNN min)
+[train]:    epoch: 3 (65.27), loss: 0.720, acc: 0.500, learn rate: 5.000e-06
+[train]: completed iteration 50401 (of 200000; 128.21 min elapsed; 123.15 CNN min)
+[train]:    epoch: 3 (66.33), loss: 0.701, acc: 0.515, learn rate: 5.000e-06
+[train]: completed iteration 50601 (of 200000; 128.71 min elapsed; 123.63 CNN min)
+[train]:    epoch: 3 (67.39), loss: 0.694, acc: 0.514, learn rate: 5.000e-06
+[train]: completed iteration 50801 (of 200000; 129.20 min elapsed; 124.12 CNN min)
+[train]:    epoch: 3 (68.45), loss: 0.695, acc: 0.474, learn rate: 5.000e-06
+[train]: completed iteration 51001 (of 200000; 129.69 min elapsed; 124.61 CNN min)
+[train]:    epoch: 3 (69.50), loss: 0.700, acc: 0.501, learn rate: 5.000e-06
+[train]: completed iteration 51201 (of 200000; 130.18 min elapsed; 125.09 CNN min)
+[train]:    epoch: 3 (70.56), loss: 0.722, acc: 0.481, learn rate: 5.000e-06
+[train]: completed iteration 51401 (of 200000; 130.67 min elapsed; 125.58 CNN min)
+[train]:    epoch: 3 (71.62), loss: 0.728, acc: 0.500, learn rate: 5.000e-06
+[train]: completed iteration 51601 (of 200000; 131.16 min elapsed; 126.07 CNN min)
+[train]:    epoch: 3 (72.67), loss: 0.737, acc: 0.501, learn rate: 5.000e-06
+[train]: completed iteration 51801 (of 200000; 131.65 min elapsed; 126.56 CNN min)
+[train]:    epoch: 3 (73.73), loss: 0.736, acc: 0.505, learn rate: 5.000e-06
+[train]: completed iteration 52001 (of 200000; 132.15 min elapsed; 127.05 CNN min)
+[train]:    epoch: 3 (74.79), loss: 0.748, acc: 0.470, learn rate: 5.000e-06
+[train]: completed iteration 52201 (of 200000; 132.64 min elapsed; 127.53 CNN min)
+[train]:    epoch: 3 (75.84), loss: 0.721, acc: 0.495, learn rate: 5.000e-06
+[train]: completed iteration 52401 (of 200000; 133.13 min elapsed; 128.02 CNN min)
+[train]:    epoch: 3 (76.90), loss: 0.704, acc: 0.501, learn rate: 5.000e-06
+[train]: completed iteration 52601 (of 200000; 133.62 min elapsed; 128.51 CNN min)
+[train]:    epoch: 3 (77.96), loss: 0.694, acc: 0.508, learn rate: 5.000e-06
+[train]: completed iteration 52801 (of 200000; 134.11 min elapsed; 129.00 CNN min)
+[train]:    epoch: 3 (79.01), loss: 0.693, acc: 0.518, learn rate: 5.000e-06
+[train]: completed iteration 53001 (of 200000; 134.60 min elapsed; 129.48 CNN min)
+[train]:    epoch: 3 (80.07), loss: 0.704, acc: 0.489, learn rate: 5.000e-06
+[train]: completed iteration 53201 (of 200000; 135.09 min elapsed; 129.97 CNN min)
+[train]:    epoch: 3 (81.13), loss: 0.720, acc: 0.486, learn rate: 5.000e-06
+[train]: completed iteration 53401 (of 200000; 135.58 min elapsed; 130.46 CNN min)
+[train]:    epoch: 3 (82.18), loss: 0.725, acc: 0.504, learn rate: 5.000e-06
+[train]: completed iteration 53601 (of 200000; 136.07 min elapsed; 130.95 CNN min)
+[train]:    epoch: 3 (83.24), loss: 0.738, acc: 0.497, learn rate: 5.000e-06
+[train]: completed iteration 53801 (of 200000; 136.57 min elapsed; 131.43 CNN min)
+[train]:    epoch: 3 (84.30), loss: 0.745, acc: 0.487, learn rate: 5.000e-06
+[train]: completed iteration 54001 (of 200000; 137.06 min elapsed; 131.92 CNN min)
+[train]:    epoch: 3 (85.36), loss: 0.739, acc: 0.484, learn rate: 5.000e-06
+[train]: completed iteration 54201 (of 200000; 137.55 min elapsed; 132.41 CNN min)
+[train]:    epoch: 3 (86.41), loss: 0.725, acc: 0.482, learn rate: 5.000e-06
+[train]: completed iteration 54401 (of 200000; 138.04 min elapsed; 132.89 CNN min)
+[train]:    epoch: 3 (87.47), loss: 0.702, acc: 0.508, learn rate: 5.000e-06
+[train]: completed iteration 54601 (of 200000; 138.53 min elapsed; 133.38 CNN min)
+[train]:    epoch: 3 (88.53), loss: 0.694, acc: 0.510, learn rate: 5.000e-06
+[train]: completed iteration 54801 (of 200000; 139.03 min elapsed; 133.87 CNN min)
+[train]:    epoch: 3 (89.58), loss: 0.694, acc: 0.501, learn rate: 5.000e-06
+[train]: completed iteration 55001 (of 200000; 139.52 min elapsed; 134.36 CNN min)
+[train]:    epoch: 3 (90.64), loss: 0.707, acc: 0.473, learn rate: 5.000e-06
+[train]: completed iteration 55201 (of 200000; 140.00 min elapsed; 134.84 CNN min)
+[train]:    epoch: 3 (91.70), loss: 0.708, acc: 0.512, learn rate: 5.000e-06
+[train]: completed iteration 55401 (of 200000; 140.49 min elapsed; 135.33 CNN min)
+[train]:    epoch: 3 (92.75), loss: 0.728, acc: 0.495, learn rate: 5.000e-06
+[train]: completed iteration 55601 (of 200000; 140.99 min elapsed; 135.82 CNN min)
+[train]:    epoch: 3 (93.81), loss: 0.715, acc: 0.534, learn rate: 5.000e-06
+[train]: completed iteration 55801 (of 200000; 141.49 min elapsed; 136.32 CNN min)
+[train]:    epoch: 3 (94.87), loss: 0.748, acc: 0.480, learn rate: 5.000e-06
+[train]: completed iteration 56001 (of 200000; 141.99 min elapsed; 136.82 CNN min)
+[train]:    epoch: 3 (95.92), loss: 0.725, acc: 0.508, learn rate: 5.000e-06
+[train]: completed iteration 56201 (of 200000; 142.48 min elapsed; 137.30 CNN min)
+[train]:    epoch: 3 (96.98), loss: 0.720, acc: 0.495, learn rate: 5.000e-06
+[train]: completed iteration 56401 (of 200000; 142.97 min elapsed; 137.79 CNN min)
+[train]:    epoch: 3 (98.04), loss: 0.707, acc: 0.491, learn rate: 5.000e-06
+[train]: completed iteration 56601 (of 200000; 143.47 min elapsed; 138.28 CNN min)
+[train]:    epoch: 3 (99.10), loss: 0.695, acc: 0.499, learn rate: 5.000e-06
+[train]: Not using a validation data set
+[emlib]: num. pixels per class label is: [103911440, 946160]
+[emlib]: will draw 946160 samples from each class
+[train]: completed iteration 56801 (of 200000; 145.43 min elapsed; 138.78 CNN min)
+[train]:    epoch: 4 (0.15), loss: 0.694, acc: 0.498, learn rate: 5.000e-06
+[train]: completed iteration 57001 (of 200000; 145.93 min elapsed; 139.27 CNN min)
+[train]:    epoch: 4 (1.20), loss: 0.703, acc: 0.491, learn rate: 5.000e-06
+[train]: completed iteration 57201 (of 200000; 146.43 min elapsed; 139.77 CNN min)
+[train]:    epoch: 4 (2.26), loss: 0.709, acc: 0.510, learn rate: 5.000e-06
+[train]: completed iteration 57401 (of 200000; 146.93 min elapsed; 140.26 CNN min)
+[train]:    epoch: 4 (3.32), loss: 0.737, acc: 0.480, learn rate: 5.000e-06
+[train]: completed iteration 57601 (of 200000; 147.43 min elapsed; 140.76 CNN min)
+[train]:    epoch: 4 (4.38), loss: 0.739, acc: 0.494, learn rate: 5.000e-06
+[train]: completed iteration 57801 (of 200000; 147.93 min elapsed; 141.25 CNN min)
+[train]:    epoch: 4 (5.43), loss: 0.737, acc: 0.498, learn rate: 5.000e-06
+[train]: completed iteration 58001 (of 200000; 148.43 min elapsed; 141.74 CNN min)
+[train]:    epoch: 4 (6.49), loss: 0.734, acc: 0.489, learn rate: 5.000e-06
+[train]: completed iteration 58201 (of 200000; 148.93 min elapsed; 142.25 CNN min)
+[train]:    epoch: 4 (7.55), loss: 0.714, acc: 0.505, learn rate: 5.000e-06
+[train]: completed iteration 58401 (of 200000; 149.43 min elapsed; 142.74 CNN min)
+[train]:    epoch: 4 (8.60), loss: 0.701, acc: 0.507, learn rate: 5.000e-06
+[train]: completed iteration 58601 (of 200000; 149.93 min elapsed; 143.24 CNN min)
+[train]:    epoch: 4 (9.66), loss: 0.695, acc: 0.495, learn rate: 5.000e-06
+[train]: completed iteration 58801 (of 200000; 150.43 min elapsed; 143.73 CNN min)
+[train]:    epoch: 4 (10.72), loss: 0.694, acc: 0.499, learn rate: 5.000e-06
+[train]: completed iteration 59001 (of 200000; 150.93 min elapsed; 144.23 CNN min)
+[train]:    epoch: 4 (11.77), loss: 0.704, acc: 0.487, learn rate: 5.000e-06
+[train]: completed iteration 59201 (of 200000; 151.43 min elapsed; 144.72 CNN min)
+[train]:    epoch: 4 (12.83), loss: 0.714, acc: 0.496, learn rate: 5.000e-06
+[train]: completed iteration 59401 (of 200000; 151.93 min elapsed; 145.22 CNN min)
+[train]:    epoch: 4 (13.89), loss: 0.717, acc: 0.516, learn rate: 5.000e-06
+[train]: completed iteration 59601 (of 200000; 152.43 min elapsed; 145.72 CNN min)
+[train]:    epoch: 4 (14.94), loss: 0.712, acc: 0.537, learn rate: 5.000e-06
+[train]: completed iteration 59801 (of 200000; 152.93 min elapsed; 146.21 CNN min)
+[train]:    epoch: 4 (16.00), loss: 0.730, acc: 0.507, learn rate: 5.000e-06
+[train]: completed iteration 60001 (of 200000; 153.43 min elapsed; 146.71 CNN min)
+[train]:    epoch: 4 (17.06), loss: 0.724, acc: 0.506, learn rate: 2.500e-06
+[train]: completed iteration 60201 (of 200000; 153.93 min elapsed; 147.20 CNN min)
+[train]:    epoch: 4 (18.12), loss: 0.717, acc: 0.509, learn rate: 2.500e-06
+[train]: completed iteration 60401 (of 200000; 154.44 min elapsed; 147.71 CNN min)
+[train]:    epoch: 4 (19.17), loss: 0.717, acc: 0.489, learn rate: 2.500e-06
+[train]: completed iteration 60601 (of 200000; 154.94 min elapsed; 148.20 CNN min)
+[train]:    epoch: 4 (20.23), loss: 0.700, acc: 0.515, learn rate: 2.500e-06
+[train]: completed iteration 60801 (of 200000; 155.43 min elapsed; 148.70 CNN min)
+[train]:    epoch: 4 (21.29), loss: 0.696, acc: 0.511, learn rate: 2.500e-06
+[train]: completed iteration 61001 (of 200000; 155.93 min elapsed; 149.19 CNN min)
+[train]:    epoch: 4 (22.34), loss: 0.693, acc: 0.506, learn rate: 2.500e-06
+[train]: completed iteration 61201 (of 200000; 156.43 min elapsed; 149.69 CNN min)
+[train]:    epoch: 4 (23.40), loss: 0.694, acc: 0.496, learn rate: 2.500e-06
+[train]: completed iteration 61401 (of 200000; 156.93 min elapsed; 150.18 CNN min)
+[train]:    epoch: 4 (24.46), loss: 0.696, acc: 0.504, learn rate: 2.500e-06
+[train]: completed iteration 61601 (of 200000; 157.43 min elapsed; 150.68 CNN min)
+[train]:    epoch: 4 (25.51), loss: 0.715, acc: 0.455, learn rate: 2.500e-06
+[train]: completed iteration 61801 (of 200000; 157.93 min elapsed; 151.18 CNN min)
+[train]:    epoch: 4 (26.57), loss: 0.710, acc: 0.500, learn rate: 2.500e-06
+[train]: completed iteration 62001 (of 200000; 158.44 min elapsed; 151.67 CNN min)
+[train]:    epoch: 4 (27.63), loss: 0.710, acc: 0.519, learn rate: 2.500e-06
+[train]: completed iteration 62201 (of 200000; 158.94 min elapsed; 152.17 CNN min)
+[train]:    epoch: 4 (28.68), loss: 0.735, acc: 0.481, learn rate: 2.500e-06
+[train]: completed iteration 62401 (of 200000; 159.44 min elapsed; 152.67 CNN min)
+[train]:    epoch: 4 (29.74), loss: 0.737, acc: 0.487, learn rate: 2.500e-06
+[train]: completed iteration 62601 (of 200000; 159.94 min elapsed; 153.17 CNN min)
+[train]:    epoch: 4 (30.80), loss: 0.731, acc: 0.500, learn rate: 2.500e-06
+[train]: completed iteration 62801 (of 200000; 160.45 min elapsed; 153.67 CNN min)
+[train]:    epoch: 4 (31.86), loss: 0.730, acc: 0.496, learn rate: 2.500e-06
+[train]: completed iteration 63001 (of 200000; 160.95 min elapsed; 154.17 CNN min)
+[train]:    epoch: 4 (32.91), loss: 0.719, acc: 0.508, learn rate: 2.500e-06
+[train]: completed iteration 63201 (of 200000; 161.44 min elapsed; 154.66 CNN min)
+[train]:    epoch: 4 (33.97), loss: 0.714, acc: 0.503, learn rate: 2.500e-06
+[train]: completed iteration 63401 (of 200000; 161.94 min elapsed; 155.15 CNN min)
+[train]:    epoch: 4 (35.03), loss: 0.713, acc: 0.479, learn rate: 2.500e-06
+[train]: completed iteration 63601 (of 200000; 162.44 min elapsed; 155.65 CNN min)
+[train]:    epoch: 4 (36.08), loss: 0.697, acc: 0.510, learn rate: 2.500e-06
+[train]: completed iteration 63801 (of 200000; 162.94 min elapsed; 156.14 CNN min)
+[train]:    epoch: 4 (37.14), loss: 0.694, acc: 0.503, learn rate: 2.500e-06
+[train]: completed iteration 64001 (of 200000; 163.44 min elapsed; 156.64 CNN min)
+[train]:    epoch: 4 (38.20), loss: 0.693, acc: 0.488, learn rate: 2.500e-06
+[train]: completed iteration 64201 (of 200000; 163.94 min elapsed; 157.13 CNN min)
+[train]:    epoch: 4 (39.25), loss: 0.692, acc: 0.524, learn rate: 2.500e-06
+[train]: completed iteration 64401 (of 200000; 164.43 min elapsed; 157.62 CNN min)
+[train]:    epoch: 4 (40.31), loss: 0.705, acc: 0.488, learn rate: 2.500e-06
+[train]: completed iteration 64601 (of 200000; 164.93 min elapsed; 158.12 CNN min)
+[train]:    epoch: 4 (41.37), loss: 0.710, acc: 0.497, learn rate: 2.500e-06
+[train]: completed iteration 64801 (of 200000; 165.43 min elapsed; 158.61 CNN min)
+[train]:    epoch: 4 (42.42), loss: 0.718, acc: 0.500, learn rate: 2.500e-06
+[train]: completed iteration 65001 (of 200000; 165.93 min elapsed; 159.11 CNN min)
+[train]:    epoch: 4 (43.48), loss: 0.719, acc: 0.512, learn rate: 2.500e-06
+[train]: completed iteration 65201 (of 200000; 166.42 min elapsed; 159.60 CNN min)
+[train]:    epoch: 4 (44.54), loss: 0.741, acc: 0.480, learn rate: 2.500e-06
+[train]: completed iteration 65401 (of 200000; 166.92 min elapsed; 160.09 CNN min)
+[train]:    epoch: 4 (45.59), loss: 0.716, acc: 0.529, learn rate: 2.500e-06
+[train]: completed iteration 65601 (of 200000; 167.42 min elapsed; 160.59 CNN min)
+[train]:    epoch: 4 (46.65), loss: 0.727, acc: 0.505, learn rate: 2.500e-06
+[train]: completed iteration 65801 (of 200000; 167.92 min elapsed; 161.09 CNN min)
+[train]:    epoch: 4 (47.71), loss: 0.725, acc: 0.500, learn rate: 2.500e-06
+[train]: completed iteration 66001 (of 200000; 168.42 min elapsed; 161.58 CNN min)
+[train]:    epoch: 4 (48.77), loss: 0.714, acc: 0.508, learn rate: 2.500e-06
+[train]: completed iteration 66201 (of 200000; 168.92 min elapsed; 162.07 CNN min)
+[train]:    epoch: 4 (49.82), loss: 0.710, acc: 0.497, learn rate: 2.500e-06
+[train]: completed iteration 66401 (of 200000; 169.41 min elapsed; 162.57 CNN min)
+[train]:    epoch: 4 (50.88), loss: 0.710, acc: 0.464, learn rate: 2.500e-06
+[train]: completed iteration 66601 (of 200000; 169.91 min elapsed; 163.06 CNN min)
+[train]:    epoch: 4 (51.94), loss: 0.695, acc: 0.506, learn rate: 2.500e-06
+[train]: completed iteration 66801 (of 200000; 170.41 min elapsed; 163.56 CNN min)
+[train]:    epoch: 4 (52.99), loss: 0.693, acc: 0.528, learn rate: 2.500e-06
+[train]: completed iteration 67001 (of 200000; 170.91 min elapsed; 164.05 CNN min)
+[train]:    epoch: 4 (54.05), loss: 0.694, acc: 0.505, learn rate: 2.500e-06
+[train]: completed iteration 67201 (of 200000; 171.41 min elapsed; 164.55 CNN min)
+[train]:    epoch: 4 (55.11), loss: 0.701, acc: 0.495, learn rate: 2.500e-06
+[train]: completed iteration 67401 (of 200000; 171.91 min elapsed; 165.04 CNN min)
+[train]:    epoch: 4 (56.16), loss: 0.710, acc: 0.493, learn rate: 2.500e-06
+[train]: completed iteration 67601 (of 200000; 172.40 min elapsed; 165.53 CNN min)
+[train]:    epoch: 4 (57.22), loss: 0.716, acc: 0.500, learn rate: 2.500e-06
+[train]: completed iteration 67801 (of 200000; 172.90 min elapsed; 166.03 CNN min)
+[train]:    epoch: 4 (58.28), loss: 0.727, acc: 0.495, learn rate: 2.500e-06
+[train]: completed iteration 68001 (of 200000; 173.41 min elapsed; 166.52 CNN min)
+[train]:    epoch: 4 (59.33), loss: 0.743, acc: 0.477, learn rate: 2.500e-06
+[train]: completed iteration 68201 (of 200000; 173.90 min elapsed; 167.02 CNN min)
+[train]:    epoch: 4 (60.39), loss: 0.726, acc: 0.512, learn rate: 2.500e-06
+[train]: completed iteration 68401 (of 200000; 174.40 min elapsed; 167.51 CNN min)
+[train]:    epoch: 4 (61.45), loss: 0.740, acc: 0.484, learn rate: 2.500e-06
+[train]: completed iteration 68601 (of 200000; 174.90 min elapsed; 168.01 CNN min)
+[train]:    epoch: 4 (62.51), loss: 0.723, acc: 0.507, learn rate: 2.500e-06
+[train]: completed iteration 68801 (of 200000; 175.40 min elapsed; 168.50 CNN min)
+[train]:    epoch: 4 (63.56), loss: 0.721, acc: 0.495, learn rate: 2.500e-06
+[train]: completed iteration 69001 (of 200000; 175.90 min elapsed; 169.00 CNN min)
+[train]:    epoch: 4 (64.62), loss: 0.708, acc: 0.508, learn rate: 2.500e-06
+[train]: completed iteration 69201 (of 200000; 176.40 min elapsed; 169.50 CNN min)
+[train]:    epoch: 4 (65.68), loss: 0.703, acc: 0.499, learn rate: 2.500e-06
+[train]: completed iteration 69401 (of 200000; 176.91 min elapsed; 170.00 CNN min)
+[train]:    epoch: 4 (66.73), loss: 0.700, acc: 0.480, learn rate: 2.500e-06
+[train]: completed iteration 69601 (of 200000; 177.40 min elapsed; 170.49 CNN min)
+[train]:    epoch: 4 (67.79), loss: 0.692, acc: 0.521, learn rate: 2.500e-06
+[train]: completed iteration 69801 (of 200000; 177.90 min elapsed; 170.98 CNN min)
+[train]:    epoch: 4 (68.85), loss: 0.693, acc: 0.509, learn rate: 2.500e-06
+[train]: completed iteration 70001 (of 200000; 178.40 min elapsed; 171.48 CNN min)
+[train]:    epoch: 4 (69.90), loss: 0.695, acc: 0.516, learn rate: 2.500e-06
+[train]: completed iteration 70201 (of 200000; 178.90 min elapsed; 171.98 CNN min)
+[train]:    epoch: 4 (70.96), loss: 0.705, acc: 0.500, learn rate: 2.500e-06
+[train]: completed iteration 70401 (of 200000; 179.41 min elapsed; 172.48 CNN min)
+[train]:    epoch: 4 (72.02), loss: 0.702, acc: 0.527, learn rate: 2.500e-06
+[train]: completed iteration 70601 (of 200000; 179.91 min elapsed; 172.97 CNN min)
+[train]:    epoch: 4 (73.07), loss: 0.722, acc: 0.499, learn rate: 2.500e-06
+[train]: completed iteration 70801 (of 200000; 180.40 min elapsed; 173.47 CNN min)
+[train]:    epoch: 4 (74.13), loss: 0.736, acc: 0.483, learn rate: 2.500e-06
+[train]: completed iteration 71001 (of 200000; 180.90 min elapsed; 173.96 CNN min)
+[train]:    epoch: 4 (75.19), loss: 0.731, acc: 0.499, learn rate: 2.500e-06
+[train]: completed iteration 71201 (of 200000; 181.40 min elapsed; 174.46 CNN min)
+[train]:    epoch: 4 (76.25), loss: 0.744, acc: 0.476, learn rate: 2.500e-06
+[train]: completed iteration 71401 (of 200000; 181.90 min elapsed; 174.95 CNN min)
+[train]:    epoch: 4 (77.30), loss: 0.729, acc: 0.496, learn rate: 2.500e-06
+[train]: completed iteration 71601 (of 200000; 182.40 min elapsed; 175.45 CNN min)
+[train]:    epoch: 4 (78.36), loss: 0.727, acc: 0.487, learn rate: 2.500e-06
+[train]: completed iteration 71801 (of 200000; 182.89 min elapsed; 175.94 CNN min)
+[train]:    epoch: 4 (79.42), loss: 0.710, acc: 0.505, learn rate: 2.500e-06
+[train]: completed iteration 72001 (of 200000; 183.39 min elapsed; 176.43 CNN min)
+[train]:    epoch: 4 (80.47), loss: 0.704, acc: 0.501, learn rate: 2.500e-06
+[train]: completed iteration 72201 (of 200000; 183.89 min elapsed; 176.92 CNN min)
+[train]:    epoch: 4 (81.53), loss: 0.696, acc: 0.507, learn rate: 2.500e-06
+[train]: completed iteration 72401 (of 200000; 184.39 min elapsed; 177.42 CNN min)
+[train]:    epoch: 4 (82.59), loss: 0.692, acc: 0.523, learn rate: 2.500e-06
+[train]: completed iteration 72601 (of 200000; 184.88 min elapsed; 177.91 CNN min)
+[train]:    epoch: 4 (83.64), loss: 0.693, acc: 0.503, learn rate: 2.500e-06
+[train]: completed iteration 72801 (of 200000; 185.38 min elapsed; 178.41 CNN min)
+[train]:    epoch: 4 (84.70), loss: 0.695, acc: 0.511, learn rate: 2.500e-06
+[train]: completed iteration 73001 (of 200000; 185.88 min elapsed; 178.90 CNN min)
+[train]:    epoch: 4 (85.76), loss: 0.705, acc: 0.497, learn rate: 2.500e-06
+[train]: completed iteration 73201 (of 200000; 186.37 min elapsed; 179.39 CNN min)
+[train]:    epoch: 4 (86.81), loss: 0.713, acc: 0.500, learn rate: 2.500e-06
+[train]: completed iteration 73401 (of 200000; 186.88 min elapsed; 179.89 CNN min)
+[train]:    epoch: 4 (87.87), loss: 0.723, acc: 0.496, learn rate: 2.500e-06
+[train]: completed iteration 73601 (of 200000; 187.38 min elapsed; 180.39 CNN min)
+[train]:    epoch: 4 (88.93), loss: 0.730, acc: 0.496, learn rate: 2.500e-06
+[train]: completed iteration 73801 (of 200000; 187.87 min elapsed; 180.88 CNN min)
+[train]:    epoch: 4 (89.98), loss: 0.744, acc: 0.479, learn rate: 2.500e-06
+[train]: completed iteration 74001 (of 200000; 188.38 min elapsed; 181.38 CNN min)
+[train]:    epoch: 4 (91.04), loss: 0.729, acc: 0.506, learn rate: 2.500e-06
+[train]: completed iteration 74201 (of 200000; 188.87 min elapsed; 181.87 CNN min)
+[train]:    epoch: 4 (92.10), loss: 0.724, acc: 0.509, learn rate: 2.500e-06
+[train]: completed iteration 74401 (of 200000; 189.37 min elapsed; 182.37 CNN min)
+[train]:    epoch: 4 (93.16), loss: 0.715, acc: 0.515, learn rate: 2.500e-06
+[train]: completed iteration 74601 (of 200000; 189.88 min elapsed; 182.87 CNN min)
+[train]:    epoch: 4 (94.21), loss: 0.715, acc: 0.497, learn rate: 2.500e-06
+[train]: completed iteration 74801 (of 200000; 190.38 min elapsed; 183.36 CNN min)
+[train]:    epoch: 4 (95.27), loss: 0.699, acc: 0.519, learn rate: 2.500e-06
+[train]: completed iteration 75001 (of 200000; 190.88 min elapsed; 183.86 CNN min)
+[train]:    epoch: 4 (96.33), loss: 0.702, acc: 0.482, learn rate: 2.500e-06
+[train]: completed iteration 75201 (of 200000; 191.37 min elapsed; 184.35 CNN min)
+[train]:    epoch: 4 (97.38), loss: 0.694, acc: 0.495, learn rate: 2.500e-06
+[train]: completed iteration 75401 (of 200000; 191.87 min elapsed; 184.84 CNN min)
+[train]:    epoch: 4 (98.44), loss: 0.695, acc: 0.469, learn rate: 2.500e-06
+[train]: completed iteration 75601 (of 200000; 192.37 min elapsed; 185.34 CNN min)
+[train]:    epoch: 4 (99.50), loss: 0.696, acc: 0.503, learn rate: 2.500e-06
+[train]: Not using a validation data set
+[emlib]: num. pixels per class label is: [103911440, 946160]
+[emlib]: will draw 946160 samples from each class
+[train]: completed iteration 75801 (of 200000; 194.32 min elapsed; 185.84 CNN min)
+[train]:    epoch: 5 (0.55), loss: 0.704, acc: 0.496, learn rate: 2.500e-06
+[train]: completed iteration 76001 (of 200000; 194.83 min elapsed; 186.34 CNN min)
+[train]:    epoch: 5 (1.61), loss: 0.710, acc: 0.502, learn rate: 2.500e-06
+[train]: completed iteration 76201 (of 200000; 195.34 min elapsed; 186.85 CNN min)
+[train]:    epoch: 5 (2.66), loss: 0.723, acc: 0.492, learn rate: 2.500e-06
+[train]: completed iteration 76401 (of 200000; 195.84 min elapsed; 187.34 CNN min)
+[train]:    epoch: 5 (3.72), loss: 0.713, acc: 0.526, learn rate: 2.500e-06
+[train]: completed iteration 76601 (of 200000; 196.34 min elapsed; 187.84 CNN min)
+[train]:    epoch: 5 (4.78), loss: 0.733, acc: 0.496, learn rate: 2.500e-06
+[train]: completed iteration 76801 (of 200000; 196.84 min elapsed; 188.34 CNN min)
+[train]:    epoch: 5 (5.83), loss: 0.723, acc: 0.516, learn rate: 2.500e-06
+[train]: completed iteration 77001 (of 200000; 197.33 min elapsed; 188.83 CNN min)
+[train]:    epoch: 5 (6.89), loss: 0.717, acc: 0.522, learn rate: 2.500e-06
+[train]: completed iteration 77201 (of 200000; 197.84 min elapsed; 189.33 CNN min)
+[train]:    epoch: 5 (7.95), loss: 0.727, acc: 0.492, learn rate: 2.500e-06
+[train]: completed iteration 77401 (of 200000; 198.34 min elapsed; 189.83 CNN min)
+[train]:    epoch: 5 (9.00), loss: 0.717, acc: 0.495, learn rate: 2.500e-06
+[train]: completed iteration 77601 (of 200000; 198.84 min elapsed; 190.32 CNN min)
+[train]:    epoch: 5 (10.06), loss: 0.706, acc: 0.500, learn rate: 2.500e-06
+[train]: completed iteration 77801 (of 200000; 199.34 min elapsed; 190.82 CNN min)
+[train]:    epoch: 5 (11.12), loss: 0.698, acc: 0.506, learn rate: 2.500e-06
+[train]: completed iteration 78001 (of 200000; 199.83 min elapsed; 191.31 CNN min)
+[train]:    epoch: 5 (12.18), loss: 0.695, acc: 0.494, learn rate: 2.500e-06
+[train]: completed iteration 78201 (of 200000; 200.33 min elapsed; 191.80 CNN min)
+[train]:    epoch: 5 (13.23), loss: 0.694, acc: 0.451, learn rate: 2.500e-06
+[train]: completed iteration 78401 (of 200000; 200.84 min elapsed; 192.30 CNN min)
+[train]:    epoch: 5 (14.29), loss: 0.695, acc: 0.505, learn rate: 2.500e-06
+[train]: completed iteration 78601 (of 200000; 201.34 min elapsed; 192.80 CNN min)
+[train]:    epoch: 5 (15.35), loss: 0.700, acc: 0.506, learn rate: 2.500e-06
+[train]: completed iteration 78801 (of 200000; 201.84 min elapsed; 193.30 CNN min)
+[train]:    epoch: 5 (16.40), loss: 0.705, acc: 0.513, learn rate: 2.500e-06
+[train]: completed iteration 79001 (of 200000; 202.34 min elapsed; 193.79 CNN min)
+[train]:    epoch: 5 (17.46), loss: 0.720, acc: 0.496, learn rate: 2.500e-06
+[train]: completed iteration 79201 (of 200000; 202.83 min elapsed; 194.28 CNN min)
+[train]:    epoch: 5 (18.52), loss: 0.735, acc: 0.481, learn rate: 2.500e-06
+[train]: completed iteration 79401 (of 200000; 203.33 min elapsed; 194.78 CNN min)
+[train]:    epoch: 5 (19.57), loss: 0.728, acc: 0.504, learn rate: 2.500e-06
+[train]: completed iteration 79601 (of 200000; 203.83 min elapsed; 195.28 CNN min)
+[train]:    epoch: 5 (20.63), loss: 0.733, acc: 0.497, learn rate: 2.500e-06
+[train]: completed iteration 79801 (of 200000; 204.33 min elapsed; 195.78 CNN min)
+[train]:    epoch: 5 (21.69), loss: 0.734, acc: 0.491, learn rate: 2.500e-06
+[train]: completed iteration 80001 (of 200000; 204.84 min elapsed; 196.27 CNN min)
+[train]:    epoch: 5 (22.74), loss: 0.723, acc: 0.501, learn rate: 2.500e-06
+[train]: completed iteration 80201 (of 200000; 205.33 min elapsed; 196.77 CNN min)
+[train]:    epoch: 5 (23.80), loss: 0.716, acc: 0.501, learn rate: 2.500e-06
+[train]: completed iteration 80401 (of 200000; 205.84 min elapsed; 197.26 CNN min)
+[train]:    epoch: 5 (24.86), loss: 0.707, acc: 0.502, learn rate: 2.500e-06
+[train]: completed iteration 80601 (of 200000; 206.34 min elapsed; 197.76 CNN min)
+[train]:    epoch: 5 (25.92), loss: 0.711, acc: 0.453, learn rate: 2.500e-06
+[train]: completed iteration 80801 (of 200000; 206.84 min elapsed; 198.26 CNN min)
+[train]:    epoch: 5 (26.97), loss: 0.692, acc: 0.525, learn rate: 2.500e-06
+[train]: completed iteration 81001 (of 200000; 207.34 min elapsed; 198.76 CNN min)
+[train]:    epoch: 5 (28.03), loss: 0.693, acc: 0.493, learn rate: 2.500e-06
+[train]: completed iteration 81201 (of 200000; 207.85 min elapsed; 199.26 CNN min)
+[train]:    epoch: 5 (29.09), loss: 0.692, acc: 0.521, learn rate: 2.500e-06
+[train]: completed iteration 81401 (of 200000; 208.35 min elapsed; 199.77 CNN min)
+[train]:    epoch: 5 (30.14), loss: 0.698, acc: 0.508, learn rate: 2.500e-06
+[train]: completed iteration 81601 (of 200000; 208.86 min elapsed; 200.27 CNN min)
+[train]:    epoch: 5 (31.20), loss: 0.717, acc: 0.474, learn rate: 2.500e-06
+[train]: completed iteration 81801 (of 200000; 209.36 min elapsed; 200.76 CNN min)
+[train]:    epoch: 5 (32.26), loss: 0.726, acc: 0.478, learn rate: 2.500e-06
+[train]: completed iteration 82001 (of 200000; 209.86 min elapsed; 201.25 CNN min)
+[train]:    epoch: 5 (33.31), loss: 0.724, acc: 0.500, learn rate: 2.500e-06
+[train]: completed iteration 82201 (of 200000; 210.36 min elapsed; 201.75 CNN min)
+[train]:    epoch: 5 (34.37), loss: 0.732, acc: 0.495, learn rate: 2.500e-06
+[train]: completed iteration 82401 (of 200000; 210.85 min elapsed; 202.24 CNN min)
+[train]:    epoch: 5 (35.43), loss: 0.717, acc: 0.526, learn rate: 2.500e-06
+[train]: completed iteration 82601 (of 200000; 211.36 min elapsed; 202.74 CNN min)
+[train]:    epoch: 5 (36.48), loss: 0.724, acc: 0.509, learn rate: 2.500e-06
+[train]: completed iteration 82801 (of 200000; 211.86 min elapsed; 203.24 CNN min)
+[train]:    epoch: 5 (37.54), loss: 0.717, acc: 0.515, learn rate: 2.500e-06
+[train]: completed iteration 83001 (of 200000; 212.36 min elapsed; 203.73 CNN min)
+[train]:    epoch: 5 (38.60), loss: 0.716, acc: 0.503, learn rate: 2.500e-06
+[train]: completed iteration 83201 (of 200000; 212.85 min elapsed; 204.23 CNN min)
+[train]:    epoch: 5 (39.66), loss: 0.696, acc: 0.537, learn rate: 2.500e-06
+[train]: completed iteration 83401 (of 200000; 213.35 min elapsed; 204.72 CNN min)
+[train]:    epoch: 5 (40.71), loss: 0.696, acc: 0.520, learn rate: 2.500e-06
+[train]: completed iteration 83601 (of 200000; 213.85 min elapsed; 205.22 CNN min)
+[train]:    epoch: 5 (41.77), loss: 0.692, acc: 0.525, learn rate: 2.500e-06
+[train]: completed iteration 83801 (of 200000; 214.35 min elapsed; 205.71 CNN min)
+[train]:    epoch: 5 (42.83), loss: 0.693, acc: 0.513, learn rate: 2.500e-06
+[train]: completed iteration 84001 (of 200000; 214.85 min elapsed; 206.21 CNN min)
+[train]:    epoch: 5 (43.88), loss: 0.697, acc: 0.468, learn rate: 2.500e-06
+[train]: completed iteration 84201 (of 200000; 215.35 min elapsed; 206.70 CNN min)
+[train]:    epoch: 5 (44.94), loss: 0.698, acc: 0.505, learn rate: 2.500e-06
+[train]: completed iteration 84401 (of 200000; 215.84 min elapsed; 207.19 CNN min)
+[train]:    epoch: 5 (46.00), loss: 0.707, acc: 0.497, learn rate: 2.500e-06
+[train]: completed iteration 84601 (of 200000; 216.34 min elapsed; 207.69 CNN min)
+[train]:    epoch: 5 (47.05), loss: 0.715, acc: 0.497, learn rate: 2.500e-06
+[train]: completed iteration 84801 (of 200000; 216.84 min elapsed; 208.18 CNN min)
+[train]:    epoch: 5 (48.11), loss: 0.719, acc: 0.505, learn rate: 2.500e-06
+[train]: completed iteration 85001 (of 200000; 217.34 min elapsed; 208.68 CNN min)
+[train]:    epoch: 5 (49.17), loss: 0.722, acc: 0.509, learn rate: 2.500e-06
+[train]: completed iteration 85201 (of 200000; 217.84 min elapsed; 209.17 CNN min)
+[train]:    epoch: 5 (50.22), loss: 0.724, acc: 0.509, learn rate: 2.500e-06
+[train]: completed iteration 85401 (of 200000; 218.33 min elapsed; 209.66 CNN min)
+[train]:    epoch: 5 (51.28), loss: 0.721, acc: 0.513, learn rate: 2.500e-06
+[train]: completed iteration 85601 (of 200000; 218.83 min elapsed; 210.16 CNN min)
+[train]:    epoch: 5 (52.34), loss: 0.723, acc: 0.503, learn rate: 2.500e-06
+[train]: completed iteration 85801 (of 200000; 219.33 min elapsed; 210.66 CNN min)
+[train]:    epoch: 5 (53.39), loss: 0.721, acc: 0.492, learn rate: 2.500e-06
+[train]: completed iteration 86001 (of 200000; 219.83 min elapsed; 211.15 CNN min)
+[train]:    epoch: 5 (54.45), loss: 0.705, acc: 0.513, learn rate: 2.500e-06
+[train]: completed iteration 86201 (of 200000; 220.33 min elapsed; 211.64 CNN min)
+[train]:    epoch: 5 (55.51), loss: 0.705, acc: 0.491, learn rate: 2.500e-06
+[train]: completed iteration 86401 (of 200000; 220.83 min elapsed; 212.14 CNN min)
+[train]:    epoch: 5 (56.57), loss: 0.696, acc: 0.505, learn rate: 2.500e-06
+[train]: completed iteration 86601 (of 200000; 221.33 min elapsed; 212.64 CNN min)
+[train]:    epoch: 5 (57.62), loss: 0.694, acc: 0.486, learn rate: 2.500e-06
+[train]: completed iteration 86801 (of 200000; 221.83 min elapsed; 213.13 CNN min)
+[train]:    epoch: 5 (58.68), loss: 0.694, acc: 0.503, learn rate: 2.500e-06
+[train]: completed iteration 87001 (of 200000; 222.33 min elapsed; 213.63 CNN min)
+[train]:    epoch: 5 (59.74), loss: 0.695, acc: 0.516, learn rate: 2.500e-06
+[train]: completed iteration 87201 (of 200000; 222.83 min elapsed; 214.12 CNN min)
+[train]:    epoch: 5 (60.79), loss: 0.718, acc: 0.455, learn rate: 2.500e-06
+[train]: completed iteration 87401 (of 200000; 223.32 min elapsed; 214.61 CNN min)
+[train]:    epoch: 5 (61.85), loss: 0.712, acc: 0.501, learn rate: 2.500e-06
+[train]: completed iteration 87601 (of 200000; 223.82 min elapsed; 215.11 CNN min)
+[train]:    epoch: 5 (62.91), loss: 0.707, acc: 0.527, learn rate: 2.500e-06
+[train]: completed iteration 87801 (of 200000; 224.33 min elapsed; 215.61 CNN min)
+[train]:    epoch: 5 (63.96), loss: 0.719, acc: 0.513, learn rate: 2.500e-06
+[train]: completed iteration 88001 (of 200000; 224.83 min elapsed; 216.11 CNN min)
+[train]:    epoch: 5 (65.02), loss: 0.720, acc: 0.518, learn rate: 2.500e-06
+[train]: completed iteration 88201 (of 200000; 225.33 min elapsed; 216.60 CNN min)
+[train]:    epoch: 5 (66.08), loss: 0.706, acc: 0.543, learn rate: 2.500e-06
+[train]: completed iteration 88401 (of 200000; 225.83 min elapsed; 217.10 CNN min)
+[train]:    epoch: 5 (67.13), loss: 0.723, acc: 0.506, learn rate: 2.500e-06
+[train]: completed iteration 88601 (of 200000; 226.33 min elapsed; 217.59 CNN min)
+[train]:    epoch: 5 (68.19), loss: 0.712, acc: 0.516, learn rate: 2.500e-06
+[train]: completed iteration 88801 (of 200000; 226.83 min elapsed; 218.09 CNN min)
+[train]:    epoch: 5 (69.25), loss: 0.717, acc: 0.486, learn rate: 2.500e-06
+[train]: completed iteration 89001 (of 200000; 227.33 min elapsed; 218.59 CNN min)
+[train]:    epoch: 5 (70.31), loss: 0.702, acc: 0.508, learn rate: 2.500e-06
+[train]: completed iteration 89201 (of 200000; 227.83 min elapsed; 219.09 CNN min)
+[train]:    epoch: 5 (71.36), loss: 0.697, acc: 0.505, learn rate: 2.500e-06
+[train]: completed iteration 89401 (of 200000; 228.33 min elapsed; 219.58 CNN min)
+[train]:    epoch: 5 (72.42), loss: 0.693, acc: 0.508, learn rate: 2.500e-06
+[train]: completed iteration 89601 (of 200000; 228.83 min elapsed; 220.08 CNN min)
+[train]:    epoch: 5 (73.48), loss: 0.692, acc: 0.528, learn rate: 2.500e-06
+[train]: completed iteration 89801 (of 200000; 229.33 min elapsed; 220.58 CNN min)
+[train]:    epoch: 5 (74.53), loss: 0.697, acc: 0.500, learn rate: 2.500e-06
+[train]: completed iteration 90001 (of 200000; 229.84 min elapsed; 221.07 CNN min)
+[train]:    epoch: 5 (75.59), loss: 0.706, acc: 0.489, learn rate: 1.250e-06
+[train]: completed iteration 90201 (of 200000; 230.34 min elapsed; 221.57 CNN min)
+[train]:    epoch: 5 (76.65), loss: 0.696, acc: 0.530, learn rate: 1.250e-06
+[train]: completed iteration 90401 (of 200000; 230.84 min elapsed; 222.07 CNN min)
+[train]:    epoch: 5 (77.70), loss: 0.713, acc: 0.491, learn rate: 1.250e-06
+[train]: completed iteration 90601 (of 200000; 231.34 min elapsed; 222.56 CNN min)
+[train]:    epoch: 5 (78.76), loss: 0.719, acc: 0.484, learn rate: 1.250e-06
+[train]: completed iteration 90801 (of 200000; 231.84 min elapsed; 223.06 CNN min)
+[train]:    epoch: 5 (79.82), loss: 0.722, acc: 0.483, learn rate: 1.250e-06
+[train]: completed iteration 91001 (of 200000; 232.34 min elapsed; 223.56 CNN min)
+[train]:    epoch: 5 (80.87), loss: 0.726, acc: 0.477, learn rate: 1.250e-06
+[train]: completed iteration 91201 (of 200000; 232.84 min elapsed; 224.05 CNN min)
+[train]:    epoch: 5 (81.93), loss: 0.717, acc: 0.498, learn rate: 1.250e-06
+[train]: completed iteration 91401 (of 200000; 233.33 min elapsed; 224.55 CNN min)
+[train]:    epoch: 5 (82.99), loss: 0.721, acc: 0.486, learn rate: 1.250e-06
+[train]: completed iteration 91601 (of 200000; 233.83 min elapsed; 225.04 CNN min)
+[train]:    epoch: 5 (84.04), loss: 0.708, acc: 0.511, learn rate: 1.250e-06
+[train]: completed iteration 91801 (of 200000; 234.33 min elapsed; 225.54 CNN min)
+[train]:    epoch: 5 (85.10), loss: 0.700, acc: 0.526, learn rate: 1.250e-06
+[train]: completed iteration 92001 (of 200000; 234.84 min elapsed; 226.03 CNN min)
+[train]:    epoch: 5 (86.16), loss: 0.706, acc: 0.502, learn rate: 1.250e-06
+[train]: completed iteration 92201 (of 200000; 235.33 min elapsed; 226.53 CNN min)
+[train]:    epoch: 5 (87.22), loss: 0.704, acc: 0.498, learn rate: 1.250e-06
+[train]: completed iteration 92401 (of 200000; 235.83 min elapsed; 227.02 CNN min)
+[train]:    epoch: 5 (88.27), loss: 0.700, acc: 0.500, learn rate: 1.250e-06
+[train]: completed iteration 92601 (of 200000; 236.33 min elapsed; 227.52 CNN min)
+[train]:    epoch: 5 (89.33), loss: 0.695, acc: 0.511, learn rate: 1.250e-06
+[train]: completed iteration 92801 (of 200000; 236.83 min elapsed; 228.02 CNN min)
+[train]:    epoch: 5 (90.39), loss: 0.692, acc: 0.522, learn rate: 1.250e-06
+[train]: completed iteration 93001 (of 200000; 237.33 min elapsed; 228.51 CNN min)
+[train]:    epoch: 5 (91.44), loss: 0.694, acc: 0.492, learn rate: 1.250e-06
+[train]: completed iteration 93201 (of 200000; 237.84 min elapsed; 229.01 CNN min)
+[train]:    epoch: 5 (92.50), loss: 0.693, acc: 0.511, learn rate: 1.250e-06
+[train]: completed iteration 93401 (of 200000; 238.34 min elapsed; 229.51 CNN min)
+[train]:    epoch: 5 (93.56), loss: 0.696, acc: 0.482, learn rate: 1.250e-06
+[train]: completed iteration 93601 (of 200000; 238.83 min elapsed; 230.00 CNN min)
+[train]:    epoch: 5 (94.61), loss: 0.698, acc: 0.491, learn rate: 1.250e-06
+[train]: completed iteration 93801 (of 200000; 239.33 min elapsed; 230.50 CNN min)
+[train]:    epoch: 5 (95.67), loss: 0.702, acc: 0.488, learn rate: 1.250e-06
+[train]: completed iteration 94001 (of 200000; 239.84 min elapsed; 231.00 CNN min)
+[train]:    epoch: 5 (96.73), loss: 0.706, acc: 0.486, learn rate: 1.250e-06
+[train]: completed iteration 94201 (of 200000; 240.34 min elapsed; 231.49 CNN min)
+[train]:    epoch: 5 (97.78), loss: 0.697, acc: 0.528, learn rate: 1.250e-06
+[train]: completed iteration 94401 (of 200000; 240.84 min elapsed; 231.99 CNN min)
+[train]:    epoch: 5 (98.84), loss: 0.702, acc: 0.519, learn rate: 1.250e-06
+[train]: completed iteration 94601 (of 200000; 241.33 min elapsed; 232.48 CNN min)
+[train]:    epoch: 5 (99.90), loss: 0.708, acc: 0.508, learn rate: 1.250e-06
+[train]: Not using a validation data set
+[emlib]: num. pixels per class label is: [103911440, 946160]
+[emlib]: will draw 946160 samples from each class
+[train]: completed iteration 94801 (of 200000; 243.25 min elapsed; 232.98 CNN min)
+[train]:    epoch: 6 (0.95), loss: 0.708, acc: 0.514, learn rate: 1.250e-06
+[train]: completed iteration 95001 (of 200000; 243.75 min elapsed; 233.47 CNN min)
+[train]:    epoch: 6 (2.01), loss: 0.716, acc: 0.496, learn rate: 1.250e-06
+[train]: completed iteration 95201 (of 200000; 244.25 min elapsed; 233.97 CNN min)
+[train]:    epoch: 6 (3.07), loss: 0.709, acc: 0.514, learn rate: 1.250e-06
+[train]: completed iteration 95401 (of 200000; 244.75 min elapsed; 234.47 CNN min)
+[train]:    epoch: 6 (4.12), loss: 0.713, acc: 0.503, learn rate: 1.250e-06
+[train]: completed iteration 95601 (of 200000; 245.26 min elapsed; 234.97 CNN min)
+[train]:    epoch: 6 (5.18), loss: 0.705, acc: 0.518, learn rate: 1.250e-06
+[train]: completed iteration 95801 (of 200000; 245.76 min elapsed; 235.46 CNN min)
+[train]:    epoch: 6 (6.24), loss: 0.708, acc: 0.502, learn rate: 1.250e-06
+[train]: completed iteration 96001 (of 200000; 246.26 min elapsed; 235.96 CNN min)
+[train]:    epoch: 6 (7.29), loss: 0.705, acc: 0.502, learn rate: 1.250e-06
+[train]: completed iteration 96201 (of 200000; 246.76 min elapsed; 236.46 CNN min)
+[train]:    epoch: 6 (8.35), loss: 0.707, acc: 0.485, learn rate: 1.250e-06
+[train]: completed iteration 96401 (of 200000; 247.26 min elapsed; 236.96 CNN min)
+[train]:    epoch: 6 (9.41), loss: 0.696, acc: 0.514, learn rate: 1.250e-06
+[train]: completed iteration 96601 (of 200000; 247.77 min elapsed; 237.45 CNN min)
+[train]:    epoch: 6 (10.46), loss: 0.698, acc: 0.491, learn rate: 1.250e-06
+[train]: completed iteration 96801 (of 200000; 248.26 min elapsed; 237.95 CNN min)
+[train]:    epoch: 6 (11.52), loss: 0.693, acc: 0.518, learn rate: 1.250e-06
+[train]: completed iteration 97001 (of 200000; 248.76 min elapsed; 238.45 CNN min)
+[train]:    epoch: 6 (12.58), loss: 0.693, acc: 0.519, learn rate: 1.250e-06
+[train]: completed iteration 97201 (of 200000; 249.26 min elapsed; 238.94 CNN min)
+[train]:    epoch: 6 (13.63), loss: 0.694, acc: 0.489, learn rate: 1.250e-06
+[train]: completed iteration 97401 (of 200000; 249.77 min elapsed; 239.44 CNN min)
+[train]:    epoch: 6 (14.69), loss: 0.697, acc: 0.465, learn rate: 1.250e-06
+[train]: completed iteration 97601 (of 200000; 250.27 min elapsed; 239.94 CNN min)
+[train]:    epoch: 6 (15.75), loss: 0.699, acc: 0.482, learn rate: 1.250e-06
+[train]: completed iteration 97801 (of 200000; 250.77 min elapsed; 240.43 CNN min)
+[train]:    epoch: 6 (16.80), loss: 0.698, acc: 0.504, learn rate: 1.250e-06
+[train]: completed iteration 98001 (of 200000; 251.27 min elapsed; 240.93 CNN min)
+[train]:    epoch: 6 (17.86), loss: 0.703, acc: 0.495, learn rate: 1.250e-06
+[train]: completed iteration 98201 (of 200000; 251.77 min elapsed; 241.42 CNN min)
+[train]:    epoch: 6 (18.92), loss: 0.699, acc: 0.521, learn rate: 1.250e-06
+[train]: completed iteration 98401 (of 200000; 252.27 min elapsed; 241.92 CNN min)
+[train]:    epoch: 6 (19.98), loss: 0.711, acc: 0.493, learn rate: 1.250e-06
+[train]: completed iteration 98601 (of 200000; 252.77 min elapsed; 242.42 CNN min)
+[train]:    epoch: 6 (21.03), loss: 0.710, acc: 0.504, learn rate: 1.250e-06
+[train]: completed iteration 98801 (of 200000; 253.27 min elapsed; 242.92 CNN min)
+[train]:    epoch: 6 (22.09), loss: 0.712, acc: 0.504, learn rate: 1.250e-06
+[train]: completed iteration 99001 (of 200000; 253.77 min elapsed; 243.41 CNN min)
+[train]:    epoch: 6 (23.15), loss: 0.715, acc: 0.500, learn rate: 1.250e-06
+[train]: completed iteration 99201 (of 200000; 254.27 min elapsed; 243.90 CNN min)
+[train]:    epoch: 6 (24.20), loss: 0.701, acc: 0.533, learn rate: 1.250e-06
+[train]: completed iteration 99401 (of 200000; 254.76 min elapsed; 244.40 CNN min)
+[train]:    epoch: 6 (25.26), loss: 0.710, acc: 0.509, learn rate: 1.250e-06
+[train]: completed iteration 99601 (of 200000; 255.27 min elapsed; 244.90 CNN min)
+[train]:    epoch: 6 (26.32), loss: 0.714, acc: 0.495, learn rate: 1.250e-06
+[train]: completed iteration 99801 (of 200000; 255.77 min elapsed; 245.40 CNN min)
+[train]:    epoch: 6 (27.37), loss: 0.712, acc: 0.491, learn rate: 1.250e-06
+[train]: completed iteration 100001 (of 200000; 256.27 min elapsed; 245.89 CNN min)
+[train]:    epoch: 6 (28.43), loss: 0.700, acc: 0.518, learn rate: 1.250e-06
+[train]: completed iteration 100201 (of 200000; 256.77 min elapsed; 246.39 CNN min)
+[train]:    epoch: 6 (29.49), loss: 0.699, acc: 0.512, learn rate: 1.250e-06
+[train]: completed iteration 100401 (of 200000; 257.27 min elapsed; 246.88 CNN min)
+[train]:    epoch: 6 (30.54), loss: 0.702, acc: 0.486, learn rate: 1.250e-06
+[train]: completed iteration 100601 (of 200000; 257.77 min elapsed; 247.38 CNN min)
+[train]:    epoch: 6 (31.60), loss: 0.697, acc: 0.497, learn rate: 1.250e-06
+[train]: completed iteration 100801 (of 200000; 258.27 min elapsed; 247.88 CNN min)
+[train]:    epoch: 6 (32.66), loss: 0.695, acc: 0.492, learn rate: 1.250e-06
+[train]: completed iteration 101001 (of 200000; 258.77 min elapsed; 248.37 CNN min)
+[train]:    epoch: 6 (33.72), loss: 0.694, acc: 0.488, learn rate: 1.250e-06
+[train]: completed iteration 101201 (of 200000; 259.27 min elapsed; 248.87 CNN min)
+[train]:    epoch: 6 (34.77), loss: 0.694, acc: 0.489, learn rate: 1.250e-06
+[train]: completed iteration 101401 (of 200000; 259.76 min elapsed; 249.36 CNN min)
+[train]:    epoch: 6 (35.83), loss: 0.695, acc: 0.493, learn rate: 1.250e-06
+[train]: completed iteration 101601 (of 200000; 260.26 min elapsed; 249.85 CNN min)
+[train]:    epoch: 6 (36.89), loss: 0.698, acc: 0.491, learn rate: 1.250e-06
+[train]: completed iteration 101801 (of 200000; 260.77 min elapsed; 250.35 CNN min)
+[train]:    epoch: 6 (37.94), loss: 0.703, acc: 0.484, learn rate: 1.250e-06
+[train]: completed iteration 102001 (of 200000; 261.27 min elapsed; 250.85 CNN min)
+[train]:    epoch: 6 (39.00), loss: 0.703, acc: 0.498, learn rate: 1.250e-06
+[train]: completed iteration 102201 (of 200000; 261.78 min elapsed; 251.35 CNN min)
+[train]:    epoch: 6 (40.06), loss: 0.704, acc: 0.506, learn rate: 1.250e-06
+[train]: completed iteration 102401 (of 200000; 262.28 min elapsed; 251.85 CNN min)
+[train]:    epoch: 6 (41.11), loss: 0.708, acc: 0.504, learn rate: 1.250e-06
+[train]: completed iteration 102601 (of 200000; 262.77 min elapsed; 252.34 CNN min)
+[train]:    epoch: 6 (42.17), loss: 0.714, acc: 0.494, learn rate: 1.250e-06
+[train]: completed iteration 102801 (of 200000; 263.28 min elapsed; 252.84 CNN min)
+[train]:    epoch: 6 (43.23), loss: 0.715, acc: 0.497, learn rate: 1.250e-06
+[train]: completed iteration 103001 (of 200000; 263.78 min elapsed; 253.34 CNN min)
+[train]:    epoch: 6 (44.28), loss: 0.720, acc: 0.486, learn rate: 1.250e-06
+[train]: completed iteration 103201 (of 200000; 264.28 min elapsed; 253.84 CNN min)
+[train]:    epoch: 6 (45.34), loss: 0.714, acc: 0.500, learn rate: 1.250e-06
+[train]: completed iteration 103401 (of 200000; 264.78 min elapsed; 254.33 CNN min)
+[train]:    epoch: 6 (46.40), loss: 0.703, acc: 0.524, learn rate: 1.250e-06
+[train]: completed iteration 103601 (of 200000; 265.27 min elapsed; 254.83 CNN min)
+[train]:    epoch: 6 (47.45), loss: 0.711, acc: 0.499, learn rate: 1.250e-06
+[train]: completed iteration 103801 (of 200000; 265.77 min elapsed; 255.32 CNN min)
+[train]:    epoch: 6 (48.51), loss: 0.698, acc: 0.527, learn rate: 1.250e-06
+[train]: completed iteration 104001 (of 200000; 266.28 min elapsed; 255.82 CNN min)
+[train]:    epoch: 6 (49.57), loss: 0.703, acc: 0.504, learn rate: 1.250e-06
+[train]: completed iteration 104201 (of 200000; 266.78 min elapsed; 256.32 CNN min)
+[train]:    epoch: 6 (50.63), loss: 0.697, acc: 0.515, learn rate: 1.250e-06
+[train]: completed iteration 104401 (of 200000; 267.27 min elapsed; 256.81 CNN min)
+[train]:    epoch: 6 (51.68), loss: 0.697, acc: 0.505, learn rate: 1.250e-06
+[train]: completed iteration 104601 (of 200000; 267.77 min elapsed; 257.30 CNN min)
+[train]:    epoch: 6 (52.74), loss: 0.696, acc: 0.496, learn rate: 1.250e-06
+[train]: completed iteration 104801 (of 200000; 268.27 min elapsed; 257.79 CNN min)
+[train]:    epoch: 6 (53.80), loss: 0.695, acc: 0.488, learn rate: 1.250e-06
+[train]: completed iteration 105001 (of 200000; 268.77 min elapsed; 258.29 CNN min)
+[train]:    epoch: 6 (54.85), loss: 0.693, acc: 0.494, learn rate: 1.250e-06
+[train]: completed iteration 105201 (of 200000; 269.27 min elapsed; 258.79 CNN min)
+[train]:    epoch: 6 (55.91), loss: 0.693, acc: 0.508, learn rate: 1.250e-06
+[train]: completed iteration 105401 (of 200000; 269.76 min elapsed; 259.28 CNN min)
+[train]:    epoch: 6 (56.97), loss: 0.697, acc: 0.482, learn rate: 1.250e-06
+[train]: completed iteration 105601 (of 200000; 270.26 min elapsed; 259.77 CNN min)
+[train]:    epoch: 6 (58.02), loss: 0.695, acc: 0.513, learn rate: 1.250e-06
+[train]: completed iteration 105801 (of 200000; 270.76 min elapsed; 260.26 CNN min)
+[train]:    epoch: 6 (59.08), loss: 0.703, acc: 0.488, learn rate: 1.250e-06
+[train]: completed iteration 106001 (of 200000; 271.26 min elapsed; 260.76 CNN min)
+[train]:    epoch: 6 (60.14), loss: 0.707, acc: 0.487, learn rate: 1.250e-06
+[train]: completed iteration 106201 (of 200000; 271.76 min elapsed; 261.26 CNN min)
+[train]:    epoch: 6 (61.19), loss: 0.712, acc: 0.485, learn rate: 1.250e-06
+[train]: completed iteration 106401 (of 200000; 272.26 min elapsed; 261.75 CNN min)
+[train]:    epoch: 6 (62.25), loss: 0.719, acc: 0.475, learn rate: 1.250e-06
+[train]: completed iteration 106601 (of 200000; 272.76 min elapsed; 262.25 CNN min)
+[train]:    epoch: 6 (63.31), loss: 0.719, acc: 0.482, learn rate: 1.250e-06
+[train]: completed iteration 106801 (of 200000; 273.25 min elapsed; 262.74 CNN min)
+[train]:    epoch: 6 (64.37), loss: 0.717, acc: 0.491, learn rate: 1.250e-06
+[train]: completed iteration 107001 (of 200000; 273.75 min elapsed; 263.23 CNN min)
+[train]:    epoch: 6 (65.42), loss: 0.714, acc: 0.500, learn rate: 1.250e-06
+[train]: completed iteration 107201 (of 200000; 274.25 min elapsed; 263.73 CNN min)
+[train]:    epoch: 6 (66.48), loss: 0.714, acc: 0.500, learn rate: 1.250e-06
+[train]: completed iteration 107401 (of 200000; 274.75 min elapsed; 264.23 CNN min)
+[train]:    epoch: 6 (67.54), loss: 0.707, acc: 0.515, learn rate: 1.250e-06
+[train]: completed iteration 107601 (of 200000; 275.25 min elapsed; 264.72 CNN min)
+[train]:    epoch: 6 (68.59), loss: 0.704, acc: 0.516, learn rate: 1.250e-06
+[train]: completed iteration 107801 (of 200000; 275.75 min elapsed; 265.22 CNN min)
+[train]:    epoch: 6 (69.65), loss: 0.712, acc: 0.487, learn rate: 1.250e-06
+[train]: completed iteration 108001 (of 200000; 276.25 min elapsed; 265.71 CNN min)
+[train]:    epoch: 6 (70.71), loss: 0.702, acc: 0.506, learn rate: 1.250e-06
+[train]: completed iteration 108201 (of 200000; 276.74 min elapsed; 266.20 CNN min)
+[train]:    epoch: 6 (71.76), loss: 0.707, acc: 0.474, learn rate: 1.250e-06
+[train]: completed iteration 108401 (of 200000; 277.24 min elapsed; 266.70 CNN min)
+[train]:    epoch: 6 (72.82), loss: 0.698, acc: 0.501, learn rate: 1.250e-06
+[train]: completed iteration 108601 (of 200000; 277.74 min elapsed; 267.20 CNN min)
+[train]:    epoch: 6 (73.88), loss: 0.692, acc: 0.527, learn rate: 1.250e-06
+[train]: completed iteration 108801 (of 200000; 278.24 min elapsed; 267.69 CNN min)
+[train]:    epoch: 6 (74.93), loss: 0.693, acc: 0.510, learn rate: 1.250e-06
+[train]: completed iteration 109001 (of 200000; 278.74 min elapsed; 268.18 CNN min)
+[train]:    epoch: 6 (75.99), loss: 0.693, acc: 0.512, learn rate: 1.250e-06
+[train]: completed iteration 109201 (of 200000; 279.24 min elapsed; 268.68 CNN min)
+[train]:    epoch: 6 (77.05), loss: 0.693, acc: 0.509, learn rate: 1.250e-06
+[train]: completed iteration 109401 (of 200000; 279.74 min elapsed; 269.18 CNN min)
+[train]:    epoch: 6 (78.11), loss: 0.695, acc: 0.497, learn rate: 1.250e-06
+[train]: completed iteration 109601 (of 200000; 280.24 min elapsed; 269.68 CNN min)
+[train]:    epoch: 6 (79.16), loss: 0.694, acc: 0.519, learn rate: 1.250e-06
+[train]: completed iteration 109801 (of 200000; 280.74 min elapsed; 270.17 CNN min)
+[train]:    epoch: 6 (80.22), loss: 0.696, acc: 0.517, learn rate: 1.250e-06
+[train]: completed iteration 110001 (of 200000; 281.24 min elapsed; 270.67 CNN min)
+[train]:    epoch: 6 (81.28), loss: 0.701, acc: 0.510, learn rate: 1.250e-06
+[train]: completed iteration 110201 (of 200000; 281.74 min elapsed; 271.16 CNN min)
+[train]:    epoch: 6 (82.33), loss: 0.706, acc: 0.503, learn rate: 1.250e-06
+[train]: completed iteration 110401 (of 200000; 282.24 min elapsed; 271.66 CNN min)
+[train]:    epoch: 6 (83.39), loss: 0.710, acc: 0.499, learn rate: 1.250e-06
+[train]: completed iteration 110601 (of 200000; 282.74 min elapsed; 272.15 CNN min)
+[train]:    epoch: 6 (84.45), loss: 0.721, acc: 0.478, learn rate: 1.250e-06
+[train]: completed iteration 110801 (of 200000; 283.24 min elapsed; 272.65 CNN min)
+[train]:    epoch: 6 (85.50), loss: 0.712, acc: 0.505, learn rate: 1.250e-06
+[train]: completed iteration 111001 (of 200000; 283.74 min elapsed; 273.14 CNN min)
+[train]:    epoch: 6 (86.56), loss: 0.713, acc: 0.504, learn rate: 1.250e-06
+[train]: completed iteration 111201 (of 200000; 284.24 min elapsed; 273.64 CNN min)
+[train]:    epoch: 6 (87.62), loss: 0.731, acc: 0.459, learn rate: 1.250e-06
+[train]: completed iteration 111401 (of 200000; 284.73 min elapsed; 274.13 CNN min)
+[train]:    epoch: 6 (88.67), loss: 0.707, acc: 0.514, learn rate: 1.250e-06
+[train]: completed iteration 111601 (of 200000; 285.23 min elapsed; 274.63 CNN min)
+[train]:    epoch: 6 (89.73), loss: 0.695, acc: 0.540, learn rate: 1.250e-06
+[train]: completed iteration 111801 (of 200000; 285.73 min elapsed; 275.12 CNN min)
+[train]:    epoch: 6 (90.79), loss: 0.705, acc: 0.506, learn rate: 1.250e-06
+[train]: completed iteration 112001 (of 200000; 286.23 min elapsed; 275.62 CNN min)
+[train]:    epoch: 6 (91.84), loss: 0.709, acc: 0.482, learn rate: 1.250e-06
+[train]: completed iteration 112201 (of 200000; 286.73 min elapsed; 276.11 CNN min)
+[train]:    epoch: 6 (92.90), loss: 0.704, acc: 0.486, learn rate: 1.250e-06
+[train]: completed iteration 112401 (of 200000; 287.23 min elapsed; 276.60 CNN min)
+[train]:    epoch: 6 (93.96), loss: 0.694, acc: 0.517, learn rate: 1.250e-06
+[train]: completed iteration 112601 (of 200000; 287.72 min elapsed; 277.09 CNN min)
+[train]:    epoch: 6 (95.02), loss: 0.697, acc: 0.486, learn rate: 1.250e-06
+[train]: completed iteration 112801 (of 200000; 288.22 min elapsed; 277.59 CNN min)
+[train]:    epoch: 6 (96.07), loss: 0.692, acc: 0.521, learn rate: 1.250e-06
+[train]: completed iteration 113001 (of 200000; 288.72 min elapsed; 278.09 CNN min)
+[train]:    epoch: 6 (97.13), loss: 0.693, acc: 0.487, learn rate: 1.250e-06
+[train]: completed iteration 113201 (of 200000; 289.22 min elapsed; 278.58 CNN min)
+[train]:    epoch: 6 (98.19), loss: 0.693, acc: 0.503, learn rate: 1.250e-06
+[train]: completed iteration 113401 (of 200000; 289.72 min elapsed; 279.08 CNN min)
+[train]:    epoch: 6 (99.24), loss: 0.693, acc: 0.514, learn rate: 1.250e-06
+[train]: Not using a validation data set
+[emlib]: num. pixels per class label is: [103911440, 946160]
+[emlib]: will draw 946160 samples from each class
+[train]: completed iteration 113601 (of 200000; 291.63 min elapsed; 279.57 CNN min)
+[train]:    epoch: 7 (0.30), loss: 0.702, acc: 0.478, learn rate: 1.250e-06
+[train]: completed iteration 113801 (of 200000; 292.12 min elapsed; 280.06 CNN min)
+[train]:    epoch: 7 (1.35), loss: 0.704, acc: 0.485, learn rate: 1.250e-06
+[train]: completed iteration 114001 (of 200000; 292.62 min elapsed; 280.55 CNN min)
+[train]:    epoch: 7 (2.41), loss: 0.710, acc: 0.478, learn rate: 1.250e-06
+[train]: completed iteration 114201 (of 200000; 293.12 min elapsed; 281.04 CNN min)
+[train]:    epoch: 7 (3.47), loss: 0.705, acc: 0.506, learn rate: 1.250e-06
+[train]: completed iteration 114401 (of 200000; 293.62 min elapsed; 281.54 CNN min)
+[train]:    epoch: 7 (4.52), loss: 0.708, acc: 0.505, learn rate: 1.250e-06
+[train]: completed iteration 114601 (of 200000; 294.12 min elapsed; 282.04 CNN min)
+[train]:    epoch: 7 (5.58), loss: 0.716, acc: 0.491, learn rate: 1.250e-06
+[train]: completed iteration 114801 (of 200000; 294.62 min elapsed; 282.54 CNN min)
+[train]:    epoch: 7 (6.64), loss: 0.712, acc: 0.503, learn rate: 1.250e-06
+[train]: completed iteration 115001 (of 200000; 295.12 min elapsed; 283.03 CNN min)
+[train]:    epoch: 7 (7.69), loss: 0.712, acc: 0.505, learn rate: 1.250e-06
+[train]: completed iteration 115201 (of 200000; 295.61 min elapsed; 283.52 CNN min)
+[train]:    epoch: 7 (8.75), loss: 0.712, acc: 0.505, learn rate: 1.250e-06
+[train]: completed iteration 115401 (of 200000; 296.12 min elapsed; 284.02 CNN min)
+[train]:    epoch: 7 (9.81), loss: 0.713, acc: 0.499, learn rate: 1.250e-06
+[train]: completed iteration 115601 (of 200000; 296.62 min elapsed; 284.52 CNN min)
+[train]:    epoch: 7 (10.86), loss: 0.702, acc: 0.521, learn rate: 1.250e-06
+[train]: completed iteration 115801 (of 200000; 297.12 min elapsed; 285.02 CNN min)
+[train]:    epoch: 7 (11.92), loss: 0.703, acc: 0.513, learn rate: 1.250e-06
+[train]: completed iteration 116001 (of 200000; 297.62 min elapsed; 285.51 CNN min)
+[train]:    epoch: 7 (12.98), loss: 0.702, acc: 0.507, learn rate: 1.250e-06
+[train]: completed iteration 116201 (of 200000; 298.12 min elapsed; 286.01 CNN min)
+[train]:    epoch: 7 (14.04), loss: 0.703, acc: 0.490, learn rate: 1.250e-06
+[train]: completed iteration 116401 (of 200000; 298.61 min elapsed; 286.50 CNN min)
+[train]:    epoch: 7 (15.09), loss: 0.695, acc: 0.516, learn rate: 1.250e-06
+[train]: completed iteration 116601 (of 200000; 299.11 min elapsed; 286.99 CNN min)
+[train]:    epoch: 7 (16.15), loss: 0.693, acc: 0.518, learn rate: 1.250e-06
+[train]: completed iteration 116801 (of 200000; 299.61 min elapsed; 287.49 CNN min)
+[train]:    epoch: 7 (17.21), loss: 0.692, acc: 0.528, learn rate: 1.250e-06
+[train]: completed iteration 117001 (of 200000; 300.12 min elapsed; 287.99 CNN min)
+[train]:    epoch: 7 (18.26), loss: 0.693, acc: 0.493, learn rate: 1.250e-06
+[train]: completed iteration 117201 (of 200000; 300.61 min elapsed; 288.48 CNN min)
+[train]:    epoch: 7 (19.32), loss: 0.693, acc: 0.509, learn rate: 1.250e-06
+[train]: completed iteration 117401 (of 200000; 301.11 min elapsed; 288.98 CNN min)
+[train]:    epoch: 7 (20.38), loss: 0.696, acc: 0.493, learn rate: 1.250e-06
+[train]: completed iteration 117601 (of 200000; 301.61 min elapsed; 289.47 CNN min)
+[train]:    epoch: 7 (21.43), loss: 0.699, acc: 0.492, learn rate: 1.250e-06
+[train]: completed iteration 117801 (of 200000; 302.11 min elapsed; 289.97 CNN min)
+[train]:    epoch: 7 (22.49), loss: 0.698, acc: 0.508, learn rate: 1.250e-06
+[train]: completed iteration 118001 (of 200000; 302.62 min elapsed; 290.47 CNN min)
+[train]:    epoch: 7 (23.55), loss: 0.701, acc: 0.507, learn rate: 1.250e-06
+[train]: completed iteration 118201 (of 200000; 303.12 min elapsed; 290.97 CNN min)
+[train]:    epoch: 7 (24.60), loss: 0.701, acc: 0.517, learn rate: 1.250e-06
+[train]: completed iteration 118401 (of 200000; 303.62 min elapsed; 291.46 CNN min)
+[train]:    epoch: 7 (25.66), loss: 0.709, acc: 0.499, learn rate: 1.250e-06
+[train]: completed iteration 118601 (of 200000; 304.12 min elapsed; 291.96 CNN min)
+[train]:    epoch: 7 (26.72), loss: 0.706, acc: 0.513, learn rate: 1.250e-06
+[train]: completed iteration 118801 (of 200000; 304.62 min elapsed; 292.46 CNN min)
+[train]:    epoch: 7 (27.78), loss: 0.707, acc: 0.515, learn rate: 1.250e-06
+[train]: completed iteration 119001 (of 200000; 305.12 min elapsed; 292.96 CNN min)
+[train]:    epoch: 7 (28.83), loss: 0.702, acc: 0.528, learn rate: 1.250e-06
+[train]: completed iteration 119201 (of 200000; 305.62 min elapsed; 293.45 CNN min)
+[train]:    epoch: 7 (29.89), loss: 0.710, acc: 0.507, learn rate: 1.250e-06
+[train]: completed iteration 119401 (of 200000; 306.12 min elapsed; 293.95 CNN min)
+[train]:    epoch: 7 (30.95), loss: 0.715, acc: 0.490, learn rate: 1.250e-06
+[train]: completed iteration 119601 (of 200000; 306.62 min elapsed; 294.44 CNN min)
+[train]:    epoch: 7 (32.00), loss: 0.713, acc: 0.487, learn rate: 1.250e-06
+[train]: completed iteration 119801 (of 200000; 307.12 min elapsed; 294.94 CNN min)
+[train]:    epoch: 7 (33.06), loss: 0.710, acc: 0.488, learn rate: 1.250e-06
+[train]: completed iteration 120001 (of 200000; 307.63 min elapsed; 295.44 CNN min)
+[train]:    epoch: 7 (34.12), loss: 0.697, acc: 0.521, learn rate: 6.250e-07
+[train]: completed iteration 120201 (of 200000; 308.13 min elapsed; 295.94 CNN min)
+[train]:    epoch: 7 (35.17), loss: 0.706, acc: 0.482, learn rate: 6.250e-07
+[train]: completed iteration 120401 (of 200000; 308.63 min elapsed; 296.43 CNN min)
+[train]:    epoch: 7 (36.23), loss: 0.695, acc: 0.519, learn rate: 6.250e-07
+[train]: completed iteration 120601 (of 200000; 309.12 min elapsed; 296.93 CNN min)
+[train]:    epoch: 7 (37.29), loss: 0.697, acc: 0.506, learn rate: 6.250e-07
+[train]: completed iteration 120801 (of 200000; 309.63 min elapsed; 297.42 CNN min)
+[train]:    epoch: 7 (38.34), loss: 0.702, acc: 0.464, learn rate: 6.250e-07
+[train]: completed iteration 121001 (of 200000; 310.13 min elapsed; 297.92 CNN min)
+[train]:    epoch: 7 (39.40), loss: 0.692, acc: 0.527, learn rate: 6.250e-07
+[train]: completed iteration 121201 (of 200000; 310.63 min elapsed; 298.42 CNN min)
+[train]:    epoch: 7 (40.46), loss: 0.695, acc: 0.497, learn rate: 6.250e-07
+[train]: completed iteration 121401 (of 200000; 311.13 min elapsed; 298.92 CNN min)
+[train]:    epoch: 7 (41.52), loss: 0.692, acc: 0.525, learn rate: 6.250e-07
+[train]: completed iteration 121601 (of 200000; 311.63 min elapsed; 299.41 CNN min)
+[train]:    epoch: 7 (42.57), loss: 0.693, acc: 0.504, learn rate: 6.250e-07
+[train]: completed iteration 121801 (of 200000; 312.13 min elapsed; 299.91 CNN min)
+[train]:    epoch: 7 (43.63), loss: 0.693, acc: 0.508, learn rate: 6.250e-07
+[train]: completed iteration 122001 (of 200000; 312.63 min elapsed; 300.40 CNN min)
+[train]:    epoch: 7 (44.69), loss: 0.694, acc: 0.493, learn rate: 6.250e-07
+[train]: completed iteration 122201 (of 200000; 313.13 min elapsed; 300.90 CNN min)
+[train]:    epoch: 7 (45.74), loss: 0.692, acc: 0.529, learn rate: 6.250e-07
+[train]: completed iteration 122401 (of 200000; 313.63 min elapsed; 301.40 CNN min)
+[train]:    epoch: 7 (46.80), loss: 0.694, acc: 0.509, learn rate: 6.250e-07
+[train]: completed iteration 122601 (of 200000; 314.13 min elapsed; 301.89 CNN min)
+[train]:    epoch: 7 (47.86), loss: 0.699, acc: 0.484, learn rate: 6.250e-07
+[train]: completed iteration 122801 (of 200000; 314.63 min elapsed; 302.39 CNN min)
+[train]:    epoch: 7 (48.91), loss: 0.700, acc: 0.490, learn rate: 6.250e-07
+[train]: completed iteration 123001 (of 200000; 315.13 min elapsed; 302.88 CNN min)
+[train]:    epoch: 7 (49.97), loss: 0.697, acc: 0.513, learn rate: 6.250e-07
+[train]: completed iteration 123201 (of 200000; 315.63 min elapsed; 303.38 CNN min)
+[train]:    epoch: 7 (51.03), loss: 0.695, acc: 0.526, learn rate: 6.250e-07
+[train]: completed iteration 123401 (of 200000; 316.12 min elapsed; 303.87 CNN min)
+[train]:    epoch: 7 (52.08), loss: 0.707, acc: 0.485, learn rate: 6.250e-07
+[train]: completed iteration 123601 (of 200000; 316.62 min elapsed; 304.36 CNN min)
+[train]:    epoch: 7 (53.14), loss: 0.709, acc: 0.485, learn rate: 6.250e-07
+[train]: completed iteration 123801 (of 200000; 317.12 min elapsed; 304.86 CNN min)
+[train]:    epoch: 7 (54.20), loss: 0.691, acc: 0.546, learn rate: 6.250e-07
+[train]: completed iteration 124001 (of 200000; 317.62 min elapsed; 305.36 CNN min)
+[train]:    epoch: 7 (55.25), loss: 0.702, acc: 0.515, learn rate: 6.250e-07
+[train]: completed iteration 124201 (of 200000; 318.12 min elapsed; 305.85 CNN min)
+[train]:    epoch: 7 (56.31), loss: 0.703, acc: 0.514, learn rate: 6.250e-07
+[train]: completed iteration 124401 (of 200000; 318.62 min elapsed; 306.35 CNN min)
+[train]:    epoch: 7 (57.37), loss: 0.703, acc: 0.514, learn rate: 6.250e-07
+[train]: completed iteration 124601 (of 200000; 319.11 min elapsed; 306.84 CNN min)
+[train]:    epoch: 7 (58.43), loss: 0.709, acc: 0.498, learn rate: 6.250e-07
+[train]: completed iteration 124801 (of 200000; 319.61 min elapsed; 307.33 CNN min)
+[train]:    epoch: 7 (59.48), loss: 0.718, acc: 0.469, learn rate: 6.250e-07
+[train]: completed iteration 125001 (of 200000; 320.11 min elapsed; 307.83 CNN min)
+[train]:    epoch: 7 (60.54), loss: 0.709, acc: 0.494, learn rate: 6.250e-07
+[train]: completed iteration 125201 (of 200000; 320.61 min elapsed; 308.33 CNN min)
+[train]:    epoch: 7 (61.60), loss: 0.703, acc: 0.509, learn rate: 6.250e-07
+[train]: completed iteration 125401 (of 200000; 321.11 min elapsed; 308.82 CNN min)
+[train]:    epoch: 7 (62.65), loss: 0.708, acc: 0.487, learn rate: 6.250e-07
+[train]: completed iteration 125601 (of 200000; 321.61 min elapsed; 309.31 CNN min)
+[train]:    epoch: 7 (63.71), loss: 0.710, acc: 0.474, learn rate: 6.250e-07
+[train]: completed iteration 125801 (of 200000; 322.10 min elapsed; 309.81 CNN min)
+[train]:    epoch: 7 (64.77), loss: 0.706, acc: 0.481, learn rate: 6.250e-07
+[train]: completed iteration 126001 (of 200000; 322.61 min elapsed; 310.30 CNN min)
+[train]:    epoch: 7 (65.82), loss: 0.698, acc: 0.509, learn rate: 6.250e-07
+[train]: completed iteration 126201 (of 200000; 323.11 min elapsed; 310.80 CNN min)
+[train]:    epoch: 7 (66.88), loss: 0.704, acc: 0.472, learn rate: 6.250e-07
+[train]: completed iteration 126401 (of 200000; 323.60 min elapsed; 311.29 CNN min)
+[train]:    epoch: 7 (67.94), loss: 0.699, acc: 0.486, learn rate: 6.250e-07
+[train]: completed iteration 126601 (of 200000; 324.10 min elapsed; 311.78 CNN min)
+[train]:    epoch: 7 (68.99), loss: 0.693, acc: 0.519, learn rate: 6.250e-07
+[train]: completed iteration 126801 (of 200000; 324.60 min elapsed; 312.28 CNN min)
+[train]:    epoch: 7 (70.05), loss: 0.695, acc: 0.488, learn rate: 6.250e-07
+[train]: completed iteration 127001 (of 200000; 325.10 min elapsed; 312.77 CNN min)
+[train]:    epoch: 7 (71.11), loss: 0.692, acc: 0.523, learn rate: 6.250e-07
+[train]: completed iteration 127201 (of 200000; 325.59 min elapsed; 313.27 CNN min)
+[train]:    epoch: 7 (72.17), loss: 0.693, acc: 0.498, learn rate: 6.250e-07
+[train]: completed iteration 127401 (of 200000; 326.09 min elapsed; 313.76 CNN min)
+[train]:    epoch: 7 (73.22), loss: 0.693, acc: 0.514, learn rate: 6.250e-07
+[train]: completed iteration 127601 (of 200000; 326.59 min elapsed; 314.26 CNN min)
+[train]:    epoch: 7 (74.28), loss: 0.695, acc: 0.481, learn rate: 6.250e-07
+[train]: completed iteration 127801 (of 200000; 327.09 min elapsed; 314.75 CNN min)
+[train]:    epoch: 7 (75.34), loss: 0.696, acc: 0.479, learn rate: 6.250e-07
+[train]: completed iteration 128001 (of 200000; 327.59 min elapsed; 315.25 CNN min)
+[train]:    epoch: 7 (76.39), loss: 0.695, acc: 0.502, learn rate: 6.250e-07
+[train]: completed iteration 128201 (of 200000; 328.09 min elapsed; 315.74 CNN min)
+[train]:    epoch: 7 (77.45), loss: 0.691, acc: 0.536, learn rate: 6.250e-07
+[train]: completed iteration 128401 (of 200000; 328.59 min elapsed; 316.24 CNN min)
+[train]:    epoch: 7 (78.51), loss: 0.696, acc: 0.509, learn rate: 6.250e-07
+[train]: completed iteration 128601 (of 200000; 329.09 min elapsed; 316.74 CNN min)
+[train]:    epoch: 7 (79.56), loss: 0.691, acc: 0.540, learn rate: 6.250e-07
+[train]: completed iteration 128801 (of 200000; 329.59 min elapsed; 317.24 CNN min)
+[train]:    epoch: 7 (80.62), loss: 0.696, acc: 0.520, learn rate: 6.250e-07
+[train]: completed iteration 129001 (of 200000; 330.09 min elapsed; 317.73 CNN min)
+[train]:    epoch: 7 (81.68), loss: 0.699, acc: 0.515, learn rate: 6.250e-07
+[train]: completed iteration 129201 (of 200000; 330.59 min elapsed; 318.23 CNN min)
+[train]:    epoch: 7 (82.73), loss: 0.701, acc: 0.511, learn rate: 6.250e-07
+[train]: completed iteration 129401 (of 200000; 331.09 min elapsed; 318.72 CNN min)
+[train]:    epoch: 7 (83.79), loss: 0.707, acc: 0.497, learn rate: 6.250e-07
+[train]: completed iteration 129601 (of 200000; 331.59 min elapsed; 319.22 CNN min)
+[train]:    epoch: 7 (84.85), loss: 0.705, acc: 0.506, learn rate: 6.250e-07
+[train]: completed iteration 129801 (of 200000; 332.09 min elapsed; 319.71 CNN min)
+[train]:    epoch: 7 (85.91), loss: 0.709, acc: 0.494, learn rate: 6.250e-07
+[train]: completed iteration 130001 (of 200000; 332.59 min elapsed; 320.21 CNN min)
+[train]:    epoch: 7 (86.96), loss: 0.711, acc: 0.492, learn rate: 6.250e-07
+[train]: completed iteration 130201 (of 200000; 333.09 min elapsed; 320.70 CNN min)
+[train]:    epoch: 7 (88.02), loss: 0.715, acc: 0.478, learn rate: 6.250e-07
+[train]: completed iteration 130401 (of 200000; 333.59 min elapsed; 321.20 CNN min)
+[train]:    epoch: 7 (89.08), loss: 0.711, acc: 0.491, learn rate: 6.250e-07
+[train]: completed iteration 130601 (of 200000; 334.08 min elapsed; 321.69 CNN min)
+[train]:    epoch: 7 (90.13), loss: 0.706, acc: 0.503, learn rate: 6.250e-07
+[train]: completed iteration 130801 (of 200000; 334.58 min elapsed; 322.18 CNN min)
+[train]:    epoch: 7 (91.19), loss: 0.698, acc: 0.526, learn rate: 6.250e-07
+[train]: completed iteration 131001 (of 200000; 335.08 min elapsed; 322.68 CNN min)
+[train]:    epoch: 7 (92.25), loss: 0.698, acc: 0.521, learn rate: 6.250e-07
+[train]: completed iteration 131201 (of 200000; 335.58 min elapsed; 323.18 CNN min)
+[train]:    epoch: 7 (93.30), loss: 0.703, acc: 0.502, learn rate: 6.250e-07
+[train]: completed iteration 131401 (of 200000; 336.08 min elapsed; 323.67 CNN min)
+[train]:    epoch: 7 (94.36), loss: 0.706, acc: 0.482, learn rate: 6.250e-07
+[train]: completed iteration 131601 (of 200000; 336.57 min elapsed; 324.16 CNN min)
+[train]:    epoch: 7 (95.42), loss: 0.700, acc: 0.500, learn rate: 6.250e-07
+[train]: completed iteration 131801 (of 200000; 337.07 min elapsed; 324.66 CNN min)
+[train]:    epoch: 7 (96.47), loss: 0.699, acc: 0.496, learn rate: 6.250e-07
+[train]: completed iteration 132001 (of 200000; 337.58 min elapsed; 325.15 CNN min)
+[train]:    epoch: 7 (97.53), loss: 0.698, acc: 0.496, learn rate: 6.250e-07
+[train]: completed iteration 132201 (of 200000; 338.08 min elapsed; 325.65 CNN min)
+[train]:    epoch: 7 (98.59), loss: 0.693, acc: 0.516, learn rate: 6.250e-07
+[train]: completed iteration 132401 (of 200000; 338.58 min elapsed; 326.15 CNN min)
+[train]:    epoch: 7 (99.64), loss: 0.695, acc: 0.499, learn rate: 6.250e-07
+[train]: Not using a validation data set
+[emlib]: num. pixels per class label is: [103911440, 946160]
+[emlib]: will draw 946160 samples from each class
+[train]: completed iteration 132601 (of 200000; 340.58 min elapsed; 326.64 CNN min)
+[train]:    epoch: 8 (0.70), loss: 0.692, acc: 0.518, learn rate: 6.250e-07
+[train]: completed iteration 132801 (of 200000; 341.08 min elapsed; 327.14 CNN min)
+[train]:    epoch: 8 (1.75), loss: 0.693, acc: 0.496, learn rate: 6.250e-07
+[train]: completed iteration 133001 (of 200000; 341.58 min elapsed; 327.63 CNN min)
+[train]:    epoch: 8 (2.81), loss: 0.693, acc: 0.483, learn rate: 6.250e-07
+[train]: completed iteration 133201 (of 200000; 342.09 min elapsed; 328.13 CNN min)
+[train]:    epoch: 8 (3.87), loss: 0.695, acc: 0.472, learn rate: 6.250e-07
+[train]: completed iteration 133401 (of 200000; 342.59 min elapsed; 328.63 CNN min)
+[train]:    epoch: 8 (4.93), loss: 0.693, acc: 0.514, learn rate: 6.250e-07
+[train]: completed iteration 133601 (of 200000; 343.08 min elapsed; 329.12 CNN min)
+[train]:    epoch: 8 (5.98), loss: 0.697, acc: 0.483, learn rate: 6.250e-07
+[train]: completed iteration 133801 (of 200000; 343.58 min elapsed; 329.62 CNN min)
+[train]:    epoch: 8 (7.04), loss: 0.691, acc: 0.533, learn rate: 6.250e-07
+[train]: completed iteration 134001 (of 200000; 344.08 min elapsed; 330.11 CNN min)
+[train]:    epoch: 8 (8.10), loss: 0.699, acc: 0.494, learn rate: 6.250e-07
+[train]: completed iteration 134201 (of 200000; 344.58 min elapsed; 330.61 CNN min)
+[train]:    epoch: 8 (9.15), loss: 0.700, acc: 0.497, learn rate: 6.250e-07
+[train]: completed iteration 134401 (of 200000; 345.08 min elapsed; 331.10 CNN min)
+[train]:    epoch: 8 (10.21), loss: 0.693, acc: 0.531, learn rate: 6.250e-07
+[train]: completed iteration 134601 (of 200000; 345.58 min elapsed; 331.60 CNN min)
+[train]:    epoch: 8 (11.27), loss: 0.704, acc: 0.493, learn rate: 6.250e-07
+[train]: completed iteration 134801 (of 200000; 346.08 min elapsed; 332.09 CNN min)
+[train]:    epoch: 8 (12.32), loss: 0.706, acc: 0.492, learn rate: 6.250e-07
+[train]: completed iteration 135001 (of 200000; 346.58 min elapsed; 332.59 CNN min)
+[train]:    epoch: 8 (13.38), loss: 0.712, acc: 0.478, learn rate: 6.250e-07
+[train]: completed iteration 135201 (of 200000; 347.08 min elapsed; 333.08 CNN min)
+[train]:    epoch: 8 (14.44), loss: 0.713, acc: 0.479, learn rate: 6.250e-07
+[train]: completed iteration 135401 (of 200000; 347.57 min elapsed; 333.58 CNN min)
+[train]:    epoch: 8 (15.49), loss: 0.706, acc: 0.504, learn rate: 6.250e-07
+[train]: completed iteration 135601 (of 200000; 348.07 min elapsed; 334.07 CNN min)
+[train]:    epoch: 8 (16.55), loss: 0.711, acc: 0.489, learn rate: 6.250e-07
+[train]: completed iteration 135801 (of 200000; 348.56 min elapsed; 334.56 CNN min)
+[train]:    epoch: 8 (17.61), loss: 0.713, acc: 0.483, learn rate: 6.250e-07
+[train]: completed iteration 136001 (of 200000; 349.07 min elapsed; 335.06 CNN min)
+[train]:    epoch: 8 (18.66), loss: 0.705, acc: 0.508, learn rate: 6.250e-07
+[train]: completed iteration 136201 (of 200000; 349.57 min elapsed; 335.56 CNN min)
+[train]:    epoch: 8 (19.72), loss: 0.704, acc: 0.509, learn rate: 6.250e-07
+[train]: completed iteration 136401 (of 200000; 350.07 min elapsed; 336.05 CNN min)
+[train]:    epoch: 8 (20.78), loss: 0.714, acc: 0.474, learn rate: 6.250e-07
+[train]: completed iteration 136601 (of 200000; 350.56 min elapsed; 336.54 CNN min)
+[train]:    epoch: 8 (21.84), loss: 0.703, acc: 0.506, learn rate: 6.250e-07
+[train]: completed iteration 136801 (of 200000; 351.06 min elapsed; 337.04 CNN min)
+[train]:    epoch: 8 (22.89), loss: 0.696, acc: 0.525, learn rate: 6.250e-07
+[train]: completed iteration 137001 (of 200000; 351.55 min elapsed; 337.53 CNN min)
+[train]:    epoch: 8 (23.95), loss: 0.702, acc: 0.497, learn rate: 6.250e-07
+[train]: completed iteration 137201 (of 200000; 352.06 min elapsed; 338.03 CNN min)
+[train]:    epoch: 8 (25.01), loss: 0.702, acc: 0.493, learn rate: 6.250e-07
+[train]: completed iteration 137401 (of 200000; 352.56 min elapsed; 338.52 CNN min)
+[train]:    epoch: 8 (26.06), loss: 0.701, acc: 0.489, learn rate: 6.250e-07
+[train]: completed iteration 137601 (of 200000; 353.05 min elapsed; 339.02 CNN min)
+[train]:    epoch: 8 (27.12), loss: 0.694, acc: 0.517, learn rate: 6.250e-07
+[train]: completed iteration 137801 (of 200000; 353.55 min elapsed; 339.51 CNN min)
+[train]:    epoch: 8 (28.18), loss: 0.700, acc: 0.467, learn rate: 6.250e-07
+[train]: completed iteration 138001 (of 200000; 354.05 min elapsed; 340.00 CNN min)
+[train]:    epoch: 8 (29.23), loss: 0.695, acc: 0.497, learn rate: 6.250e-07
+[train]: completed iteration 138201 (of 200000; 354.55 min elapsed; 340.50 CNN min)
+[train]:    epoch: 8 (30.29), loss: 0.694, acc: 0.504, learn rate: 6.250e-07
+[train]: completed iteration 138401 (of 200000; 355.05 min elapsed; 340.99 CNN min)
+[train]:    epoch: 8 (31.35), loss: 0.694, acc: 0.478, learn rate: 6.250e-07
+[train]: completed iteration 138601 (of 200000; 355.55 min elapsed; 341.49 CNN min)
+[train]:    epoch: 8 (32.40), loss: 0.693, acc: 0.510, learn rate: 6.250e-07
+[train]: completed iteration 138801 (of 200000; 356.05 min elapsed; 341.98 CNN min)
+[train]:    epoch: 8 (33.46), loss: 0.694, acc: 0.490, learn rate: 6.250e-07
+[train]: completed iteration 139001 (of 200000; 356.55 min elapsed; 342.48 CNN min)
+[train]:    epoch: 8 (34.52), loss: 0.692, acc: 0.531, learn rate: 6.250e-07
+[train]: completed iteration 139201 (of 200000; 357.04 min elapsed; 342.98 CNN min)
+[train]:    epoch: 8 (35.58), loss: 0.695, acc: 0.500, learn rate: 6.250e-07
+[train]: completed iteration 139401 (of 200000; 357.55 min elapsed; 343.47 CNN min)
+[train]:    epoch: 8 (36.63), loss: 0.695, acc: 0.506, learn rate: 6.250e-07
+[train]: completed iteration 139601 (of 200000; 358.05 min elapsed; 343.97 CNN min)
+[train]:    epoch: 8 (37.69), loss: 0.696, acc: 0.504, learn rate: 6.250e-07
+[train]: completed iteration 139801 (of 200000; 358.54 min elapsed; 344.46 CNN min)
+[train]:    epoch: 8 (38.75), loss: 0.699, acc: 0.496, learn rate: 6.250e-07
+[train]: completed iteration 140001 (of 200000; 359.04 min elapsed; 344.96 CNN min)
+[train]:    epoch: 8 (39.80), loss: 0.699, acc: 0.504, learn rate: 6.250e-07
+[train]: completed iteration 140201 (of 200000; 359.54 min elapsed; 345.45 CNN min)
+[train]:    epoch: 8 (40.86), loss: 0.701, acc: 0.502, learn rate: 6.250e-07
+[train]: completed iteration 140401 (of 200000; 360.04 min elapsed; 345.94 CNN min)
+[train]:    epoch: 8 (41.92), loss: 0.706, acc: 0.491, learn rate: 6.250e-07
+[train]: completed iteration 140601 (of 200000; 360.54 min elapsed; 346.44 CNN min)
+[train]:    epoch: 8 (42.97), loss: 0.704, acc: 0.500, learn rate: 6.250e-07
+[train]: completed iteration 140801 (of 200000; 361.03 min elapsed; 346.93 CNN min)
+[train]:    epoch: 8 (44.03), loss: 0.702, acc: 0.511, learn rate: 6.250e-07
+[train]: completed iteration 141001 (of 200000; 361.53 min elapsed; 347.43 CNN min)
+[train]:    epoch: 8 (45.09), loss: 0.705, acc: 0.503, learn rate: 6.250e-07
+[train]: completed iteration 141201 (of 200000; 362.03 min elapsed; 347.92 CNN min)
+[train]:    epoch: 8 (46.14), loss: 0.708, acc: 0.496, learn rate: 6.250e-07
+[train]: completed iteration 141401 (of 200000; 362.53 min elapsed; 348.41 CNN min)
+[train]:    epoch: 8 (47.20), loss: 0.707, acc: 0.501, learn rate: 6.250e-07
+[train]: completed iteration 141601 (of 200000; 363.03 min elapsed; 348.91 CNN min)
+[train]:    epoch: 8 (48.26), loss: 0.710, acc: 0.492, learn rate: 6.250e-07
+[train]: completed iteration 141801 (of 200000; 363.53 min elapsed; 349.41 CNN min)
+[train]:    epoch: 8 (49.32), loss: 0.709, acc: 0.492, learn rate: 6.250e-07
+[train]: completed iteration 142001 (of 200000; 364.03 min elapsed; 349.90 CNN min)
+[train]:    epoch: 8 (50.37), loss: 0.700, acc: 0.518, learn rate: 6.250e-07
+[train]: completed iteration 142201 (of 200000; 364.52 min elapsed; 350.39 CNN min)
+[train]:    epoch: 8 (51.43), loss: 0.705, acc: 0.500, learn rate: 6.250e-07
+[train]: completed iteration 142401 (of 200000; 365.02 min elapsed; 350.88 CNN min)
+[train]:    epoch: 8 (52.49), loss: 0.702, acc: 0.504, learn rate: 6.250e-07
+[train]: completed iteration 142601 (of 200000; 365.52 min elapsed; 351.38 CNN min)
+[train]:    epoch: 8 (53.54), loss: 0.696, acc: 0.523, learn rate: 6.250e-07
+[train]: completed iteration 142801 (of 200000; 366.02 min elapsed; 351.88 CNN min)
+[train]:    epoch: 8 (54.60), loss: 0.698, acc: 0.510, learn rate: 6.250e-07
+[train]: completed iteration 143001 (of 200000; 366.52 min elapsed; 352.37 CNN min)
+[train]:    epoch: 8 (55.66), loss: 0.702, acc: 0.486, learn rate: 6.250e-07
+[train]: completed iteration 143201 (of 200000; 367.01 min elapsed; 352.86 CNN min)
+[train]:    epoch: 8 (56.71), loss: 0.694, acc: 0.516, learn rate: 6.250e-07
+[train]: completed iteration 143401 (of 200000; 367.50 min elapsed; 353.35 CNN min)
+[train]:    epoch: 8 (57.77), loss: 0.698, acc: 0.488, learn rate: 6.250e-07
+[train]: completed iteration 143601 (of 200000; 368.00 min elapsed; 353.85 CNN min)
+[train]:    epoch: 8 (58.83), loss: 0.695, acc: 0.498, learn rate: 6.250e-07
+[train]: completed iteration 143801 (of 200000; 368.50 min elapsed; 354.35 CNN min)
+[train]:    epoch: 8 (59.88), loss: 0.696, acc: 0.481, learn rate: 6.250e-07
+[train]: completed iteration 144001 (of 200000; 369.00 min elapsed; 354.84 CNN min)
+[train]:    epoch: 8 (60.94), loss: 0.694, acc: 0.482, learn rate: 6.250e-07
+[train]: completed iteration 144201 (of 200000; 369.50 min elapsed; 355.33 CNN min)
+[train]:    epoch: 8 (62.00), loss: 0.693, acc: 0.494, learn rate: 6.250e-07
+[train]: completed iteration 144401 (of 200000; 370.00 min elapsed; 355.82 CNN min)
+[train]:    epoch: 8 (63.05), loss: 0.693, acc: 0.495, learn rate: 6.250e-07
+[train]: completed iteration 144601 (of 200000; 370.49 min elapsed; 356.32 CNN min)
+[train]:    epoch: 8 (64.11), loss: 0.693, acc: 0.515, learn rate: 6.250e-07
+[train]: completed iteration 144801 (of 200000; 370.99 min elapsed; 356.81 CNN min)
+[train]:    epoch: 8 (65.17), loss: 0.695, acc: 0.492, learn rate: 6.250e-07
+[train]: completed iteration 145001 (of 200000; 371.49 min elapsed; 357.31 CNN min)
+[train]:    epoch: 8 (66.23), loss: 0.696, acc: 0.497, learn rate: 6.250e-07
+[train]: completed iteration 145201 (of 200000; 371.99 min elapsed; 357.80 CNN min)
+[train]:    epoch: 8 (67.28), loss: 0.694, acc: 0.518, learn rate: 6.250e-07
+[train]: completed iteration 145401 (of 200000; 372.49 min elapsed; 358.30 CNN min)
+[train]:    epoch: 8 (68.34), loss: 0.698, acc: 0.501, learn rate: 6.250e-07
+[train]: completed iteration 145601 (of 200000; 372.98 min elapsed; 358.79 CNN min)
+[train]:    epoch: 8 (69.40), loss: 0.700, acc: 0.501, learn rate: 6.250e-07
+[train]: completed iteration 145801 (of 200000; 373.48 min elapsed; 359.29 CNN min)
+[train]:    epoch: 8 (70.45), loss: 0.709, acc: 0.470, learn rate: 6.250e-07
+[train]: completed iteration 146001 (of 200000; 373.99 min elapsed; 359.78 CNN min)
+[train]:    epoch: 8 (71.51), loss: 0.702, acc: 0.504, learn rate: 6.250e-07
+[train]: completed iteration 146201 (of 200000; 374.49 min elapsed; 360.28 CNN min)
+[train]:    epoch: 8 (72.57), loss: 0.706, acc: 0.495, learn rate: 6.250e-07
+[train]: completed iteration 146401 (of 200000; 374.99 min elapsed; 360.78 CNN min)
+[train]:    epoch: 8 (73.62), loss: 0.702, acc: 0.510, learn rate: 6.250e-07
+[train]: completed iteration 146601 (of 200000; 375.48 min elapsed; 361.27 CNN min)
+[train]:    epoch: 8 (74.68), loss: 0.707, acc: 0.497, learn rate: 6.250e-07
+[train]: completed iteration 146801 (of 200000; 375.98 min elapsed; 361.76 CNN min)
+[train]:    epoch: 8 (75.74), loss: 0.703, acc: 0.512, learn rate: 6.250e-07
+[train]: completed iteration 147001 (of 200000; 376.48 min elapsed; 362.26 CNN min)
+[train]:    epoch: 8 (76.79), loss: 0.707, acc: 0.501, learn rate: 6.250e-07
+[train]: completed iteration 147201 (of 200000; 376.98 min elapsed; 362.76 CNN min)
+[train]:    epoch: 8 (77.85), loss: 0.708, acc: 0.499, learn rate: 6.250e-07
+[train]: completed iteration 147401 (of 200000; 377.48 min elapsed; 363.25 CNN min)
+[train]:    epoch: 8 (78.91), loss: 0.715, acc: 0.476, learn rate: 6.250e-07
+[train]: completed iteration 147601 (of 200000; 377.98 min elapsed; 363.74 CNN min)
+[train]:    epoch: 8 (79.97), loss: 0.705, acc: 0.504, learn rate: 6.250e-07
+[train]: completed iteration 147801 (of 200000; 378.47 min elapsed; 364.23 CNN min)
+[train]:    epoch: 8 (81.02), loss: 0.702, acc: 0.511, learn rate: 6.250e-07
+[train]: completed iteration 148001 (of 200000; 378.98 min elapsed; 364.73 CNN min)
+[train]:    epoch: 8 (82.08), loss: 0.711, acc: 0.477, learn rate: 6.250e-07
+[train]: completed iteration 148201 (of 200000; 379.48 min elapsed; 365.23 CNN min)
+[train]:    epoch: 8 (83.14), loss: 0.701, acc: 0.504, learn rate: 6.250e-07
+[train]: completed iteration 148401 (of 200000; 379.97 min elapsed; 365.72 CNN min)
+[train]:    epoch: 8 (84.19), loss: 0.705, acc: 0.482, learn rate: 6.250e-07
+[train]: completed iteration 148601 (of 200000; 380.47 min elapsed; 366.22 CNN min)
+[train]:    epoch: 8 (85.25), loss: 0.700, acc: 0.495, learn rate: 6.250e-07
+[train]: completed iteration 148801 (of 200000; 380.96 min elapsed; 366.71 CNN min)
+[train]:    epoch: 8 (86.31), loss: 0.695, acc: 0.512, learn rate: 6.250e-07
+[train]: completed iteration 149001 (of 200000; 381.46 min elapsed; 367.20 CNN min)
+[train]:    epoch: 8 (87.36), loss: 0.699, acc: 0.481, learn rate: 6.250e-07
+[train]: completed iteration 149201 (of 200000; 381.96 min elapsed; 367.69 CNN min)
+[train]:    epoch: 8 (88.42), loss: 0.695, acc: 0.501, learn rate: 6.250e-07
+[train]: completed iteration 149401 (of 200000; 382.46 min elapsed; 368.19 CNN min)
+[train]:    epoch: 8 (89.48), loss: 0.694, acc: 0.497, learn rate: 6.250e-07
+[train]: completed iteration 149601 (of 200000; 382.96 min elapsed; 368.68 CNN min)
+[train]:    epoch: 8 (90.53), loss: 0.695, acc: 0.467, learn rate: 6.250e-07
+[train]: completed iteration 149801 (of 200000; 383.45 min elapsed; 369.18 CNN min)
+[train]:    epoch: 8 (91.59), loss: 0.693, acc: 0.485, learn rate: 6.250e-07
+[train]: completed iteration 150001 (of 200000; 383.95 min elapsed; 369.67 CNN min)
+[train]:    epoch: 8 (92.65), loss: 0.694, acc: 0.481, learn rate: 3.125e-07
+[train]: completed iteration 150201 (of 200000; 384.45 min elapsed; 370.16 CNN min)
+[train]:    epoch: 8 (93.71), loss: 0.694, acc: 0.492, learn rate: 3.125e-07
+[train]: completed iteration 150401 (of 200000; 384.95 min elapsed; 370.66 CNN min)
+[train]:    epoch: 8 (94.76), loss: 0.693, acc: 0.505, learn rate: 3.125e-07
+[train]: completed iteration 150601 (of 200000; 385.45 min elapsed; 371.15 CNN min)
+[train]:    epoch: 8 (95.82), loss: 0.693, acc: 0.512, learn rate: 3.125e-07
+[train]: completed iteration 150801 (of 200000; 385.94 min elapsed; 371.65 CNN min)
+[train]:    epoch: 8 (96.88), loss: 0.694, acc: 0.507, learn rate: 3.125e-07
+[train]: completed iteration 151001 (of 200000; 386.44 min elapsed; 372.14 CNN min)
+[train]:    epoch: 8 (97.93), loss: 0.692, acc: 0.521, learn rate: 3.125e-07
+[train]: completed iteration 151201 (of 200000; 386.93 min elapsed; 372.63 CNN min)
+[train]:    epoch: 8 (98.99), loss: 0.694, acc: 0.510, learn rate: 3.125e-07
+[train]: Not using a validation data set
+[emlib]: num. pixels per class label is: [103911440, 946160]
+[emlib]: will draw 946160 samples from each class
+[train]: completed iteration 151401 (of 200000; 388.84 min elapsed; 373.13 CNN min)
+[train]:    epoch: 9 (0.04), loss: 0.697, acc: 0.492, learn rate: 3.125e-07
+[train]: completed iteration 151601 (of 200000; 389.34 min elapsed; 373.62 CNN min)
+[train]:    epoch: 9 (1.10), loss: 0.695, acc: 0.510, learn rate: 3.125e-07
+[train]: completed iteration 151801 (of 200000; 389.83 min elapsed; 374.11 CNN min)
+[train]:    epoch: 9 (2.16), loss: 0.697, acc: 0.499, learn rate: 3.125e-07
+[train]: completed iteration 152001 (of 200000; 390.33 min elapsed; 374.61 CNN min)
+[train]:    epoch: 9 (3.21), loss: 0.699, acc: 0.494, learn rate: 3.125e-07
+[train]: completed iteration 152201 (of 200000; 390.83 min elapsed; 375.10 CNN min)
+[train]:    epoch: 9 (4.27), loss: 0.696, acc: 0.513, learn rate: 3.125e-07
+[train]: completed iteration 152401 (of 200000; 391.33 min elapsed; 375.60 CNN min)
+[train]:    epoch: 9 (5.33), loss: 0.703, acc: 0.478, learn rate: 3.125e-07
+[train]: completed iteration 152601 (of 200000; 391.83 min elapsed; 376.10 CNN min)
+[train]:    epoch: 9 (6.38), loss: 0.696, acc: 0.516, learn rate: 3.125e-07
+[train]: completed iteration 152801 (of 200000; 392.33 min elapsed; 376.59 CNN min)
+[train]:    epoch: 9 (7.44), loss: 0.701, acc: 0.492, learn rate: 3.125e-07
+[train]: completed iteration 153001 (of 200000; 392.82 min elapsed; 377.08 CNN min)
+[train]:    epoch: 9 (8.50), loss: 0.695, acc: 0.522, learn rate: 3.125e-07
+[train]: completed iteration 153201 (of 200000; 393.32 min elapsed; 377.57 CNN min)
+[train]:    epoch: 9 (9.55), loss: 0.701, acc: 0.496, learn rate: 3.125e-07
+[train]: completed iteration 153401 (of 200000; 393.82 min elapsed; 378.07 CNN min)
+[train]:    epoch: 9 (10.61), loss: 0.701, acc: 0.499, learn rate: 3.125e-07
+[train]: completed iteration 153601 (of 200000; 394.32 min elapsed; 378.57 CNN min)
+[train]:    epoch: 9 (11.67), loss: 0.698, acc: 0.510, learn rate: 3.125e-07
+[train]: completed iteration 153801 (of 200000; 394.82 min elapsed; 379.06 CNN min)
+[train]:    epoch: 9 (12.73), loss: 0.703, acc: 0.489, learn rate: 3.125e-07
+[train]: completed iteration 154001 (of 200000; 395.31 min elapsed; 379.55 CNN min)
+[train]:    epoch: 9 (13.78), loss: 0.705, acc: 0.481, learn rate: 3.125e-07
+[train]: completed iteration 154201 (of 200000; 395.81 min elapsed; 380.04 CNN min)
+[train]:    epoch: 9 (14.84), loss: 0.695, acc: 0.524, learn rate: 3.125e-07
+[train]: completed iteration 154401 (of 200000; 396.31 min elapsed; 380.53 CNN min)
+[train]:    epoch: 9 (15.90), loss: 0.690, acc: 0.541, learn rate: 3.125e-07
+[train]: completed iteration 154601 (of 200000; 396.81 min elapsed; 381.03 CNN min)
+[train]:    epoch: 9 (16.95), loss: 0.700, acc: 0.499, learn rate: 3.125e-07
+[train]: completed iteration 154801 (of 200000; 397.31 min elapsed; 381.53 CNN min)
+[train]:    epoch: 9 (18.01), loss: 0.696, acc: 0.515, learn rate: 3.125e-07
+[train]: completed iteration 155001 (of 200000; 397.80 min elapsed; 382.02 CNN min)
+[train]:    epoch: 9 (19.07), loss: 0.706, acc: 0.468, learn rate: 3.125e-07
+[train]: completed iteration 155201 (of 200000; 398.30 min elapsed; 382.52 CNN min)
+[train]:    epoch: 9 (20.12), loss: 0.697, acc: 0.506, learn rate: 3.125e-07
+[train]: completed iteration 155401 (of 200000; 398.80 min elapsed; 383.01 CNN min)
+[train]:    epoch: 9 (21.18), loss: 0.700, acc: 0.492, learn rate: 3.125e-07
+[train]: completed iteration 155601 (of 200000; 399.30 min elapsed; 383.51 CNN min)
+[train]:    epoch: 9 (22.24), loss: 0.697, acc: 0.501, learn rate: 3.125e-07
+[train]: completed iteration 155801 (of 200000; 399.80 min elapsed; 384.00 CNN min)
+[train]:    epoch: 9 (23.29), loss: 0.697, acc: 0.501, learn rate: 3.125e-07
+[train]: completed iteration 156001 (of 200000; 400.30 min elapsed; 384.50 CNN min)
+[train]:    epoch: 9 (24.35), loss: 0.699, acc: 0.483, learn rate: 3.125e-07
+[train]: completed iteration 156201 (of 200000; 400.80 min elapsed; 384.99 CNN min)
+[train]:    epoch: 9 (25.41), loss: 0.699, acc: 0.480, learn rate: 3.125e-07
+[train]: completed iteration 156401 (of 200000; 401.30 min elapsed; 385.48 CNN min)
+[train]:    epoch: 9 (26.46), loss: 0.694, acc: 0.506, learn rate: 3.125e-07
+[train]: completed iteration 156601 (of 200000; 401.80 min elapsed; 385.98 CNN min)
+[train]:    epoch: 9 (27.52), loss: 0.692, acc: 0.524, learn rate: 3.125e-07
+[train]: completed iteration 156801 (of 200000; 402.30 min elapsed; 386.48 CNN min)
+[train]:    epoch: 9 (28.58), loss: 0.694, acc: 0.500, learn rate: 3.125e-07
+[train]: completed iteration 157001 (of 200000; 402.80 min elapsed; 386.98 CNN min)
+[train]:    epoch: 9 (29.64), loss: 0.692, acc: 0.529, learn rate: 3.125e-07
+[train]: completed iteration 157201 (of 200000; 403.30 min elapsed; 387.47 CNN min)
+[train]:    epoch: 9 (30.69), loss: 0.694, acc: 0.485, learn rate: 3.125e-07
+[train]: completed iteration 157401 (of 200000; 403.80 min elapsed; 387.97 CNN min)
+[train]:    epoch: 9 (31.75), loss: 0.693, acc: 0.507, learn rate: 3.125e-07
+[train]: completed iteration 157601 (of 200000; 404.30 min elapsed; 388.46 CNN min)
+[train]:    epoch: 9 (32.81), loss: 0.693, acc: 0.484, learn rate: 3.125e-07
+[train]: completed iteration 157801 (of 200000; 404.80 min elapsed; 388.96 CNN min)
+[train]:    epoch: 9 (33.86), loss: 0.693, acc: 0.485, learn rate: 3.125e-07
+[train]: completed iteration 158001 (of 200000; 405.30 min elapsed; 389.46 CNN min)
+[train]:    epoch: 9 (34.92), loss: 0.693, acc: 0.507, learn rate: 3.125e-07
+[train]: completed iteration 158201 (of 200000; 405.80 min elapsed; 389.95 CNN min)
+[train]:    epoch: 9 (35.98), loss: 0.693, acc: 0.506, learn rate: 3.125e-07
+[train]: completed iteration 158401 (of 200000; 406.30 min elapsed; 390.45 CNN min)
+[train]:    epoch: 9 (37.03), loss: 0.693, acc: 0.509, learn rate: 3.125e-07
+[train]: completed iteration 158601 (of 200000; 406.80 min elapsed; 390.95 CNN min)
+[train]:    epoch: 9 (38.09), loss: 0.695, acc: 0.485, learn rate: 3.125e-07
+[train]: completed iteration 158801 (of 200000; 407.30 min elapsed; 391.44 CNN min)
+[train]:    epoch: 9 (39.15), loss: 0.699, acc: 0.454, learn rate: 3.125e-07
+[train]: completed iteration 159001 (of 200000; 407.80 min elapsed; 391.94 CNN min)
+[train]:    epoch: 9 (40.20), loss: 0.693, acc: 0.515, learn rate: 3.125e-07
+[train]: completed iteration 159201 (of 200000; 408.30 min elapsed; 392.43 CNN min)
+[train]:    epoch: 9 (41.26), loss: 0.697, acc: 0.484, learn rate: 3.125e-07
+[train]: completed iteration 159401 (of 200000; 408.80 min elapsed; 392.93 CNN min)
+[train]:    epoch: 9 (42.32), loss: 0.696, acc: 0.498, learn rate: 3.125e-07
+[train]: completed iteration 159601 (of 200000; 409.30 min elapsed; 393.43 CNN min)
+[train]:    epoch: 9 (43.38), loss: 0.695, acc: 0.507, learn rate: 3.125e-07
+[train]: completed iteration 159801 (of 200000; 409.80 min elapsed; 393.92 CNN min)
+[train]:    epoch: 9 (44.43), loss: 0.694, acc: 0.515, learn rate: 3.125e-07
+[train]: completed iteration 160001 (of 200000; 410.31 min elapsed; 394.43 CNN min)
+[train]:    epoch: 9 (45.49), loss: 0.702, acc: 0.480, learn rate: 3.125e-07
+[train]: completed iteration 160201 (of 200000; 410.81 min elapsed; 394.93 CNN min)
+[train]:    epoch: 9 (46.55), loss: 0.701, acc: 0.486, learn rate: 3.125e-07
+[train]: completed iteration 160401 (of 200000; 411.31 min elapsed; 395.42 CNN min)
+[train]:    epoch: 9 (47.60), loss: 0.699, acc: 0.500, learn rate: 3.125e-07
+[train]: completed iteration 160601 (of 200000; 411.81 min elapsed; 395.92 CNN min)
+[train]:    epoch: 9 (48.66), loss: 0.696, acc: 0.513, learn rate: 3.125e-07
+[train]: completed iteration 160801 (of 200000; 412.32 min elapsed; 396.42 CNN min)
+[train]:    epoch: 9 (49.72), loss: 0.703, acc: 0.488, learn rate: 3.125e-07
+[train]: completed iteration 161001 (of 200000; 412.82 min elapsed; 396.92 CNN min)
+[train]:    epoch: 9 (50.77), loss: 0.706, acc: 0.477, learn rate: 3.125e-07
+[train]: completed iteration 161201 (of 200000; 413.32 min elapsed; 397.42 CNN min)
+[train]:    epoch: 9 (51.83), loss: 0.695, acc: 0.523, learn rate: 3.125e-07
+[train]: completed iteration 161401 (of 200000; 413.82 min elapsed; 397.91 CNN min)
+[train]:    epoch: 9 (52.89), loss: 0.695, acc: 0.522, learn rate: 3.125e-07
+[train]: completed iteration 161601 (of 200000; 414.32 min elapsed; 398.41 CNN min)
+[train]:    epoch: 9 (53.94), loss: 0.700, acc: 0.505, learn rate: 3.125e-07
+[train]: completed iteration 161801 (of 200000; 414.82 min elapsed; 398.90 CNN min)
+[train]:    epoch: 9 (55.00), loss: 0.700, acc: 0.503, learn rate: 3.125e-07
+[train]: completed iteration 162001 (of 200000; 415.32 min elapsed; 399.40 CNN min)
+[train]:    epoch: 9 (56.06), loss: 0.706, acc: 0.477, learn rate: 3.125e-07
+[train]: completed iteration 162201 (of 200000; 415.82 min elapsed; 399.90 CNN min)
+[train]:    epoch: 9 (57.12), loss: 0.700, acc: 0.503, learn rate: 3.125e-07
+[train]: completed iteration 162401 (of 200000; 416.32 min elapsed; 400.39 CNN min)
+[train]:    epoch: 9 (58.17), loss: 0.708, acc: 0.468, learn rate: 3.125e-07
+[train]: completed iteration 162601 (of 200000; 416.82 min elapsed; 400.89 CNN min)
+[train]:    epoch: 9 (59.23), loss: 0.700, acc: 0.500, learn rate: 3.125e-07
+[train]: completed iteration 162801 (of 200000; 417.32 min elapsed; 401.39 CNN min)
+[train]:    epoch: 9 (60.29), loss: 0.696, acc: 0.516, learn rate: 3.125e-07
+[train]: completed iteration 163001 (of 200000; 417.82 min elapsed; 401.88 CNN min)
+[train]:    epoch: 9 (61.34), loss: 0.702, acc: 0.486, learn rate: 3.125e-07
+[train]: completed iteration 163201 (of 200000; 418.32 min elapsed; 402.38 CNN min)
+[train]:    epoch: 9 (62.40), loss: 0.701, acc: 0.488, learn rate: 3.125e-07
+[train]: completed iteration 163401 (of 200000; 418.82 min elapsed; 402.87 CNN min)
+[train]:    epoch: 9 (63.46), loss: 0.696, acc: 0.509, learn rate: 3.125e-07
+[train]: completed iteration 163601 (of 200000; 419.32 min elapsed; 403.37 CNN min)
+[train]:    epoch: 9 (64.51), loss: 0.699, acc: 0.491, learn rate: 3.125e-07
+[train]: completed iteration 163801 (of 200000; 419.82 min elapsed; 403.87 CNN min)
+[train]:    epoch: 9 (65.57), loss: 0.698, acc: 0.490, learn rate: 3.125e-07
+[train]: completed iteration 164001 (of 200000; 420.33 min elapsed; 404.36 CNN min)
+[train]:    epoch: 9 (66.63), loss: 0.696, acc: 0.499, learn rate: 3.125e-07
+[train]: completed iteration 164201 (of 200000; 420.83 min elapsed; 404.86 CNN min)
+[train]:    epoch: 9 (67.68), loss: 0.697, acc: 0.490, learn rate: 3.125e-07
+[train]: completed iteration 164401 (of 200000; 421.33 min elapsed; 405.36 CNN min)
+[train]:    epoch: 9 (68.74), loss: 0.695, acc: 0.502, learn rate: 3.125e-07
+[train]: completed iteration 164601 (of 200000; 421.82 min elapsed; 405.85 CNN min)
+[train]:    epoch: 9 (69.80), loss: 0.694, acc: 0.504, learn rate: 3.125e-07
+[train]: completed iteration 164801 (of 200000; 422.33 min elapsed; 406.35 CNN min)
+[train]:    epoch: 9 (70.85), loss: 0.692, acc: 0.519, learn rate: 3.125e-07
+[train]: completed iteration 165001 (of 200000; 422.83 min elapsed; 406.85 CNN min)
+[train]:    epoch: 9 (71.91), loss: 0.696, acc: 0.471, learn rate: 3.125e-07
+[train]: completed iteration 165201 (of 200000; 423.32 min elapsed; 407.34 CNN min)
+[train]:    epoch: 9 (72.97), loss: 0.693, acc: 0.517, learn rate: 3.125e-07
+[train]: completed iteration 165401 (of 200000; 423.82 min elapsed; 407.84 CNN min)
+[train]:    epoch: 9 (74.03), loss: 0.693, acc: 0.504, learn rate: 3.125e-07
+[train]: completed iteration 165601 (of 200000; 424.32 min elapsed; 408.33 CNN min)
+[train]:    epoch: 9 (75.08), loss: 0.693, acc: 0.512, learn rate: 3.125e-07
+[train]: completed iteration 165801 (of 200000; 424.82 min elapsed; 408.83 CNN min)
+[train]:    epoch: 9 (76.14), loss: 0.693, acc: 0.496, learn rate: 3.125e-07
+[train]: completed iteration 166001 (of 200000; 425.33 min elapsed; 409.33 CNN min)
+[train]:    epoch: 9 (77.20), loss: 0.693, acc: 0.519, learn rate: 3.125e-07
+[train]: completed iteration 166201 (of 200000; 425.83 min elapsed; 409.82 CNN min)
+[train]:    epoch: 9 (78.25), loss: 0.692, acc: 0.524, learn rate: 3.125e-07
+[train]: completed iteration 166401 (of 200000; 426.33 min elapsed; 410.32 CNN min)
+[train]:    epoch: 9 (79.31), loss: 0.693, acc: 0.507, learn rate: 3.125e-07
+[train]: completed iteration 166601 (of 200000; 426.82 min elapsed; 410.81 CNN min)
+[train]:    epoch: 9 (80.37), loss: 0.693, acc: 0.514, learn rate: 3.125e-07
+[train]: completed iteration 166801 (of 200000; 427.32 min elapsed; 411.31 CNN min)
+[train]:    epoch: 9 (81.42), loss: 0.693, acc: 0.517, learn rate: 3.125e-07
+[train]: completed iteration 167001 (of 200000; 427.82 min elapsed; 411.80 CNN min)
+[train]:    epoch: 9 (82.48), loss: 0.692, acc: 0.524, learn rate: 3.125e-07
+[train]: completed iteration 167201 (of 200000; 428.32 min elapsed; 412.30 CNN min)
+[train]:    epoch: 9 (83.54), loss: 0.694, acc: 0.507, learn rate: 3.125e-07
+[train]: completed iteration 167401 (of 200000; 428.82 min elapsed; 412.79 CNN min)
+[train]:    epoch: 9 (84.59), loss: 0.697, acc: 0.494, learn rate: 3.125e-07
+[train]: completed iteration 167601 (of 200000; 429.32 min elapsed; 413.29 CNN min)
+[train]:    epoch: 9 (85.65), loss: 0.697, acc: 0.499, learn rate: 3.125e-07
+[train]: completed iteration 167801 (of 200000; 429.82 min elapsed; 413.78 CNN min)
+[train]:    epoch: 9 (86.71), loss: 0.691, acc: 0.534, learn rate: 3.125e-07
+[train]: completed iteration 168001 (of 200000; 430.32 min elapsed; 414.28 CNN min)
+[train]:    epoch: 9 (87.77), loss: 0.699, acc: 0.494, learn rate: 3.125e-07
+[train]: completed iteration 168201 (of 200000; 430.82 min elapsed; 414.78 CNN min)
+[train]:    epoch: 9 (88.82), loss: 0.695, acc: 0.518, learn rate: 3.125e-07
+[train]: completed iteration 168401 (of 200000; 431.32 min elapsed; 415.27 CNN min)
+[train]:    epoch: 9 (89.88), loss: 0.704, acc: 0.476, learn rate: 3.125e-07
+[train]: completed iteration 168601 (of 200000; 431.82 min elapsed; 415.77 CNN min)
+[train]:    epoch: 9 (90.94), loss: 0.699, acc: 0.500, learn rate: 3.125e-07
+[train]: completed iteration 168801 (of 200000; 432.31 min elapsed; 416.26 CNN min)
+[train]:    epoch: 9 (91.99), loss: 0.700, acc: 0.501, learn rate: 3.125e-07
+[train]: completed iteration 169001 (of 200000; 432.82 min elapsed; 416.76 CNN min)
+[train]:    epoch: 9 (93.05), loss: 0.713, acc: 0.447, learn rate: 3.125e-07
+[train]: completed iteration 169201 (of 200000; 433.32 min elapsed; 417.26 CNN min)
+[train]:    epoch: 9 (94.11), loss: 0.706, acc: 0.477, learn rate: 3.125e-07
+[train]: completed iteration 169401 (of 200000; 433.82 min elapsed; 417.75 CNN min)
+[train]:    epoch: 9 (95.16), loss: 0.698, acc: 0.511, learn rate: 3.125e-07
+[train]: completed iteration 169601 (of 200000; 434.31 min elapsed; 418.24 CNN min)
+[train]:    epoch: 9 (96.22), loss: 0.697, acc: 0.514, learn rate: 3.125e-07
+[train]: completed iteration 169801 (of 200000; 434.81 min elapsed; 418.74 CNN min)
+[train]:    epoch: 9 (97.28), loss: 0.699, acc: 0.505, learn rate: 3.125e-07
+[train]: completed iteration 170001 (of 200000; 435.32 min elapsed; 419.24 CNN min)
+[train]:    epoch: 9 (98.33), loss: 0.706, acc: 0.477, learn rate: 3.125e-07
+[train]: completed iteration 170201 (of 200000; 435.82 min elapsed; 419.73 CNN min)
+[train]:    epoch: 9 (99.39), loss: 0.695, acc: 0.524, learn rate: 3.125e-07
+[train]: Not using a validation data set
+[emlib]: num. pixels per class label is: [103911440, 946160]
+[emlib]: will draw 946160 samples from each class
+[train]: completed iteration 170401 (of 200000; 437.73 min elapsed; 420.23 CNN min)
+[train]:    epoch: 10 (0.44), loss: 0.691, acc: 0.539, learn rate: 3.125e-07
+[train]: completed iteration 170601 (of 200000; 438.22 min elapsed; 420.72 CNN min)
+[train]:    epoch: 10 (1.50), loss: 0.701, acc: 0.494, learn rate: 3.125e-07
+[train]: completed iteration 170801 (of 200000; 438.72 min elapsed; 421.21 CNN min)
+[train]:    epoch: 10 (2.56), loss: 0.700, acc: 0.498, learn rate: 3.125e-07
+[train]: completed iteration 171001 (of 200000; 439.23 min elapsed; 421.71 CNN min)
+[train]:    epoch: 10 (3.61), loss: 0.705, acc: 0.472, learn rate: 3.125e-07
+[train]: completed iteration 171201 (of 200000; 439.73 min elapsed; 422.21 CNN min)
+[train]:    epoch: 10 (4.67), loss: 0.696, acc: 0.510, learn rate: 3.125e-07
+[train]: completed iteration 171401 (of 200000; 440.22 min elapsed; 422.71 CNN min)
+[train]:    epoch: 10 (5.73), loss: 0.692, acc: 0.528, learn rate: 3.125e-07
+[train]: completed iteration 171601 (of 200000; 440.72 min elapsed; 423.20 CNN min)
+[train]:    epoch: 10 (6.79), loss: 0.696, acc: 0.504, learn rate: 3.125e-07
+[train]: completed iteration 171801 (of 200000; 441.23 min elapsed; 423.70 CNN min)
+[train]:    epoch: 10 (7.84), loss: 0.693, acc: 0.520, learn rate: 3.125e-07
+[train]: completed iteration 172001 (of 200000; 441.73 min elapsed; 424.20 CNN min)
+[train]:    epoch: 10 (8.90), loss: 0.692, acc: 0.526, learn rate: 3.125e-07
+[train]: completed iteration 172201 (of 200000; 442.23 min elapsed; 424.69 CNN min)
+[train]:    epoch: 10 (9.96), loss: 0.690, acc: 0.541, learn rate: 3.125e-07
+[train]: completed iteration 172401 (of 200000; 442.73 min elapsed; 425.19 CNN min)
+[train]:    epoch: 10 (11.01), loss: 0.695, acc: 0.503, learn rate: 3.125e-07
+[train]: completed iteration 172601 (of 200000; 443.23 min elapsed; 425.68 CNN min)
+[train]:    epoch: 10 (12.07), loss: 0.697, acc: 0.476, learn rate: 3.125e-07
+[train]: completed iteration 172801 (of 200000; 443.73 min elapsed; 426.18 CNN min)
+[train]:    epoch: 10 (13.13), loss: 0.693, acc: 0.510, learn rate: 3.125e-07
+[train]: completed iteration 173001 (of 200000; 444.23 min elapsed; 426.68 CNN min)
+[train]:    epoch: 10 (14.18), loss: 0.694, acc: 0.501, learn rate: 3.125e-07
+[train]: completed iteration 173201 (of 200000; 444.73 min elapsed; 427.18 CNN min)
+[train]:    epoch: 10 (15.24), loss: 0.693, acc: 0.518, learn rate: 3.125e-07
+[train]: completed iteration 173401 (of 200000; 445.23 min elapsed; 427.67 CNN min)
+[train]:    epoch: 10 (16.30), loss: 0.693, acc: 0.509, learn rate: 3.125e-07
+[train]: completed iteration 173601 (of 200000; 445.73 min elapsed; 428.17 CNN min)
+[train]:    epoch: 10 (17.35), loss: 0.693, acc: 0.519, learn rate: 3.125e-07
+[train]: completed iteration 173801 (of 200000; 446.23 min elapsed; 428.66 CNN min)
+[train]:    epoch: 10 (18.41), loss: 0.694, acc: 0.461, learn rate: 3.125e-07
+[train]: completed iteration 174001 (of 200000; 446.73 min elapsed; 429.16 CNN min)
+[train]:    epoch: 10 (19.47), loss: 0.693, acc: 0.518, learn rate: 3.125e-07
+[train]: completed iteration 174201 (of 200000; 447.23 min elapsed; 429.66 CNN min)
+[train]:    epoch: 10 (20.53), loss: 0.694, acc: 0.497, learn rate: 3.125e-07
+[train]: completed iteration 174401 (of 200000; 447.73 min elapsed; 430.15 CNN min)
+[train]:    epoch: 10 (21.58), loss: 0.695, acc: 0.484, learn rate: 3.125e-07
+[train]: completed iteration 174601 (of 200000; 448.22 min elapsed; 430.64 CNN min)
+[train]:    epoch: 10 (22.64), loss: 0.691, acc: 0.534, learn rate: 3.125e-07
+[train]: completed iteration 174801 (of 200000; 448.72 min elapsed; 431.13 CNN min)
+[train]:    epoch: 10 (23.70), loss: 0.695, acc: 0.492, learn rate: 3.125e-07
+[train]: completed iteration 175001 (of 200000; 449.22 min elapsed; 431.63 CNN min)
+[train]:    epoch: 10 (24.75), loss: 0.694, acc: 0.511, learn rate: 3.125e-07
+[train]: completed iteration 175201 (of 200000; 449.72 min elapsed; 432.13 CNN min)
+[train]:    epoch: 10 (25.81), loss: 0.695, acc: 0.504, learn rate: 3.125e-07
+[train]: completed iteration 175401 (of 200000; 450.22 min elapsed; 432.63 CNN min)
+[train]:    epoch: 10 (26.87), loss: 0.696, acc: 0.504, learn rate: 3.125e-07
+[train]: completed iteration 175601 (of 200000; 450.72 min elapsed; 433.12 CNN min)
+[train]:    epoch: 10 (27.92), loss: 0.696, acc: 0.505, learn rate: 3.125e-07
+[train]: completed iteration 175801 (of 200000; 451.21 min elapsed; 433.61 CNN min)
+[train]:    epoch: 10 (28.98), loss: 0.695, acc: 0.515, learn rate: 3.125e-07
+[train]: completed iteration 176001 (of 200000; 451.72 min elapsed; 434.11 CNN min)
+[train]:    epoch: 10 (30.04), loss: 0.700, acc: 0.488, learn rate: 3.125e-07
+[train]: completed iteration 176201 (of 200000; 452.22 min elapsed; 434.60 CNN min)
+[train]:    epoch: 10 (31.09), loss: 0.704, acc: 0.471, learn rate: 3.125e-07
+[train]: completed iteration 176401 (of 200000; 452.72 min elapsed; 435.10 CNN min)
+[train]:    epoch: 10 (32.15), loss: 0.696, acc: 0.515, learn rate: 3.125e-07
+[train]: completed iteration 176601 (of 200000; 453.21 min elapsed; 435.59 CNN min)
+[train]:    epoch: 10 (33.21), loss: 0.701, acc: 0.492, learn rate: 3.125e-07
+[train]: completed iteration 176801 (of 200000; 453.71 min elapsed; 436.08 CNN min)
+[train]:    epoch: 10 (34.26), loss: 0.691, acc: 0.538, learn rate: 3.125e-07
+[train]: completed iteration 177001 (of 200000; 454.21 min elapsed; 436.58 CNN min)
+[train]:    epoch: 10 (35.32), loss: 0.698, acc: 0.510, learn rate: 3.125e-07
+[train]: completed iteration 177201 (of 200000; 454.71 min elapsed; 437.08 CNN min)
+[train]:    epoch: 10 (36.38), loss: 0.704, acc: 0.485, learn rate: 3.125e-07
+[train]: completed iteration 177401 (of 200000; 455.21 min elapsed; 437.57 CNN min)
+[train]:    epoch: 10 (37.44), loss: 0.699, acc: 0.507, learn rate: 3.125e-07
+[train]: completed iteration 177601 (of 200000; 455.71 min elapsed; 438.07 CNN min)
+[train]:    epoch: 10 (38.49), loss: 0.700, acc: 0.502, learn rate: 3.125e-07
+[train]: completed iteration 177801 (of 200000; 456.21 min elapsed; 438.56 CNN min)
+[train]:    epoch: 10 (39.55), loss: 0.703, acc: 0.490, learn rate: 3.125e-07
+[train]: completed iteration 178001 (of 200000; 456.70 min elapsed; 439.05 CNN min)
+[train]:    epoch: 10 (40.61), loss: 0.698, acc: 0.510, learn rate: 3.125e-07
+[train]: completed iteration 178201 (of 200000; 457.21 min elapsed; 439.55 CNN min)
+[train]:    epoch: 10 (41.66), loss: 0.701, acc: 0.497, learn rate: 3.125e-07
+[train]: completed iteration 178401 (of 200000; 457.71 min elapsed; 440.05 CNN min)
+[train]:    epoch: 10 (42.72), loss: 0.700, acc: 0.500, learn rate: 3.125e-07
+[train]: completed iteration 178601 (of 200000; 458.20 min elapsed; 440.54 CNN min)
+[train]:    epoch: 10 (43.78), loss: 0.702, acc: 0.491, learn rate: 3.125e-07
+[train]: completed iteration 178801 (of 200000; 458.70 min elapsed; 441.04 CNN min)
+[train]:    epoch: 10 (44.83), loss: 0.701, acc: 0.495, learn rate: 3.125e-07
+[train]: completed iteration 179001 (of 200000; 459.20 min elapsed; 441.53 CNN min)
+[train]:    epoch: 10 (45.89), loss: 0.702, acc: 0.487, learn rate: 3.125e-07
+[train]: completed iteration 179201 (of 200000; 459.69 min elapsed; 442.02 CNN min)
+[train]:    epoch: 10 (46.95), loss: 0.700, acc: 0.491, learn rate: 3.125e-07
+[train]: completed iteration 179401 (of 200000; 460.20 min elapsed; 442.52 CNN min)
+[train]:    epoch: 10 (48.00), loss: 0.698, acc: 0.497, learn rate: 3.125e-07
+[train]: completed iteration 179601 (of 200000; 460.70 min elapsed; 443.02 CNN min)
+[train]:    epoch: 10 (49.06), loss: 0.699, acc: 0.490, learn rate: 3.125e-07
+[train]: completed iteration 179801 (of 200000; 461.19 min elapsed; 443.51 CNN min)
+[train]:    epoch: 10 (50.12), loss: 0.697, acc: 0.499, learn rate: 3.125e-07
+[train]: completed iteration 180001 (of 200000; 461.69 min elapsed; 444.00 CNN min)
+[train]:    epoch: 10 (51.18), loss: 0.693, acc: 0.517, learn rate: 1.563e-07
+[train]: completed iteration 180201 (of 200000; 462.19 min elapsed; 444.50 CNN min)
+[train]:    epoch: 10 (52.23), loss: 0.693, acc: 0.517, learn rate: 1.563e-07
+[train]: completed iteration 180401 (of 200000; 462.69 min elapsed; 444.99 CNN min)
+[train]:    epoch: 10 (53.29), loss: 0.698, acc: 0.479, learn rate: 1.563e-07
+[train]: completed iteration 180601 (of 200000; 463.19 min elapsed; 445.49 CNN min)
+[train]:    epoch: 10 (54.35), loss: 0.696, acc: 0.493, learn rate: 1.563e-07
+[train]: completed iteration 180801 (of 200000; 463.69 min elapsed; 445.99 CNN min)
+[train]:    epoch: 10 (55.40), loss: 0.695, acc: 0.499, learn rate: 1.563e-07
+[train]: completed iteration 181001 (of 200000; 464.19 min elapsed; 446.48 CNN min)
+[train]:    epoch: 10 (56.46), loss: 0.696, acc: 0.486, learn rate: 1.563e-07
+[train]: completed iteration 181201 (of 200000; 464.68 min elapsed; 446.97 CNN min)
+[train]:    epoch: 10 (57.52), loss: 0.695, acc: 0.494, learn rate: 1.563e-07
+[train]: completed iteration 181401 (of 200000; 465.18 min elapsed; 447.47 CNN min)
+[train]:    epoch: 10 (58.57), loss: 0.696, acc: 0.483, learn rate: 1.563e-07
+[train]: completed iteration 181601 (of 200000; 465.68 min elapsed; 447.97 CNN min)
+[train]:    epoch: 10 (59.63), loss: 0.694, acc: 0.501, learn rate: 1.563e-07
+[train]: completed iteration 181801 (of 200000; 466.18 min elapsed; 448.46 CNN min)
+[train]:    epoch: 10 (60.69), loss: 0.693, acc: 0.515, learn rate: 1.563e-07
+[train]: completed iteration 182001 (of 200000; 466.68 min elapsed; 448.96 CNN min)
+[train]:    epoch: 10 (61.74), loss: 0.692, acc: 0.529, learn rate: 1.563e-07
+[train]: completed iteration 182201 (of 200000; 467.18 min elapsed; 449.45 CNN min)
+[train]:    epoch: 10 (62.80), loss: 0.693, acc: 0.505, learn rate: 1.563e-07
+[train]: completed iteration 182401 (of 200000; 467.67 min elapsed; 449.94 CNN min)
+[train]:    epoch: 10 (63.86), loss: 0.694, acc: 0.481, learn rate: 1.563e-07
+[train]: completed iteration 182601 (of 200000; 468.17 min elapsed; 450.44 CNN min)
+[train]:    epoch: 10 (64.92), loss: 0.694, acc: 0.484, learn rate: 1.563e-07
+[train]: completed iteration 182801 (of 200000; 468.67 min elapsed; 450.93 CNN min)
+[train]:    epoch: 10 (65.97), loss: 0.693, acc: 0.497, learn rate: 1.563e-07
+[train]: completed iteration 183001 (of 200000; 469.17 min elapsed; 451.43 CNN min)
+[train]:    epoch: 10 (67.03), loss: 0.693, acc: 0.515, learn rate: 1.563e-07
+[train]: completed iteration 183201 (of 200000; 469.67 min elapsed; 451.92 CNN min)
+[train]:    epoch: 10 (68.09), loss: 0.693, acc: 0.500, learn rate: 1.563e-07
+[train]: completed iteration 183401 (of 200000; 470.16 min elapsed; 452.41 CNN min)
+[train]:    epoch: 10 (69.14), loss: 0.694, acc: 0.488, learn rate: 1.563e-07
+[train]: completed iteration 183601 (of 200000; 470.66 min elapsed; 452.90 CNN min)
+[train]:    epoch: 10 (70.20), loss: 0.693, acc: 0.495, learn rate: 1.563e-07
+[train]: completed iteration 183801 (of 200000; 471.16 min elapsed; 453.40 CNN min)
+[train]:    epoch: 10 (71.26), loss: 0.693, acc: 0.502, learn rate: 1.563e-07
+[train]: completed iteration 184001 (of 200000; 471.66 min elapsed; 453.90 CNN min)
+[train]:    epoch: 10 (72.31), loss: 0.695, acc: 0.478, learn rate: 1.563e-07
+[train]: completed iteration 184201 (of 200000; 472.16 min elapsed; 454.39 CNN min)
+[train]:    epoch: 10 (73.37), loss: 0.694, acc: 0.503, learn rate: 1.563e-07
+[train]: completed iteration 184401 (of 200000; 472.65 min elapsed; 454.88 CNN min)
+[train]:    epoch: 10 (74.43), loss: 0.696, acc: 0.477, learn rate: 1.563e-07
+[train]: completed iteration 184601 (of 200000; 473.15 min elapsed; 455.37 CNN min)
+[train]:    epoch: 10 (75.48), loss: 0.696, acc: 0.484, learn rate: 1.563e-07
+[train]: completed iteration 184801 (of 200000; 473.65 min elapsed; 455.87 CNN min)
+[train]:    epoch: 10 (76.54), loss: 0.693, acc: 0.510, learn rate: 1.563e-07
+[train]: completed iteration 185001 (of 200000; 474.15 min elapsed; 456.37 CNN min)
+[train]:    epoch: 10 (77.60), loss: 0.693, acc: 0.512, learn rate: 1.563e-07
+[train]: completed iteration 185201 (of 200000; 474.65 min elapsed; 456.86 CNN min)
+[train]:    epoch: 10 (78.65), loss: 0.694, acc: 0.506, learn rate: 1.563e-07
+[train]: completed iteration 185401 (of 200000; 475.15 min elapsed; 457.36 CNN min)
+[train]:    epoch: 10 (79.71), loss: 0.691, acc: 0.532, learn rate: 1.563e-07
+[train]: completed iteration 185601 (of 200000; 475.65 min elapsed; 457.85 CNN min)
+[train]:    epoch: 10 (80.77), loss: 0.700, acc: 0.470, learn rate: 1.563e-07
+[train]: completed iteration 185801 (of 200000; 476.15 min elapsed; 458.35 CNN min)
+[train]:    epoch: 10 (81.83), loss: 0.697, acc: 0.492, learn rate: 1.563e-07
+[train]: completed iteration 186001 (of 200000; 476.65 min elapsed; 458.85 CNN min)
+[train]:    epoch: 10 (82.88), loss: 0.693, acc: 0.518, learn rate: 1.563e-07
+[train]: completed iteration 186201 (of 200000; 477.15 min elapsed; 459.34 CNN min)
+[train]:    epoch: 10 (83.94), loss: 0.694, acc: 0.512, learn rate: 1.563e-07
+[train]: completed iteration 186401 (of 200000; 477.64 min elapsed; 459.83 CNN min)
+[train]:    epoch: 10 (85.00), loss: 0.697, acc: 0.499, learn rate: 1.563e-07
+[train]: completed iteration 186601 (of 200000; 478.14 min elapsed; 460.32 CNN min)
+[train]:    epoch: 10 (86.05), loss: 0.695, acc: 0.513, learn rate: 1.563e-07
+[train]: completed iteration 186801 (of 200000; 478.63 min elapsed; 460.82 CNN min)
+[train]:    epoch: 10 (87.11), loss: 0.691, acc: 0.535, learn rate: 1.563e-07
+[train]: completed iteration 187001 (of 200000; 479.14 min elapsed; 461.31 CNN min)
+[train]:    epoch: 10 (88.17), loss: 0.696, acc: 0.505, learn rate: 1.563e-07
+[train]: completed iteration 187201 (of 200000; 479.64 min elapsed; 461.81 CNN min)
+[train]:    epoch: 10 (89.22), loss: 0.693, acc: 0.524, learn rate: 1.563e-07
+[train]: completed iteration 187401 (of 200000; 480.13 min elapsed; 462.30 CNN min)
+[train]:    epoch: 10 (90.28), loss: 0.698, acc: 0.498, learn rate: 1.563e-07
+[train]: completed iteration 187601 (of 200000; 480.63 min elapsed; 462.80 CNN min)
+[train]:    epoch: 10 (91.34), loss: 0.701, acc: 0.485, learn rate: 1.563e-07
+[train]: completed iteration 187801 (of 200000; 481.13 min elapsed; 463.29 CNN min)
+[train]:    epoch: 10 (92.39), loss: 0.694, acc: 0.521, learn rate: 1.563e-07
+[train]: completed iteration 188001 (of 200000; 481.63 min elapsed; 463.78 CNN min)
+[train]:    epoch: 10 (93.45), loss: 0.696, acc: 0.509, learn rate: 1.563e-07
+[train]: completed iteration 188201 (of 200000; 482.13 min elapsed; 464.28 CNN min)
+[train]:    epoch: 10 (94.51), loss: 0.700, acc: 0.493, learn rate: 1.563e-07
+[train]: completed iteration 188401 (of 200000; 482.63 min elapsed; 464.78 CNN min)
+[train]:    epoch: 10 (95.57), loss: 0.691, acc: 0.535, learn rate: 1.563e-07
+[train]: completed iteration 188601 (of 200000; 483.12 min elapsed; 465.27 CNN min)
+[train]:    epoch: 10 (96.62), loss: 0.694, acc: 0.522, learn rate: 1.563e-07
+[train]: completed iteration 188801 (of 200000; 483.62 min elapsed; 465.76 CNN min)
+[train]:    epoch: 10 (97.68), loss: 0.701, acc: 0.488, learn rate: 1.563e-07
+[train]: completed iteration 189001 (of 200000; 484.11 min elapsed; 466.25 CNN min)
+[train]:    epoch: 10 (98.74), loss: 0.695, acc: 0.514, learn rate: 1.563e-07
+[train]: completed iteration 189201 (of 200000; 484.61 min elapsed; 466.75 CNN min)
+[train]:    epoch: 10 (99.79), loss: 0.702, acc: 0.483, learn rate: 1.563e-07
+[train]: Not using a validation data set
+[emlib]: num. pixels per class label is: [103911440, 946160]
+[emlib]: will draw 946160 samples from each class
+[train]: completed iteration 189401 (of 200000; 486.53 min elapsed; 467.24 CNN min)
+[train]:    epoch: 11 (0.85), loss: 0.697, acc: 0.508, learn rate: 1.563e-07
+[train]: completed iteration 189601 (of 200000; 487.03 min elapsed; 467.73 CNN min)
+[train]:    epoch: 11 (1.90), loss: 0.694, acc: 0.518, learn rate: 1.563e-07
+[train]: completed iteration 189801 (of 200000; 487.52 min elapsed; 468.22 CNN min)
+[train]:    epoch: 11 (2.96), loss: 0.698, acc: 0.501, learn rate: 1.563e-07
+[train]: completed iteration 190001 (of 200000; 488.02 min elapsed; 468.72 CNN min)
+[train]:    epoch: 11 (4.02), loss: 0.699, acc: 0.494, learn rate: 1.563e-07
+[train]: completed iteration 190201 (of 200000; 488.52 min elapsed; 469.21 CNN min)
+[train]:    epoch: 11 (5.07), loss: 0.694, acc: 0.521, learn rate: 1.563e-07
+[train]: completed iteration 190401 (of 200000; 489.02 min elapsed; 469.71 CNN min)
+[train]:    epoch: 11 (6.13), loss: 0.694, acc: 0.516, learn rate: 1.563e-07
+[train]: completed iteration 190601 (of 200000; 489.52 min elapsed; 470.20 CNN min)
+[train]:    epoch: 11 (7.19), loss: 0.696, acc: 0.505, learn rate: 1.563e-07
+[train]: completed iteration 190801 (of 200000; 490.01 min elapsed; 470.69 CNN min)
+[train]:    epoch: 11 (8.24), loss: 0.691, acc: 0.534, learn rate: 1.563e-07
+[train]: completed iteration 191001 (of 200000; 490.51 min elapsed; 471.18 CNN min)
+[train]:    epoch: 11 (9.30), loss: 0.702, acc: 0.464, learn rate: 1.563e-07
+[train]: completed iteration 191201 (of 200000; 491.01 min elapsed; 471.68 CNN min)
+[train]:    epoch: 11 (10.36), loss: 0.697, acc: 0.496, learn rate: 1.563e-07
+[train]: completed iteration 191401 (of 200000; 491.51 min elapsed; 472.18 CNN min)
+[train]:    epoch: 11 (11.41), loss: 0.696, acc: 0.497, learn rate: 1.563e-07
+[train]: completed iteration 191601 (of 200000; 492.01 min elapsed; 472.68 CNN min)
+[train]:    epoch: 11 (12.47), loss: 0.691, acc: 0.533, learn rate: 1.563e-07
+[train]: completed iteration 191801 (of 200000; 492.51 min elapsed; 473.17 CNN min)
+[train]:    epoch: 11 (13.53), loss: 0.697, acc: 0.488, learn rate: 1.563e-07
+[train]: completed iteration 192001 (of 200000; 493.01 min elapsed; 473.66 CNN min)
+[train]:    epoch: 11 (14.59), loss: 0.694, acc: 0.511, learn rate: 1.563e-07
+[train]: completed iteration 192201 (of 200000; 493.50 min elapsed; 474.15 CNN min)
+[train]:    epoch: 11 (15.64), loss: 0.698, acc: 0.467, learn rate: 1.563e-07
+[train]: completed iteration 192401 (of 200000; 494.00 min elapsed; 474.65 CNN min)
+[train]:    epoch: 11 (16.70), loss: 0.694, acc: 0.505, learn rate: 1.563e-07
+[train]: completed iteration 192601 (of 200000; 494.50 min elapsed; 475.15 CNN min)
+[train]:    epoch: 11 (17.76), loss: 0.695, acc: 0.491, learn rate: 1.563e-07
+[train]: completed iteration 192801 (of 200000; 495.00 min elapsed; 475.64 CNN min)
+[train]:    epoch: 11 (18.81), loss: 0.695, acc: 0.490, learn rate: 1.563e-07
+[train]: completed iteration 193001 (of 200000; 495.50 min elapsed; 476.14 CNN min)
+[train]:    epoch: 11 (19.87), loss: 0.694, acc: 0.494, learn rate: 1.563e-07
+[train]: completed iteration 193201 (of 200000; 496.00 min elapsed; 476.63 CNN min)
+[train]:    epoch: 11 (20.93), loss: 0.693, acc: 0.511, learn rate: 1.563e-07
+[train]: completed iteration 193401 (of 200000; 496.50 min elapsed; 477.13 CNN min)
+[train]:    epoch: 11 (21.98), loss: 0.693, acc: 0.501, learn rate: 1.563e-07
+[train]: completed iteration 193601 (of 200000; 497.00 min elapsed; 477.63 CNN min)
+[train]:    epoch: 11 (23.04), loss: 0.693, acc: 0.512, learn rate: 1.563e-07
+[train]: completed iteration 193801 (of 200000; 497.50 min elapsed; 478.12 CNN min)
+[train]:    epoch: 11 (24.10), loss: 0.694, acc: 0.474, learn rate: 1.563e-07
+[train]: completed iteration 194001 (of 200000; 498.00 min elapsed; 478.62 CNN min)
+[train]:    epoch: 11 (25.15), loss: 0.693, acc: 0.494, learn rate: 1.563e-07
+[train]: completed iteration 194201 (of 200000; 498.50 min elapsed; 479.11 CNN min)
+[train]:    epoch: 11 (26.21), loss: 0.693, acc: 0.475, learn rate: 1.563e-07
+[train]: completed iteration 194401 (of 200000; 499.00 min elapsed; 479.61 CNN min)
+[train]:    epoch: 11 (27.27), loss: 0.693, acc: 0.523, learn rate: 1.563e-07
+[train]: completed iteration 194601 (of 200000; 499.50 min elapsed; 480.10 CNN min)
+[train]:    epoch: 11 (28.33), loss: 0.693, acc: 0.519, learn rate: 1.563e-07
+[train]: completed iteration 194801 (of 200000; 500.00 min elapsed; 480.60 CNN min)
+[train]:    epoch: 11 (29.38), loss: 0.693, acc: 0.523, learn rate: 1.563e-07
+[train]: completed iteration 195001 (of 200000; 500.50 min elapsed; 481.10 CNN min)
+[train]:    epoch: 11 (30.44), loss: 0.694, acc: 0.492, learn rate: 1.563e-07
+[train]: completed iteration 195201 (of 200000; 500.99 min elapsed; 481.59 CNN min)
+[train]:    epoch: 11 (31.50), loss: 0.694, acc: 0.488, learn rate: 1.563e-07
+[train]: completed iteration 195401 (of 200000; 501.49 min elapsed; 482.08 CNN min)
+[train]:    epoch: 11 (32.55), loss: 0.693, acc: 0.517, learn rate: 1.563e-07
+[train]: completed iteration 195601 (of 200000; 501.99 min elapsed; 482.58 CNN min)
+[train]:    epoch: 11 (33.61), loss: 0.692, acc: 0.520, learn rate: 1.563e-07
+[train]: completed iteration 195801 (of 200000; 502.49 min elapsed; 483.08 CNN min)
+[train]:    epoch: 11 (34.67), loss: 0.696, acc: 0.473, learn rate: 1.563e-07
+[train]: completed iteration 196001 (of 200000; 502.99 min elapsed; 483.57 CNN min)
+[train]:    epoch: 11 (35.72), loss: 0.694, acc: 0.499, learn rate: 1.563e-07
+[train]: completed iteration 196201 (of 200000; 503.49 min elapsed; 484.06 CNN min)
+[train]:    epoch: 11 (36.78), loss: 0.694, acc: 0.506, learn rate: 1.563e-07
+[train]: completed iteration 196401 (of 200000; 503.99 min elapsed; 484.56 CNN min)
+[train]:    epoch: 11 (37.84), loss: 0.695, acc: 0.502, learn rate: 1.563e-07
+[train]: completed iteration 196601 (of 200000; 504.49 min elapsed; 485.05 CNN min)
+[train]:    epoch: 11 (38.89), loss: 0.693, acc: 0.513, learn rate: 1.563e-07
+[train]: completed iteration 196801 (of 200000; 504.99 min elapsed; 485.55 CNN min)
+[train]:    epoch: 11 (39.95), loss: 0.697, acc: 0.489, learn rate: 1.563e-07
+[train]: completed iteration 197001 (of 200000; 505.49 min elapsed; 486.05 CNN min)
+[train]:    epoch: 11 (41.01), loss: 0.696, acc: 0.496, learn rate: 1.563e-07
+[train]: completed iteration 197201 (of 200000; 505.98 min elapsed; 486.54 CNN min)
+[train]:    epoch: 11 (42.06), loss: 0.699, acc: 0.480, learn rate: 1.563e-07
+[train]: completed iteration 197401 (of 200000; 506.48 min elapsed; 487.04 CNN min)
+[train]:    epoch: 11 (43.12), loss: 0.694, acc: 0.514, learn rate: 1.563e-07
+[train]: completed iteration 197601 (of 200000; 506.99 min elapsed; 487.53 CNN min)
+[train]:    epoch: 11 (44.18), loss: 0.696, acc: 0.502, learn rate: 1.563e-07
+[train]: completed iteration 197801 (of 200000; 507.48 min elapsed; 488.03 CNN min)
+[train]:    epoch: 11 (45.24), loss: 0.695, acc: 0.510, learn rate: 1.563e-07
+[train]: completed iteration 198001 (of 200000; 507.99 min elapsed; 488.52 CNN min)
+[train]:    epoch: 11 (46.29), loss: 0.695, acc: 0.510, learn rate: 1.563e-07
+[train]: completed iteration 198201 (of 200000; 508.49 min elapsed; 489.02 CNN min)
+[train]:    epoch: 11 (47.35), loss: 0.696, acc: 0.505, learn rate: 1.563e-07
+[train]: completed iteration 198401 (of 200000; 508.99 min elapsed; 489.52 CNN min)
+[train]:    epoch: 11 (48.41), loss: 0.700, acc: 0.487, learn rate: 1.563e-07
+[train]: completed iteration 198601 (of 200000; 509.49 min elapsed; 490.01 CNN min)
+[train]:    epoch: 11 (49.46), loss: 0.699, acc: 0.491, learn rate: 1.563e-07
+[train]: completed iteration 198801 (of 200000; 509.99 min elapsed; 490.51 CNN min)
+[train]:    epoch: 11 (50.52), loss: 0.700, acc: 0.489, learn rate: 1.563e-07
+[train]: completed iteration 199001 (of 200000; 510.48 min elapsed; 491.00 CNN min)
+[train]:    epoch: 11 (51.58), loss: 0.694, acc: 0.521, learn rate: 1.563e-07
+[train]: completed iteration 199201 (of 200000; 510.98 min elapsed; 491.50 CNN min)
+[train]:    epoch: 11 (52.63), loss: 0.699, acc: 0.498, learn rate: 1.563e-07
+[train]: completed iteration 199401 (of 200000; 511.48 min elapsed; 491.99 CNN min)
+[train]:    epoch: 11 (53.69), loss: 0.702, acc: 0.482, learn rate: 1.563e-07
+[train]: completed iteration 199601 (of 200000; 511.98 min elapsed; 492.49 CNN min)
+[train]:    epoch: 11 (54.75), loss: 0.702, acc: 0.482, learn rate: 1.563e-07
+[train]: completed iteration 199801 (of 200000; 512.48 min elapsed; 492.99 CNN min)
+[train]:    epoch: 11 (55.80), loss: 0.702, acc: 0.482, learn rate: 1.563e-07
+[train]: Not using a validation data set
