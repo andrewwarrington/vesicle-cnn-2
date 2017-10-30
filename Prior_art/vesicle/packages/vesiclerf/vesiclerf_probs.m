@@ -106,7 +106,7 @@ end
 
 DV(isnan(DV)) = 0;
 test_time = toc(st);
-fprintf(strcat('Test time: ', num2str(test_time), ' seconds.'))
+fprintf(strcat('Test time: ', num2str(test_time), ' seconds.\n'))
 % postprocessing
 disp('Post-processing data...')
 
@@ -119,7 +119,7 @@ size(DV)
 %% Need to fix XYZ offset and all that
 cube.data = DV;
 % Need to save output file
-save(outFile,cube)
+save(outFile,'cube')
 
 
 % (c) [2014] The Johns Hopkins University / Applied Physics Laboratory All Rights Reserved. Contact the JHU/APL Office of Technology Transfer for any additional rights.  www.jhuapl.edu/ott

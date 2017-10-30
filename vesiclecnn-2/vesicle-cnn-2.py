@@ -222,7 +222,7 @@ with tf.name_scope('Output_Layer'):
 	# Now add a final output layer.
 	W_fccnn5 = util.weight_variable([1, 1, fcLayerDimensions[3], 2], "w_fccnn_2")
 	b_fccnn5 = util.bias_variable([2], "b_fccnn_2")
-	y_syn_logit = tf.nn.relu(util.conv2d(h_fccnn4, W_fccnn5, valid=True) + b_fccnn5)
+	y_syn_logit = util.conv2d(h_fccnn4, W_fccnn5, valid=True) + b_fccnn5  # NOTE - removed ReLU from here.
 	y_syn_soft = tf.nn.softmax(y_syn_logit)
 	y_syn_logit_flat = tf.reshape(y_syn_logit, [-1, 2])
 	y_syn_soft_flat = tf.reshape(y_syn_soft, [-1, 2])

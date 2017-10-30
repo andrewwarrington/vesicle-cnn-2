@@ -65,7 +65,7 @@ classifier = classRF_train(double(trainFeat),double(trainLabel),...
     200,floor(sqrt(size(trainFeat,2))));%,extra_options);
 
 train_time = toc(st);
-fprintf(strcat('Training time: ', num2str(train_time), ' seconds.'))
+fprintf(strcat('Training time: ', num2str(train_time), ' seconds.\n'))
 
 disp('training complete')
 figure, bar(classifier.importance), drawnow

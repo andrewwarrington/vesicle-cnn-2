@@ -5,7 +5,7 @@
 # TF output...
 *LOGS*
 
-# Caffe output.
+# Caffe output...
 *.caffemodel
 
 # Data files...
@@ -15,3 +15,13 @@
 *kasthuri_data*
 *.npy
 *.mat
+
+# Tex output...
+*.log
+*.bbl
+*.toc
+*.aux
+*.pdf
+*.blg
+*.out
+*.gz
