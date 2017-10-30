@@ -1,0 +1,549 @@
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+W1023 19:24:09.171324    21 _caffe.cpp:135] DEPRECATION WARNING - deprecated use of Python interface
+W1023 19:24:09.171356    21 _caffe.cpp:136] Use this instead (with the named "weights" parameter):
+W1023 19:24:09.171360    21 _caffe.cpp:138] Net('n3-net.prototxt', 1, weights='VESICLECNN-/iter_200000.caffemodel')
+I1023 19:24:09.172509    21 upgrade_proto.cpp:53] Attempting to upgrade input file specified using deprecated V1LayerParameter: n3-net.prototxt
+I1023 19:24:09.172552    21 upgrade_proto.cpp:61] Successfully upgraded file specified using deprecated V1LayerParameter
+I1023 19:24:09.623649    21 net.cpp:53] Initializing net from parameters: 
+name: "CiresanN3"
+state {
+  phase: TEST
+  level: 0
+}
+layer {
+  name: "data"
+  type: "MemoryData"
+  top: "data"
+  top: "label"
+  memory_data_param {
+    batch_size: 100
+    channels: 1
+    height: 65
+    width: 65
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 48
+    pad: 0
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.0001
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "relu1"
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "relu1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 1
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 48
+    pad: 0
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "relu2"
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "relu2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 1
+  }
+}
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "pool2"
+  top: "conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
+  convolution_param {
+    num_output: 48
+    pad: 0
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "relu3"
+}
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "relu3"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 1
+  }
+}
+layer {
+  name: "ip1"
+  type: "InnerProduct"
+  bottom: "pool3"
+  top: "ip1"
+  param {
+    lr_mult: 1
+    decay_mult: 250
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
+  inner_product_param {
+    num_output: 200
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "ip1"
+  top: "relu4"
+}
+layer {
+  name: "ip2"
+  type: "InnerProduct"
+  bottom: "relu4"
+  top: "ip2"
+  param {
+    lr_mult: 1
+    decay_mult: 250
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 1
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "ip2"
+  bottom: "label"
+  top: "accuracy"
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "ip2"
+  bottom: "label"
+  top: "loss"
+}
+layer {
+  name: "prob"
+  type: "Softmax"
+  bottom: "ip2"
+  top: "prob"
+}
+I1023 19:24:09.623745    21 layer_factory.hpp:77] Creating layer data
+I1023 19:24:09.623757    21 net.cpp:86] Creating Layer data
+I1023 19:24:09.623766    21 net.cpp:382] data -> data
+I1023 19:24:09.623780    21 net.cpp:382] data -> label
+I1023 19:24:09.624327    21 net.cpp:124] Setting up data
+I1023 19:24:09.624344    21 net.cpp:131] Top shape: 100 1 65 65 (422500)
+I1023 19:24:09.624351    21 net.cpp:131] Top shape: 100 (100)
+I1023 19:24:09.624354    21 net.cpp:139] Memory required for data: 1690400
+I1023 19:24:09.624359    21 layer_factory.hpp:77] Creating layer label_data_1_split
+I1023 19:24:09.624374    21 net.cpp:86] Creating Layer label_data_1_split
+I1023 19:24:09.624382    21 net.cpp:408] label_data_1_split <- label
+I1023 19:24:09.624392    21 net.cpp:382] label_data_1_split -> label_data_1_split_0
+I1023 19:24:09.624404    21 net.cpp:382] label_data_1_split -> label_data_1_split_1
+I1023 19:24:09.624415    21 net.cpp:124] Setting up label_data_1_split
+I1023 19:24:09.624423    21 net.cpp:131] Top shape: 100 (100)
+I1023 19:24:09.624430    21 net.cpp:131] Top shape: 100 (100)
+I1023 19:24:09.624435    21 net.cpp:139] Memory required for data: 1691200
+I1023 19:24:09.624439    21 layer_factory.hpp:77] Creating layer conv1
+I1023 19:24:09.624454    21 net.cpp:86] Creating Layer conv1
+I1023 19:24:09.624459    21 net.cpp:408] conv1 <- data
+I1023 19:24:09.624466    21 net.cpp:382] conv1 -> conv1
+I1023 19:24:09.980484    21 net.cpp:124] Setting up conv1
+I1023 19:24:09.980510    21 net.cpp:131] Top shape: 100 48 61 61 (17860800)
+I1023 19:24:09.980514    21 net.cpp:139] Memory required for data: 73134400
+I1023 19:24:09.980526    21 layer_factory.hpp:77] Creating layer relu1
+I1023 19:24:09.980535    21 net.cpp:86] Creating Layer relu1
+I1023 19:24:09.980540    21 net.cpp:408] relu1 <- conv1
+I1023 19:24:09.980545    21 net.cpp:382] relu1 -> relu1
+I1023 19:24:09.980680    21 net.cpp:124] Setting up relu1
+I1023 19:24:09.980691    21 net.cpp:131] Top shape: 100 48 61 61 (17860800)
+I1023 19:24:09.980693    21 net.cpp:139] Memory required for data: 144577600
+I1023 19:24:09.980696    21 layer_factory.hpp:77] Creating layer pool1
+I1023 19:24:09.980703    21 net.cpp:86] Creating Layer pool1
+I1023 19:24:09.980706    21 net.cpp:408] pool1 <- relu1
+I1023 19:24:09.980710    21 net.cpp:382] pool1 -> pool1
+I1023 19:24:09.980718    21 net.cpp:124] Setting up pool1
+I1023 19:24:09.980722    21 net.cpp:131] Top shape: 100 48 60 60 (17280000)
+I1023 19:24:09.980725    21 net.cpp:139] Memory required for data: 213697600
+I1023 19:24:09.980726    21 layer_factory.hpp:77] Creating layer conv2
+I1023 19:24:09.980736    21 net.cpp:86] Creating Layer conv2
+I1023 19:24:09.980741    21 net.cpp:408] conv2 <- pool1
+I1023 19:24:09.980746    21 net.cpp:382] conv2 -> conv2
+I1023 19:24:09.981806    21 net.cpp:124] Setting up conv2
+I1023 19:24:09.981818    21 net.cpp:131] Top shape: 100 48 56 56 (15052800)
+I1023 19:24:09.981822    21 net.cpp:139] Memory required for data: 273908800
+I1023 19:24:09.981828    21 layer_factory.hpp:77] Creating layer relu2
+I1023 19:24:09.981833    21 net.cpp:86] Creating Layer relu2
+I1023 19:24:09.981837    21 net.cpp:408] relu2 <- conv2
+I1023 19:24:09.981840    21 net.cpp:382] relu2 -> relu2
+I1023 19:24:09.981959    21 net.cpp:124] Setting up relu2
+I1023 19:24:09.981968    21 net.cpp:131] Top shape: 100 48 56 56 (15052800)
+I1023 19:24:09.981971    21 net.cpp:139] Memory required for data: 334120000
+I1023 19:24:09.981973    21 layer_factory.hpp:77] Creating layer pool2
+I1023 19:24:09.981978    21 net.cpp:86] Creating Layer pool2
+I1023 19:24:09.981983    21 net.cpp:408] pool2 <- relu2
+I1023 19:24:09.981987    21 net.cpp:382] pool2 -> pool2
+I1023 19:24:09.981995    21 net.cpp:124] Setting up pool2
+I1023 19:24:09.982000    21 net.cpp:131] Top shape: 100 48 55 55 (14520000)
+I1023 19:24:09.982002    21 net.cpp:139] Memory required for data: 392200000
+I1023 19:24:09.982004    21 layer_factory.hpp:77] Creating layer conv3
+I1023 19:24:09.982012    21 net.cpp:86] Creating Layer conv3
+I1023 19:24:09.982017    21 net.cpp:408] conv3 <- pool2
+I1023 19:24:09.982020    21 net.cpp:382] conv3 -> conv3
+I1023 19:24:09.983057    21 net.cpp:124] Setting up conv3
+I1023 19:24:09.983069    21 net.cpp:131] Top shape: 100 48 51 51 (12484800)
+I1023 19:24:09.983072    21 net.cpp:139] Memory required for data: 442139200
+I1023 19:24:09.983079    21 layer_factory.hpp:77] Creating layer relu3
+I1023 19:24:09.983085    21 net.cpp:86] Creating Layer relu3
+I1023 19:24:09.983088    21 net.cpp:408] relu3 <- conv3
+I1023 19:24:09.983093    21 net.cpp:382] relu3 -> relu3
+I1023 19:24:09.983211    21 net.cpp:124] Setting up relu3
+I1023 19:24:09.983219    21 net.cpp:131] Top shape: 100 48 51 51 (12484800)
+I1023 19:24:09.983222    21 net.cpp:139] Memory required for data: 492078400
+I1023 19:24:09.983225    21 layer_factory.hpp:77] Creating layer pool3
+I1023 19:24:09.983229    21 net.cpp:86] Creating Layer pool3
+I1023 19:24:09.983233    21 net.cpp:408] pool3 <- relu3
+I1023 19:24:09.983237    21 net.cpp:382] pool3 -> pool3
+I1023 19:24:09.983247    21 net.cpp:124] Setting up pool3
+I1023 19:24:09.983252    21 net.cpp:131] Top shape: 100 48 50 50 (12000000)
+I1023 19:24:09.983254    21 net.cpp:139] Memory required for data: 540078400
+I1023 19:24:09.983256    21 layer_factory.hpp:77] Creating layer ip1
+I1023 19:24:09.983263    21 net.cpp:86] Creating Layer ip1
+I1023 19:24:09.983264    21 net.cpp:408] ip1 <- pool3
+I1023 19:24:09.983268    21 net.cpp:382] ip1 -> ip1
+I1023 19:24:10.170883    21 net.cpp:124] Setting up ip1
+I1023 19:24:10.170913    21 net.cpp:131] Top shape: 100 200 (20000)
+I1023 19:24:10.170917    21 net.cpp:139] Memory required for data: 540158400
+I1023 19:24:10.170924    21 layer_factory.hpp:77] Creating layer relu4
+I1023 19:24:10.170933    21 net.cpp:86] Creating Layer relu4
+I1023 19:24:10.170936    21 net.cpp:408] relu4 <- ip1
+I1023 19:24:10.170944    21 net.cpp:382] relu4 -> relu4
+I1023 19:24:10.171146    21 net.cpp:124] Setting up relu4
+I1023 19:24:10.171156    21 net.cpp:131] Top shape: 100 200 (20000)
+I1023 19:24:10.171160    21 net.cpp:139] Memory required for data: 540238400
+I1023 19:24:10.171164    21 layer_factory.hpp:77] Creating layer ip2
+I1023 19:24:10.171175    21 net.cpp:86] Creating Layer ip2
+I1023 19:24:10.171180    21 net.cpp:408] ip2 <- relu4
+I1023 19:24:10.171187    21 net.cpp:382] ip2 -> ip2
+I1023 19:24:10.171218    21 net.cpp:124] Setting up ip2
+I1023 19:24:10.171226    21 net.cpp:131] Top shape: 100 2 (200)
+I1023 19:24:10.171231    21 net.cpp:139] Memory required for data: 540239200
+I1023 19:24:10.171242    21 layer_factory.hpp:77] Creating layer ip2_ip2_0_split
+I1023 19:24:10.171252    21 net.cpp:86] Creating Layer ip2_ip2_0_split
+I1023 19:24:10.171258    21 net.cpp:408] ip2_ip2_0_split <- ip2
+I1023 19:24:10.171264    21 net.cpp:382] ip2_ip2_0_split -> ip2_ip2_0_split_0
+I1023 19:24:10.171275    21 net.cpp:382] ip2_ip2_0_split -> ip2_ip2_0_split_1
+I1023 19:24:10.171284    21 net.cpp:382] ip2_ip2_0_split -> ip2_ip2_0_split_2
+I1023 19:24:10.171293    21 net.cpp:124] Setting up ip2_ip2_0_split
+I1023 19:24:10.171299    21 net.cpp:131] Top shape: 100 2 (200)
+I1023 19:24:10.171306    21 net.cpp:131] Top shape: 100 2 (200)
+I1023 19:24:10.171313    21 net.cpp:131] Top shape: 100 2 (200)
+I1023 19:24:10.171317    21 net.cpp:139] Memory required for data: 540241600
+I1023 19:24:10.171321    21 layer_factory.hpp:77] Creating layer accuracy
+I1023 19:24:10.171327    21 net.cpp:86] Creating Layer accuracy
+I1023 19:24:10.171332    21 net.cpp:408] accuracy <- ip2_ip2_0_split_0
+I1023 19:24:10.171339    21 net.cpp:408] accuracy <- label_data_1_split_0
+I1023 19:24:10.171346    21 net.cpp:382] accuracy -> accuracy
+I1023 19:24:10.171365    21 net.cpp:124] Setting up accuracy
+I1023 19:24:10.171372    21 net.cpp:131] Top shape: (1)
+I1023 19:24:10.171376    21 net.cpp:139] Memory required for data: 540241604
+I1023 19:24:10.171381    21 layer_factory.hpp:77] Creating layer loss
+I1023 19:24:10.171392    21 net.cpp:86] Creating Layer loss
+I1023 19:24:10.171396    21 net.cpp:408] loss <- ip2_ip2_0_split_1
+I1023 19:24:10.171401    21 net.cpp:408] loss <- label_data_1_split_1
+I1023 19:24:10.171406    21 net.cpp:382] loss -> loss
+I1023 19:24:10.171411    21 layer_factory.hpp:77] Creating layer loss
+I1023 19:24:10.171900    21 net.cpp:124] Setting up loss
+I1023 19:24:10.171911    21 net.cpp:131] Top shape: (1)
+I1023 19:24:10.171914    21 net.cpp:134]     with loss weight 1
+I1023 19:24:10.171934    21 net.cpp:139] Memory required for data: 540241608
+I1023 19:24:10.171938    21 layer_factory.hpp:77] Creating layer prob
+I1023 19:24:10.171944    21 net.cpp:86] Creating Layer prob
+I1023 19:24:10.171948    21 net.cpp:408] prob <- ip2_ip2_0_split_2
+I1023 19:24:10.171955    21 net.cpp:382] prob -> prob
+I1023 19:24:10.172086    21 net.cpp:124] Setting up prob
+I1023 19:24:10.172096    21 net.cpp:131] Top shape: 100 2 (200)
+I1023 19:24:10.172098    21 net.cpp:139] Memory required for data: 540242408
+I1023 19:24:10.172101    21 net.cpp:202] prob does not need backward computation.
+I1023 19:24:10.172104    21 net.cpp:200] loss needs backward computation.
+I1023 19:24:10.172108    21 net.cpp:202] accuracy does not need backward computation.
+I1023 19:24:10.172112    21 net.cpp:200] ip2_ip2_0_split needs backward computation.
+I1023 19:24:10.172117    21 net.cpp:200] ip2 needs backward computation.
+I1023 19:24:10.172122    21 net.cpp:200] relu4 needs backward computation.
+I1023 19:24:10.172125    21 net.cpp:200] ip1 needs backward computation.
+I1023 19:24:10.172129    21 net.cpp:200] pool3 needs backward computation.
+I1023 19:24:10.172133    21 net.cpp:200] relu3 needs backward computation.
+I1023 19:24:10.172137    21 net.cpp:200] conv3 needs backward computation.
+I1023 19:24:10.172142    21 net.cpp:200] pool2 needs backward computation.
+I1023 19:24:10.172145    21 net.cpp:200] relu2 needs backward computation.
+I1023 19:24:10.172148    21 net.cpp:200] conv2 needs backward computation.
+I1023 19:24:10.172152    21 net.cpp:200] pool1 needs backward computation.
+I1023 19:24:10.172153    21 net.cpp:200] relu1 needs backward computation.
+I1023 19:24:10.172157    21 net.cpp:200] conv1 needs backward computation.
+I1023 19:24:10.172159    21 net.cpp:202] label_data_1_split does not need backward computation.
+I1023 19:24:10.172163    21 net.cpp:202] data does not need backward computation.
+I1023 19:24:10.172164    21 net.cpp:244] This network produces output accuracy
+I1023 19:24:10.172168    21 net.cpp:244] This network produces output loss
+I1023 19:24:10.172170    21 net.cpp:244] This network produces output prob
+I1023 19:24:10.172181    21 net.cpp:257] Network initialization done.
+[deploy]: batch shape: [100   1  65  65]
+[deploy]: probability output file: VESICLECNN-/Yhat_valid
+[deploy]: features output file:    
+[deploy]: data shape: (100, 1088, 1088)
+[deploy]: mask shape: (100, 1088, 1088)
+conv1 : (48, 1, 5, 5)
+conv2 : (48, 48, 5, 5)
+conv3 : (48, 48, 5, 5)
+ip1 : (200, 120000)
+ip2 : (2, 200)
+[deploy]: CPU mode = False
+[deploy]: Yhat shape: (2, 100, 1088, 1088)
+[deploy]: processed pixel at index [  0  32 131] (0.05 min elapsed; 0.00 CNN min)
+[deploy]: processed pixel at index [  0 750 399] (2.05 min elapsed; 1.94 CNN min)
+[deploy]: processed pixel at index [  1 431 779] (4.05 min elapsed; 3.89 CNN min)
+[deploy]: processed pixel at index [  2 111 983] (6.05 min elapsed; 5.83 CNN min)
+[deploy]: processed pixel at index [  2 816 763] (8.05 min elapsed; 7.78 CNN min)
+[deploy]: processed pixel at index [  3 497 343] (10.05 min elapsed; 9.72 CNN min)
+[deploy]: processed pixel at index [  4 177 747] (12.05 min elapsed; 11.67 CNN min)
+[deploy]: processed pixel at index [  4 881 751] (14.05 min elapsed; 13.61 CNN min)
+[deploy]: processed pixel at index [  5 562 231] (16.05 min elapsed; 15.55 CNN min)
+[deploy]: processed pixel at index [  6 243 411] (18.05 min elapsed; 17.50 CNN min)
+[deploy]: processed pixel at index [  6 947 915] (20.05 min elapsed; 19.44 CNN min)
+[deploy]: processed pixel at index [  7 628 495] (22.05 min elapsed; 21.39 CNN min)
+[deploy]: processed pixel at index [  8 308 999] (24.05 min elapsed; 23.33 CNN min)
+[deploy]: processed pixel at index [   8 1015  431] (26.05 min elapsed; 25.28 CNN min)
+[deploy]: processed pixel at index [  9 695 835] (28.05 min elapsed; 27.22 CNN min)
+[deploy]: processed pixel at index [ 10 377 491] (30.05 min elapsed; 29.16 CNN min)
+[deploy]: processed pixel at index [ 11  58 571] (32.05 min elapsed; 31.11 CNN min)
+[deploy]: processed pixel at index [ 11 763 351] (34.05 min elapsed; 33.05 CNN min)
+[deploy]: processed pixel at index [ 12 445 507] (36.05 min elapsed; 34.99 CNN min)
+[deploy]: processed pixel at index [ 13 125 911] (38.05 min elapsed; 36.93 CNN min)
+[deploy]: processed pixel at index [ 13 833 919] (40.05 min elapsed; 38.88 CNN min)
+[deploy]: processed pixel at index [ 14 517 427] (42.05 min elapsed; 40.82 CNN min)
+[deploy]: processed pixel at index [ 15 199 283] (44.05 min elapsed; 42.77 CNN min)
+[deploy]: processed pixel at index [ 15 904 763] (46.05 min elapsed; 44.71 CNN min)
+[deploy]: processed pixel at index [ 16 588 871] (48.05 min elapsed; 46.65 CNN min)
+[deploy]: processed pixel at index [ 17 271 803] (50.05 min elapsed; 48.60 CNN min)
+[deploy]: processed pixel at index [ 17 977 759] (52.05 min elapsed; 50.54 CNN min)
+[deploy]: processed pixel at index [ 18 659 715] (54.05 min elapsed; 52.49 CNN min)
+[deploy]: processed pixel at index [ 19 343 123] (56.05 min elapsed; 54.43 CNN min)
+[deploy]: processed pixel at index [  19 1049   79] (58.05 min elapsed; 56.37 CNN min)
+[deploy]: processed pixel at index [ 20 732 611] (60.05 min elapsed; 58.32 CNN min)
+[deploy]: processed pixel at index [ 21 415 943] (62.05 min elapsed; 60.26 CNN min)
+[deploy]: processed pixel at index [ 22  98 475] (64.05 min elapsed; 62.21 CNN min)
+[deploy]: processed pixel at index [ 22 804 931] (66.05 min elapsed; 64.16 CNN min)
+[deploy]: processed pixel at index [ 23 488  39] (68.05 min elapsed; 66.10 CNN min)
+[deploy]: processed pixel at index [ 24 169 619] (70.05 min elapsed; 68.04 CNN min)
+[deploy]: processed pixel at index [  24  876 1051] (72.05 min elapsed; 69.99 CNN min)
+[deploy]: processed pixel at index [ 25 561 635] (74.05 min elapsed; 71.93 CNN min)
+[deploy]: processed pixel at index [ 26 243 391] (76.05 min elapsed; 73.88 CNN min)
+[deploy]: processed pixel at index [ 26 950 623] (78.05 min elapsed; 75.82 CNN min)
+[deploy]: processed pixel at index [ 27 633 655] (80.05 min elapsed; 77.77 CNN min)
+[deploy]: processed pixel at index [ 28 317  63] (82.05 min elapsed; 79.71 CNN min)
+[deploy]: processed pixel at index [  28 1023  819] (84.05 min elapsed; 81.65 CNN min)
+[deploy]: processed pixel at index [ 29 706  51] (86.05 min elapsed; 83.60 CNN min)
+[deploy]: processed pixel at index [ 30 388 807] (88.05 min elapsed; 85.54 CNN min)
+[deploy]: processed pixel at index [ 31  71 339] (90.05 min elapsed; 87.49 CNN min)
+[deploy]: processed pixel at index [ 31 778 871] (92.05 min elapsed; 89.43 CNN min)
+[deploy]: processed pixel at index [ 32 462 179] (94.05 min elapsed; 91.38 CNN min)
+[deploy]: processed pixel at index [ 33 145 111] (96.05 min elapsed; 93.32 CNN min)
+[deploy]: processed pixel at index [ 33 851 867] (98.05 min elapsed; 95.26 CNN min)
+[deploy]: processed pixel at index [  34  536 1051] (100.05 min elapsed; 97.21 CNN min)
+[deploy]: processed pixel at index [ 35 221 135] (102.05 min elapsed; 99.15 CNN min)
+[deploy]: processed pixel at index [ 35 928 767] (104.05 min elapsed; 101.09 CNN min)
+[deploy]: processed pixel at index [ 36 612 575] (106.05 min elapsed; 103.04 CNN min)
+[deploy]: processed pixel at index [ 37 295 907] (108.05 min elapsed; 104.98 CNN min)
+[deploy]: processed pixel at index [  37 1003  615] (110.05 min elapsed; 106.93 CNN min)
+[deploy]: processed pixel at index [ 38 686 947] (112.05 min elapsed; 108.87 CNN min)
+[deploy]: processed pixel at index [ 39 370 455] (114.05 min elapsed; 110.81 CNN min)
+[deploy]: processed pixel at index [ 40  53 287] (116.05 min elapsed; 112.75 CNN min)
+[deploy]: processed pixel at index [ 40 761  95] (118.05 min elapsed; 114.70 CNN min)
+[deploy]: processed pixel at index [ 41 444 527] (120.06 min elapsed; 116.64 CNN min)
+[deploy]: processed pixel at index [ 42 127 459] (122.06 min elapsed; 118.58 CNN min)
+[deploy]: processed pixel at index [ 42 833 715] (124.06 min elapsed; 120.52 CNN min)
+[deploy]: processed pixel at index [ 43 516 547] (126.06 min elapsed; 122.47 CNN min)
+[deploy]: processed pixel at index [ 44 200 855] (128.06 min elapsed; 124.41 CNN min)
+[deploy]: processed pixel at index [ 44 908 863] (130.06 min elapsed; 126.36 CNN min)
+[deploy]: processed pixel at index [ 45 592 571] (132.06 min elapsed; 128.30 CNN min)
+[deploy]: processed pixel at index [ 46 276 679] (134.06 min elapsed; 130.24 CNN min)
+[deploy]: processed pixel at index [ 46 982 435] (136.06 min elapsed; 132.19 CNN min)
+[deploy]: processed pixel at index [ 47 666 743] (138.06 min elapsed; 134.13 CNN min)
+[deploy]: processed pixel at index [ 48 350 451] (140.06 min elapsed; 136.07 CNN min)
+[deploy]: processed pixel at index [ 49  32 907] (142.06 min elapsed; 138.02 CNN min)
+[deploy]: processed pixel at index [ 49 741 991] (144.06 min elapsed; 139.96 CNN min)
+[deploy]: processed pixel at index [ 50 426 575] (146.06 min elapsed; 141.91 CNN min)
+[deploy]: processed pixel at index [ 51 111  59] (148.06 min elapsed; 143.85 CNN min)
+[deploy]: processed pixel at index [ 51 820 243] (150.06 min elapsed; 145.80 CNN min)
+[deploy]: processed pixel at index [ 52 504 751] (152.06 min elapsed; 147.74 CNN min)
+[deploy]: processed pixel at index [ 53 190 411] (154.06 min elapsed; 149.69 CNN min)
+[deploy]: processed pixel at index [ 53 899 895] (156.06 min elapsed; 151.63 CNN min)
+[deploy]: processed pixel at index [ 54 584 379] (158.06 min elapsed; 153.58 CNN min)
+[deploy]: processed pixel at index [ 55 269 463] (160.06 min elapsed; 155.52 CNN min)
+[deploy]: processed pixel at index [ 55 978 947] (162.06 min elapsed; 157.47 CNN min)
+[deploy]: processed pixel at index [ 56 663 331] (164.06 min elapsed; 159.41 CNN min)
+[deploy]: processed pixel at index [ 57 346 763] (166.06 min elapsed; 161.35 CNN min)
+[deploy]: processed pixel at index [ 58  33 699] (168.06 min elapsed; 163.30 CNN min)
+[deploy]: processed pixel at index [ 58 747 763] (170.06 min elapsed; 165.26 CNN min)
+[deploy]: processed pixel at index [ 59 436 851] (172.06 min elapsed; 167.21 CNN min)
+[deploy]: processed pixel at index [ 60 125 639] (174.06 min elapsed; 169.17 CNN min)
+[deploy]: processed pixel at index [ 60 838 427] (176.06 min elapsed; 171.12 CNN min)
+[deploy]: processed pixel at index [ 61 527 415] (178.06 min elapsed; 173.08 CNN min)
+[deploy]: processed pixel at index [ 62 214 751] (180.06 min elapsed; 175.03 CNN min)
+[deploy]: processed pixel at index [ 62 926 963] (182.06 min elapsed; 176.99 CNN min)
+[deploy]: processed pixel at index [ 63 615 151] (184.06 min elapsed; 178.94 CNN min)
+[deploy]: processed pixel at index [ 64 302  87] (186.06 min elapsed; 180.90 CNN min)
+[deploy]: processed pixel at index [  64 1012  747] (188.06 min elapsed; 182.85 CNN min)
+[deploy]: processed pixel at index [ 65 700 159] (190.06 min elapsed; 184.80 CNN min)
+[deploy]: processed pixel at index [ 66 386 519] (192.06 min elapsed; 186.76 CNN min)
+[deploy]: processed pixel at index [ 67  73 155] (194.06 min elapsed; 188.71 CNN min)
+[deploy]: processed pixel at index [ 67 783 115] (196.06 min elapsed; 190.67 CNN min)
+[deploy]: processed pixel at index [ 68 469 475] (198.06 min elapsed; 192.62 CNN min)
+[deploy]: processed pixel at index [ 69 156 711] (200.06 min elapsed; 194.58 CNN min)
+[deploy]: processed pixel at index [ 69 866 571] (202.06 min elapsed; 196.53 CNN min)
+[deploy]: processed pixel at index [ 70 552 731] (204.06 min elapsed; 198.49 CNN min)
+[deploy]: processed pixel at index [ 71 238 491] (206.06 min elapsed; 200.44 CNN min)
+[deploy]: processed pixel at index [ 71 948 251] (208.06 min elapsed; 202.40 CNN min)
+[deploy]: processed pixel at index [ 72 633 235] (210.06 min elapsed; 204.35 CNN min)
+[deploy]: processed pixel at index [ 73 317 143] (212.06 min elapsed; 206.31 CNN min)
+[deploy]: processed pixel at index [  73 1025  651] (214.06 min elapsed; 208.26 CNN min)
+[deploy]: processed pixel at index [ 74 710 635] (216.06 min elapsed; 210.22 CNN min)
+[deploy]: processed pixel at index [ 75 394 643] (218.06 min elapsed; 212.17 CNN min)
+[deploy]: processed pixel at index [ 76  78 451] (220.06 min elapsed; 214.13 CNN min)
+[deploy]: processed pixel at index [ 76 785 483] (222.06 min elapsed; 216.08 CNN min)
+[deploy]: processed pixel at index [ 77 468 715] (224.06 min elapsed; 218.04 CNN min)
+[deploy]: processed pixel at index [ 78 150 271] (226.06 min elapsed; 219.99 CNN min)
+[deploy]: processed pixel at index [ 78 856 527] (228.06 min elapsed; 221.95 CNN min)
+[deploy]: processed pixel at index [ 79 538 383] (230.06 min elapsed; 223.90 CNN min)
+[deploy]: processed pixel at index [ 80 219 363] (232.06 min elapsed; 225.86 CNN min)
+[deploy]: processed pixel at index [ 80 925 419] (234.06 min elapsed; 227.81 CNN min)
+[deploy]: processed pixel at index [ 81 606 399] (236.06 min elapsed; 229.77 CNN min)
+[deploy]: processed pixel at index [ 82 286 703] (238.06 min elapsed; 231.72 CNN min)
+[deploy]: processed pixel at index [ 82 991 283] (240.06 min elapsed; 233.68 CNN min)
+[deploy]: processed pixel at index [ 83 672 263] (242.06 min elapsed; 235.63 CNN min)
+[deploy]: processed pixel at index [ 84 352 567] (244.06 min elapsed; 237.59 CNN min)
+[deploy]: processed pixel at index [  84 1055  495] (246.06 min elapsed; 239.54 CNN min)
+[deploy]: processed pixel at index [ 85 735  99] (248.06 min elapsed; 241.50 CNN min)
+[deploy]: processed pixel at index [ 86 414 227] (250.06 min elapsed; 243.45 CNN min)
+[deploy]: processed pixel at index [ 87  95 207] (252.06 min elapsed; 245.41 CNN min)
+[deploy]: processed pixel at index [ 87 797 959] (254.06 min elapsed; 247.37 CNN min)
+[deploy]: processed pixel at index [  88  475 1011] (256.06 min elapsed; 249.32 CNN min)
+[deploy]: processed pixel at index [ 89 155 815] (258.06 min elapsed; 251.28 CNN min)
+[deploy]: processed pixel at index [ 89 858 843] (260.06 min elapsed; 253.23 CNN min)
+[deploy]: processed pixel at index [ 90 539 423] (262.06 min elapsed; 255.19 CNN min)
+[deploy]: processed pixel at index [ 91 219 527] (264.06 min elapsed; 257.14 CNN min)
+[deploy]: processed pixel at index [ 91 921 279] (266.07 min elapsed; 259.10 CNN min)
+[deploy]: processed pixel at index [ 92 599 731] (268.07 min elapsed; 261.05 CNN min)
+[deploy]: processed pixel at index [ 93 277 983] (270.07 min elapsed; 263.01 CNN min)
+[deploy]: processed pixel at index [ 93 981 787] (272.07 min elapsed; 264.96 CNN min)
+[deploy]: processed pixel at index [ 94 660 215] (274.07 min elapsed; 266.92 CNN min)
+[deploy]: processed pixel at index [ 95 339 643] (276.07 min elapsed; 268.87 CNN min)
+[deploy]: processed pixel at index [  95 1042  471] (278.07 min elapsed; 270.83 CNN min)
+[deploy]: processed pixel at index [ 96 719 347] (280.07 min elapsed; 272.78 CNN min)
+[deploy]: processed pixel at index [ 97 397 999] (282.07 min elapsed; 274.74 CNN min)
+[deploy]: processed pixel at index [ 98  75 251] (284.07 min elapsed; 276.69 CNN min)
+[deploy]: processed pixel at index [ 98 777 403] (286.07 min elapsed; 278.65 CNN min)
+[deploy]: processed pixel at index [ 99 455 555] (288.07 min elapsed; 280.60 CNN min)
+[deploy]: Finished processing cube.  Net time was: 289.78 min (282.28 CNN min)
+[deploy]: Finished.  Saving estimates...
+[deploy]: exiting...
