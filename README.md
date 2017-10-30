@@ -4,7 +4,7 @@ TL;DR: An updated version of the synapse detector, VESICLE, presented by Roncal 
 ## Repo struture
 ./vesiclecnn-2 contains scripts and examples for the updated classifier we present.
 
-./vesiclerf-2 contains scripts for a slightly reworked version of the RF classifier to make use of multithreading and out data formatting.
+./vesiclerf-2 contains scripts for a slightly reworked version of the RF classifier to make use of multithreading and out data formatting. Development code still.
 
 ./vesiclecnn contains a slight rework of the original script such that it runs in a dockerized environment (we had no end of difficulty getting Caffe installed and so went down the docker route). We cannot get this network to train properly and hence has been used solely for timing estimates through, and getting this script training is a work in progress.
 
