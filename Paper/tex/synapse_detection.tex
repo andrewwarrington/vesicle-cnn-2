@@ -1,0 +1,197 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+% \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading nips_2016
+%
+% to avoid loading the natbib package, add option nonatbib:
+\usepackage[nonatbib, final]{nips_2017}
+
+%\usepackage{nips_2017}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%\usepackage[final]{nips_2016}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{subfigure}
+\usepackage{pdfpages}
+\usepackage{makecell}
+\usepackage{todonotes}
+\usepackage{color}
+\usepackage{caption}
+\usepackage{tabularx}
+\usepackage{graphicx,subfigure}
+\usepackage{cleveref}
+\usepackage[numbers]{natbib}
+\usepackage{paralist}
+\usepackage{relsize}
+\usepackage{bbm}
+\usepackage{lipsum}  
+\usepackage{wrapfig}
+\usepackage{varwidth}
+\usepackage{blindtext}
+
+\newcommand{\nd}[1]{\textcolor{red}{[ND: #1]}}
+\newcommand{\aw}[1]{\textcolor{magenta}{[AW: #1]}}
+
+
+
+\title{Updating the VESICLE-CNN Synapse Detector}
+
+% The \author macro works with any number of authors. There are two
+% commands used to separate the names and addresses of multiple
+% authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to
+% break the lines. Using \AND forces a line break at that point. So,
+% if LaTeX puts 3 of 4 authors names on the first line, and the last
+% on the second line, try using \AND instead of \And before the third
+% author name.
+
+\author{
+  Andrew Warrington \\
+  Department of Engineering\\
+  University of Oxford\\
+  England \\
+  \texttt{andreww@robots.ox.ac.uk} \\
+  \And
+  Frank Wood \\
+  Department of Engineering\\
+  University of Oxford\\
+  England \\
+  \texttt{fwood@robots.ox.ac.uk} \\ 
+}%
+
+\begin{document}
+
+\maketitle
+
+
+%\begin{abstract} 
+%We present an updated version of the VESICLE-CNN algorithm presented by~\citet{roncal2014vesicle}. 
+%Through the use of dilated convolutions we are able to convert the computationally wasteful patch-based architecture initially provided with a more computationally efficient fully convolutional architecture.
+%We verify the performance of this architecture, and release the source code and data into the public domain.
+%\end{abstract} 
+
+\section*{Introduction}
+\label{sec:intro}
+
+Accurate detection of synaptic clefts is paramount to the reconstruction of connectomes~\citep{seung2012connectome}.
+One of the most widely cited synapse detection algorithms, VESICLE, is presented by~\citet{roncal2014vesicle}.
+VESICLE contains two implementations, a random forest (RF) and a convolutional neural network (CNN) based approach (referred to as V-RF and V-CNN respectively).
+V-CNN outperforms the V-RF in terms of classification accuracy, but at the expense of increased computational complexity.
+However, the original implementation~\citep{vesiclegit} utilizes a patch-based approach, known to be computationally wasteful due to repeated computations.
+Accordingly, this method was suggested to be too computationally intensive for wide-scale application.
+Since the VESICLE package is commonly used as a benchmark, we believe the original implementation does not truly reflect the performance that can be obtained by the approach.
+
+Therefore, in this work, we modify the implementation such that it becomes fully convolutional, with no repeated computations, through the use of dilated convolutions, in an architecture we refer to as VESICLE-CNN-2 (V-CNN-2).
+These dilated convolutions allow the overall architecture design to remain predominantly unchanged while retaining spatial resolution in the final image.
+We then benchmark the performance of our new implementation on modern hardware and quote updated runtime estimates.
+
+Our updated CNN architecture reduces the application speed $600$-fold compared to the runtime on modern hardware, and over a $4500$-fold speedup compared to the originally quoted deployment time.
+We release source code and the data used into the public domain, including an updated test-bench for comparing and distributing results.\footnote{Source code and data available at~\url{https://github.com/andrewwarrington/vesicle-cnn-2}.}
+ 
+ 
+\section*{The VESICLE Package}
+\label{sec:prior}
+By considering synapse detection as the annotation of every voxel in the volume as either synapse or non-synapse, the task can be seen as a semantic segmentation challenge.
+This approach is taken by~\citet{roncal2014vesicle} in the VESICLE package.
+VESICLE consists of two separate implementations, one utilizing random forests, and the other using CNNs.
+ 
+In this work, we focus on the CNN implementation.
+This classifier uses only raw voxel intensities as the input, meaning markedly less preprocessing of data is required compared to the RF implementation that also requires membrane and vesicle labels as inputs.
+The architecture for this network is based on the `N3' architecture presented by~\citet{ciresan2012segment}.
+This implementation utilizes a patch-based, or sliding window, approach, where a small patch, the size of the field of view of the classifier, is extracted and the CNN applied to that patch.
+This approach results in wasted computations as the convolution kernels are repeatedly applied to the same voxels extracted for different patches.
+The authors quote this CNN implementation as being $200\times$ slower than the RF implementation, and hence suggest that it is not applicable to large datasets.
+
+\section*{VESICLE-CNN-2}
+\label{sec:methods:vesicle}
+The first step we take is to modify the original VESICLE-CNN implementation~\citep{roncal2014vesicle} to be a fully convolutional network, referred to as VESICLE-CNN-2.
+The patch-based architecture makes use of strided maxpool layers to reduce the spatial dimensions of the patch.
+However, applying this maxpooling to a whole image reduces the dimensionality of the image, and hence the output will be of lower resolution than the input.
+A one-step method of circumventing this is to use unstrided maxpool operators.
+However, this means that the effective field of view is dramatically reduced.
+Therefore, we use dilated, or atrous, convolutions.
+Atrous convolutions `inflate' the size of the mask by inserting fixed zeros at regular intervals.
+For instance, dilation of a three by three mask, with a dilation rate of one yields a five by five mask, with two rows and columns of zeros (resembling a noughts-and-crosses board).
+This allows us to capture the spatial extent similar to the original implementation, while retaining a{%
+\parfillskip=0pt
+\parskip=0pt
+\par}
+\begin{wrapfigure}[38]{R}{0.37\textwidth}
+
+ \begin{minipage}[h]{\linewidth}
+ 	\centering
+	\includegraphics[width=\textwidth]{figures/f1_sweep_comparison_synapse.eps}
+	\caption{Precision-recall (P-R) characteristics for whole-synapse detection when applied to the validation set. Dashed lines represent constant F1 contours, set to the maximum F1 score achieved by each classifier, while dots represent observed operating points. We were unable to replicate the results of~\citet{roncal2014vesicle} ourselves and hence quote results read from the original paper.}
+	\label{fig:obj_pr}
+  \end{minipage}
+
+\vspace*{0.5cm}
+
+  \begin{minipage}[h]{\linewidth}
+    \centering
+	\begin{tabular}{@{}lllllll@{}}
+		\toprule
+		Architecture 							& \multicolumn{2}{c}{Execution time} 	& Test F1 										\\
+ 														& 	\multicolumn{2}{c}{(minutes)}			& 														\\
+ 		\cmidrule{2-3}
+ 														& Training					& Deploy					& \\
+		\midrule
+		V-RF				 							& \textbf{6.15}	 	&  12.9					& 0.801												\\
+		V-CNN										& 512 						&  290 					& 0.820											\\	
+		V-CNN-2				  					& 565		          		&  \textbf{0.493}	& \textbf{0.869}								\\
+		\bottomrule			
+	\end{tabular}							
+	\captionof{table}{Comparison of performance and run-time of the different algorithms used. Bold text indicates the best performing algorithm in each category. Time requirements evaluated on a single multicore desktop machine, equipped with $6\times $ Intel Core i7-5930K, 3.7 GHz ($12$ logical cores), $64$GB RAM and a new generation Nvidia Pascal Titan Xp GPU with $12$GB onboard memory. All times are quoted for execution on a single thread and hence are maximal runtimes.}		
+	\label{tab:results}
+ \end{minipage}%
+ \end{wrapfigure}
+\noindent fully convolutional structure, but without exposing us to overfitting if we were to simply use larger, undilated convolutional kernels.
+
+Training and evaluation is conducted using the same methodology as was used by~\citet{roncal2014vesicle} and is as follows:
+Training, validation and test volumes are non-overlapping volumes drawn from the~\citet{kasthuri2015saturated} dataset, imaged at $3$nm$\times3$nm$\times30$nm.
+Images are $1024\times1024$ voxels in the imaging plane.
+Training, validation and test volumes are composed of $75$, $25$ and $100$ images respectively.
+Hyperparameter optimization was performed on the validation set.
+These hyperparameter sweeps are shown in Figure~\ref{fig:obj_pr}.
+This optimization is required by all scripts and hence we do not include the time required in the training time for each algorithm.
+
+
+\section*{Results}
+\label{sec:results}
+
+We now compare the performance of our VESICLE-2 to the original VESICLE implementation. 
+We were unable to replicate the results for VESICLE and hence the results we quote for VESICLE are read from the original text, with test F1 score (Table~\ref{tab:results}) being quoted as the maximum value from this graph (an upper bound as generalization means this score can only reasonably decrease when moving away from the validation set).
+
+Precision-recall curves for whole-synapse detection are shown in Figure~\ref{fig:obj_pr} and shows our network performs at least as well as the original implementation, if not better, achieving a higher operating point in terms of F1 score.
+This magnitude of this improvement is shown in Table~\ref{tab:results}. 
+The source of this improvement may be due to using an improved optimizer or data being drawn from a different subvolume of the Kasthuri dataset~\cite{kasthuri2015saturated}.
+The slight alteration in architecture specifics (due to implementation requirements) is unlikely to have induced this change, and hence we continue to describe this as an `update' as opposed to a new architecture.
+However, as  desired, the train and deployment times, as also shown in Figure~\ref{tab:results}, are dramatically lower than the original implementation, by a factor of $600$.
+This improvement makes the application of the VESICLE algorithm to large datasets viable, and hence shifts the benchmark for any new algorithm that aims to supersede this work.
+
+\section*{Conclusion}
+
+In this short paper we have presented an updated version of the synapse detection algorithm presented by~\citet{roncal2014vesicle}.
+We have shown that by using dilated convolutions it is possible to create a fully convolutional approximation to the original, patch-based CNN implementation, bringing vast reductions in application time.
+We have also made source code available for our implementation, as well as updated test beds for comparison of the performance of each algorithm.
+
+
+\begin{small}
+\bibliographystyle{unsrtnat}
+\bibliography{synapse_detection}{}
+\end{small}
+
+
+\end{document} 
