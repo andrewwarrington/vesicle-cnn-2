@@ -84,7 +84,7 @@ learningRate = 1e-04
 valRegularity = 1000
 
 # Define data locations.
-dataLocations = ['./kasthuri_data/train/train.h5', './kasthuri_data/validation/validation.h5', './kasthuri_data/test/test.h5']
+dataLocations = ['./../kasthuri_data/train/train.h5', './../kasthuri_data/validation/validation.h5', './../kasthuri_data/test/test.h5']
 channelLocations = ['/synapse']     # Label location _within_ the H5 file.
 internalLocations = ['SYN']
 imgLocation = '/image'              # Image location _within_ the H5 file.

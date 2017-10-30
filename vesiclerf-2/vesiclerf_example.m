@@ -1,4 +1,4 @@
-addpath(genpath('../../../../evaluation/'));
+addpath(genpath('./../evaluation/'));
 addpath(genpath('./tools'));
 
 numWorkers = 1;
