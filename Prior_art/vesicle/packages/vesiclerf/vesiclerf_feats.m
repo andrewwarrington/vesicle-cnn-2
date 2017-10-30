@@ -67,16 +67,16 @@ else
 
     disp('part 2 complete')
 
-    temp = bwdist(vesicles.data);
+    temp = bwdist(vesicles);
     xt(:,6) = reshape(temp(idxToTest),[nVox,1]);
 
-    temp = convn(vesicles.data,B2,'same');
+    temp = convn(vesicles,B2,'same');
 
     xt(:,7) = reshape(temp(idxToTest), [nVox,1]);
 
     disp('part 3 complete')
 
-    IIM = cumsum(cumsum(double(vesicles.data)),2); %Integral Image
+    IIM = cumsum(cumsum(double(vesicles)),2); %Integral Image
 
     % VC2 & VC3
     sR = [50,50]; %MUST ALL BE EVEN!!! %101, 101, 5

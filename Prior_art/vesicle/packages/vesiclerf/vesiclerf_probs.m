@@ -39,16 +39,16 @@ function vesiclerf_probs(classifier_file, padX, padY, padZ, outFile, set)
 
 disp('Executing vesiclerf-probs')
 
-eData = load(strcat('../../../../../../kasthuri_data/', set, '/eData_', set, '.mat'));
+eData = load(strcat('../../../../kasthuri_data/', set, '/eData_', set, '.mat'));
 eData = eData.cube.data;
 
-mData = load(strcat('../../../../../../kasthuri_data/', set, '/mData_', set, '.mat'));
+mData = load(strcat('../../../../kasthuri_data/', set, '/mData_', set, '.mat'));
 mData = mData.cube.data;
 
-sData = load(strcat('../../../../../../kasthuri_data/', set, '/sData_', set, '.mat'));
+sData = load(strcat('../../../../kasthuri_data/', set, '/sData_', set, '.mat'));
 sData = sData.cube.data;
 
-vData = load(strcat('../../../../../../kasthuri_data/', set, '/vData_', set, '.mat'));
+vData = load(strcat('../../../../kasthuri_data/', set, '/vData_', set, '.mat'));
 vData = vData.cube.data;
 
 % Find valid pixels
@@ -59,7 +59,7 @@ if exist('membrane') %#ok<EXIST>
     mm = bwareaopen(mm, 1000, 4);
     pixValid = find(mm > 0);
 else % this exists as a starting point if membranes are unavailable
-    pixValid = 1:numel(eData.data);
+    pixValid = 1:numel(eData);
 end
 
 % Extract Feats and Run Classifier
@@ -106,7 +106,7 @@ end
 
 DV(isnan(DV)) = 0;
 test_time = toc(st);
-fprintf(strcat('Test time: ', str(test_time), ' seconds.'))
+fprintf(strcat('Test time: ', num2str(test_time), ' seconds.'))
 % postprocessing
 disp('Post-processing data...')
 
@@ -119,7 +119,7 @@ size(DV)
 %% Need to fix XYZ offset and all that
 cube.data = DV;
 % Need to save output file
-save(outFile,strcat('cube_', set))
+save(outFile,cube)
 
 
 % (c) [2014] The Johns Hopkins University / Applied Physics Laboratory All Rights Reserved. Contact the JHU/APL Office of Technology Transfer for any additional rights.  www.jhuapl.edu/ott

@@ -15,35 +15,35 @@ function vesiclerf_train(outputFile)
 %
 %	Currently training region is hardcoded, but can be adjusted as needed by getting new '\*DataTrain'.
 
-set = 'train'
+set = 'train';
 
 addpath(genpath(pwd))
 
-eData = load(strcat('../../../../../../kasthuri_data/', set, '/eData_', set, '.mat'));
+eData = load(strcat('../../../../kasthuri_data/', set, '/eData_', set, '.mat'));
 eData = eData.cube.data;
 
-mData = load(strcat('../../../../../../kasthuri_data/', set, '/mData_', set, '.mat'));
+mData = load(strcat('../../../../kasthuri_data/', set, '/mData_', set, '.mat'));
 mData = mData.cube.data;
 
-sData = load(strcat('../../../../../../kasthuri_data/', set, '/sData_', set, '.mat'));
+sData = load(strcat('../../../../kasthuri_data/', set, '/sData_', set, '.mat'));
 sData = sData.cube.data;
 
-vData = load(strcat('../../../../../../kasthuri_data/', set, '/vData_', set, '.mat'));
+vData = load(strcat('../../../../kasthuri_data/', set, '/vData_', set, '.mat'));
 vData = vData.cube.data;
 
 % Find valid pixels
 mThresh = 0.75;
-mm = (mDataTrain.data>mThresh);
+mm = (mData>mThresh);
 mm = imdilate(mm,strel('disk',5));
 mm = bwareaopen(mm, 1000, 4);
 pixValid = find(mm > 0);
 
 % Extract Features
-st = tic
-Xtrain = vesiclerf_feats(eDataTrain.data, pixValid, vDataTrain);
+st = tic;
+Xtrain = vesiclerf_feats(mData, pixValid, vData);
 
 % Classifier training
-Ytrain = create_labels_pixel(sDataTrain.data, pixValid, [50,50,2]);
+Ytrain = create_labels_pixel(sData, pixValid, [50,50,2]);
 
 % Classifier training
 trTarget = find(Ytrain>0);
@@ -65,7 +65,7 @@ classifier = classRF_train(double(trainFeat),double(trainLabel),...
     200,floor(sqrt(size(trainFeat,2))));%,extra_options);
 
 train_time = toc(st);
-fprintf(strcat('Training time: ', str(train_time), ' seconds.'))
+fprintf(strcat('Training time: ', num2str(train_time), ' seconds.'))
 
 disp('training complete')
 figure, bar(classifier.importance), drawnow
