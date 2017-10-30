@@ -1,0 +1,165 @@
+vesiclerf_example
+part 1 complete
+part 2 complete
+part 3 complete
+part 4 complete
+part 5 complete
+Ready to classify
+
+Training time:369.0774 seconds.
+training complete
+Executing vesiclerf-probs
+Feature Extraction...
+part 1 complete
+part 2 complete
+part 3 complete
+part 4 complete
+part 5 complete
+Running RF classifier...
+Elapsed time is 9.424560 seconds.
+Elapsed time is 21.383626 seconds.
+Elapsed time is 33.363598 seconds.
+Elapsed time is 45.437882 seconds.
+Elapsed time is 57.671232 seconds.
+Elapsed time is 70.051552 seconds.
+Elapsed time is 82.283231 seconds.
+Elapsed time is 94.465685 seconds.
+Elapsed time is 106.647412 seconds.
+Elapsed time is 118.658096 seconds.
+Elapsed time is 130.797934 seconds.
+Elapsed time is 142.910538 seconds.
+Elapsed time is 155.060575 seconds.
+Elapsed time is 167.288917 seconds.
+Elapsed time is 179.558625 seconds.
+Elapsed time is 191.829170 seconds.
+Elapsed time is 204.073581 seconds.
+Elapsed time is 216.376348 seconds.
+Elapsed time is 228.701325 seconds.
+Elapsed time is 241.219724 seconds.
+Elapsed time is 253.678296 seconds.
+Elapsed time is 266.717611 seconds.
+Elapsed time is 279.330406 seconds.
+Elapsed time is 291.712748 seconds.
+Elapsed time is 304.055641 seconds.
+Elapsed time is 316.420792 seconds.
+Elapsed time is 328.663997 seconds.
+Elapsed time is 340.931356 seconds.
+Elapsed time is 353.150112 seconds.
+Elapsed time is 365.475157 seconds.
+Elapsed time is 377.857786 seconds.
+Elapsed time is 390.222644 seconds.
+Elapsed time is 402.404517 seconds.                                                                                                                                                                                               [78/1496]
+Elapsed time is 413.508493 seconds.
+Elapsed time is 418.005129 seconds.
+Test time:588.7499 seconds.
+Post-processing data...
+
+ans =
+
+        1024        1024          75
+
+
+ans =
+
+   924   924    71
+
+Executing vesiclerf-probs
+Feature Extraction...
+part 1 complete
+part 2 complete
+part 3 complete
+part 4 complete
+part 5 complete
+Running RF classifier...
+Elapsed time is 9.234531 seconds.
+Elapsed time is 21.465542 seconds.
+Elapsed time is 33.752070 seconds.
+Elapsed time is 46.188279 seconds.
+Elapsed time is 58.566433 seconds.
+Elapsed time is 71.118100 seconds.
+Elapsed time is 83.601920 seconds.
+Elapsed time is 96.116420 seconds.
+Elapsed time is 108.567800 seconds.
+Elapsed time is 120.627683 seconds.
+Elapsed time is 131.157716 seconds.
+Elapsed time is 133.974860 seconds.
+Test time:195.5151 seconds.
+Post-processing data...
+
+ans =
+
+        1024        1024          25
+
+
+ans =
+
+   924   924    21
+
+Executing vesiclerf-probs
+Feature Extraction...
+part 1 complete
+part 2 complete
+part 3 complete
+part 4 complete
+part 5 complete
+Running RF classifier...
+Elapsed time is 8.848802 seconds.
+Elapsed time is 21.027171 seconds.
+Elapsed time is 33.246103 seconds.                                                                                                                                                                                                [21/1496]
+Elapsed time is 45.174281 seconds.
+Elapsed time is 57.160476 seconds.
+Elapsed time is 69.072153 seconds.
+Elapsed time is 81.007248 seconds.
+Elapsed time is 92.987637 seconds.
+Elapsed time is 104.960442 seconds.
+Elapsed time is 116.819848 seconds.
+Elapsed time is 128.712198 seconds.
+Elapsed time is 140.542002 seconds.
+Elapsed time is 152.381994 seconds.
+Elapsed time is 164.302764 seconds.
+Elapsed time is 176.031666 seconds.
+Elapsed time is 187.862338 seconds.
+Elapsed time is 199.645503 seconds.
+Elapsed time is 211.415589 seconds.
+Elapsed time is 223.231688 seconds.
+Elapsed time is 235.045271 seconds.
+Elapsed time is 246.926037 seconds.
+Elapsed time is 258.798725 seconds.
+Elapsed time is 270.722418 seconds.
+Elapsed time is 282.783765 seconds.
+Elapsed time is 294.859760 seconds.
+Elapsed time is 306.809990 seconds.
+Elapsed time is 318.824991 seconds.
+Elapsed time is 330.892858 seconds.
+Elapsed time is 343.036349 seconds.
+Elapsed time is 355.092089 seconds.
+Elapsed time is 367.237895 seconds.
+Elapsed time is 379.355160 seconds.
+Elapsed time is 391.513784 seconds.
+Elapsed time is 403.707202 seconds.
+Elapsed time is 416.008632 seconds.
+Elapsed time is 428.221243 seconds.
+Elapsed time is 440.320502 seconds.
+Elapsed time is 452.522129 seconds.
+Elapsed time is 464.592694 seconds.
+Elapsed time is 476.636481 seconds.
+Elapsed time is 488.740152 seconds.
+Elapsed time is 500.779143 seconds.
+Elapsed time is 513.069890 seconds.
+Elapsed time is 524.954221 seconds.
+Elapsed time is 536.967140 seconds.
+Elapsed time is 547.884761 seconds.
+Elapsed time is 554.807056 seconds.
+Test time:775.3331 seconds.
+Post-processing data...
+
+ans =
+
+        1024        1024         100
+
+
+ans =
+
+   924   924    96
+
+
