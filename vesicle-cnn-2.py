@@ -71,7 +71,7 @@ convolutionalFilters = 48
 firstLayerDimensions = [5, 5, 1, convolutionalFilters]
 secondLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 thirdLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
-fcNeurons = 1024
+fcNeurons = 512
 fcLayerDimensions = [imSizeFC[0], imSizeFC[1], convolutionalFilters, fcNeurons]
 # dropoutProb = 1  # TODO - Not using dropout. 
 
@@ -276,6 +276,7 @@ f1s = []
 xEnts = []
 accs = []
 trainTimes = np.zeros((trainingSteps, 1))
+gpuTimes = np.zeros((trainingSteps, 1))
 
 ''' Train network -------------------------------------------------------------------------------------------'''
 
@@ -322,16 +323,18 @@ if training:
 			
 		startTime = timeit.default_timer()
 		batch = util.get_minibatch_patch(trainImage, trainLabels['SYN'], batch_size, patchSize, pos_frac=pos_frac, pos_locs=positive_locations, neg_locs=negative_locations)
+		startTimeGPU = timeit.default_timer()
 		_, summary = sess.run([train_step, summary_op], feed_dict={x: batch[0], y_syn: batch[1]})  # TODO - removed droupout., keep_prob: dropoutProb})
-		writer.add_summary(summary, i)
 		elapsed = timeit.default_timer() - startTime
+		gpuElapsed = timeit.default_timer() - startTimeGPU
 		trainTimes[i] = elapsed
-	
+		gpuTimes[i] = gpuElapsed
+		writer.add_summary(summary, i)	
+
 	av = np.sum(trainTimes) / trainingSteps
+	gpu_av = np.sum(gpuTimes) / trainingSteps
 	# Now write the timings to the output file.
-	fo = open(fileOutputName + "/report.txt", "a")
-	fo.write("\nAverage training step time: %g s \n\n" % av)
-	fo.close()
+	util.echo_to_file(reportLocation, "\nAverage training step time: %g s (%g GPU s). \n\n" % (av, gpu_av))
 	
 	# Restore the best net.
 	saver.restore(sess, fileOutputName + "/CNN.ckpt")
@@ -350,13 +353,15 @@ def apply_classifier(_func, _images):
 	
 	volume_prediction = np.zeros((_numFrames, finalSize[0], finalSize[1], 2))
 	_application_times = np.zeros((_numFrames, 1))
+	_gpu_times = np.zeros((_numFrames, 1))	
 	
 	for i in range(_numFrames):
-		_single_im = np.expand_dims(_images[i, :, :].astype(np.float32), axis=0)
 		startTime = timeit.default_timer()
-		predFlat = _func.eval(feed_dict={x: _single_im, keep_prob: 1.0})
-		elapsed = timeit.default_timer() - startTime
-		_application_times[i] = elapsed
+		_single_im = np.expand_dims(_images[i, :, :].astype(np.float32), axis=0)
+		startTimeGPU = timeit.default_timer()
+		predFlat = _func.eval(feed_dict={x: _single_im})  # , keep_prob: 1.0}) # TODO - dropout removed.
+		elapsed = timeit.default_timer() - startTimeGPU
+		_gpu_times[i] = elapsed
 		
 		singlePred = np.reshape(predFlat[0, :, :, 0], finalSize)
 		volume_prediction[i, :, :, 0] = singlePred
@@ -364,13 +369,15 @@ def apply_classifier(_func, _images):
 		singlePred = np.reshape(predFlat[0, :, :, 1], finalSize)
 		volume_prediction[i, :, :, 1] = singlePred
 		
+		elapsed = timeit.default_timer() - startTime
+		_application_times[i] = elapsed
+
 		print("Prediction of layer %g/%g complete." % (i + 1, _numFrames))
 	
 	av = np.sum(_application_times) / _numFrames
-	fo = open(fileOutputName + "/report.txt", "a")
-	fo.write("\nAverage application time per frame: %g s \n" % av)
-	fo.close()
-	
+	gpu_av = np.sum(_gpu_times) / _numFrames
+        util.echo_to_file(reportLocation, "\nAverage time application time per frame: %g s (%g GPU s). \n\n" % (av, gpu_av))
+
 	return volume_prediction
 
 
