@@ -1,0 +1,58 @@
+Experiment to evaluate the runtime requirements of the VESICLE-CNN-2 classifier. Any accuracy-esque results are not nessacarily valid.
+Experiment conducted at:30/10/2017 15:54:46.
+
+Experimental setup:
+Training settings:
+	Learning scheme: ADAM
+	Training steps:  10001
+	Optimize weighted cross entropy
+	Select best network from F1
+
+	Training ratio: 0.100000
+	Training weight: 0.100000
+	FC units: 1024.000000
+step 0, validation accuracy 0.984893, cross entropy 3.23178, f1(ave) 0.00354244
+
+Average training step time: 0.113061 s 
+
+Validation accuracy using single best validated model, applied to whole of validation set: 
+
+	 Validation error: 0.984893
+	 Validation XEnt: 3.23178
+	 Validation F1: 0.00354244
+	
+TESTING ALGORITHM
+Algorithm values saved at: ./vesicle-cnn-2-example
+
+Average application time per frame: 0.298276 s 
+
+syn-train
+
+Precision:  0.908059 
+
+Recall:     0.655706 
+
+F1:         0.761521 
+
+
+Average application time per frame: 0.298196 s 
+
+syn-validation
+
+Precision:  0.707954 
+
+Recall:     0.531751 
+
+F1:         0.60733 
+
+
+Average application time per frame: 0.297386 s 
+
+syn-test
+
+Precision:  0.867733 
+
+Recall:     0.631502 
+
+F1:         0.731006 
+

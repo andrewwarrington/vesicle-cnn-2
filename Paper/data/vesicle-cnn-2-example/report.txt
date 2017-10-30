@@ -1,0 +1,360 @@
+** Train timings in this log file are not correct. **
+
+Experiment to train VESICLE-CNN-2 to predict synapses, using straight upadted vesicle architecture.
+Experiment conducted at:12/10/2017 10:31:19.
+
+Experimental setup:
+Training settings:
+	Learning scheme: ADAM
+	Training steps:  300001
+	Optimize weighted cross entropy
+	Select best network from F1
+
+	Training ratio: 0.100000
+	Training weight: 0.100000
+	FC units: 1024.000000
+step 0, validation accuracy 0.00742948, cross entropy 8.50346, f1(ave) 0.0147251
+step 1000, validation accuracy 0.99258, cross entropy 0.402148, f1(ave) nan
+step 2000, validation accuracy 0.99258, cross entropy 0.443405, f1(ave) nan
+step 3000, validation accuracy 0.99258, cross entropy 0.421888, f1(ave) nan
+step 4000, validation accuracy 0.980537, cross entropy 0.451825, f1(ave) 0.282625
+step 5000, validation accuracy 0.97831, cross entropy 0.455759, f1(ave) 0.301495
+step 6000, validation accuracy 0.982506, cross entropy 0.434611, f1(ave) 0.353796
+step 7000, validation accuracy 0.98627, cross entropy 0.418062, f1(ave) 0.390906
+step 8000, validation accuracy 0.983208, cross entropy 0.434113, f1(ave) 0.372304
+step 9000, validation accuracy 0.981948, cross entropy 0.439697, f1(ave) 0.362833
+step 10000, validation accuracy 0.984242, cross entropy 0.425091, f1(ave) 0.384488
+step 11000, validation accuracy 0.985078, cross entropy 0.423291, f1(ave) 0.402624
+step 12000, validation accuracy 0.978233, cross entropy 0.454788, f1(ave) 0.339587
+step 13000, validation accuracy 0.974458, cross entropy 0.47105, f1(ave) 0.31726
+step 14000, validation accuracy 0.98103, cross entropy 0.442268, f1(ave) 0.372646
+step 15000, validation accuracy 0.980942, cross entropy 0.441148, f1(ave) 0.374796
+step 16000, validation accuracy 0.986167, cross entropy 0.415071, f1(ave) 0.428333
+step 17000, validation accuracy 0.98103, cross entropy 0.440116, f1(ave) 0.379712
+step 18000, validation accuracy 0.984983, cross entropy 0.420462, f1(ave) 0.419263
+step 19000, validation accuracy 0.989497, cross entropy 0.400158, f1(ave) 0.481116
+step 20000, validation accuracy 0.985103, cross entropy 0.418693, f1(ave) 0.42171
+step 21000, validation accuracy 0.980979, cross entropy 0.441803, f1(ave) 0.381365
+step 22000, validation accuracy 0.982089, cross entropy 0.435685, f1(ave) 0.395921
+step 23000, validation accuracy 0.984486, cross entropy 0.42505, f1(ave) 0.425349
+step 24000, validation accuracy 0.987924, cross entropy 0.409011, f1(ave) 0.479022
+step 25000, validation accuracy 0.990776, cross entropy 0.392535, f1(ave) 0.51581
+step 26000, validation accuracy 0.990062, cross entropy 0.397909, f1(ave) 0.515111
+step 27000, validation accuracy 0.987777, cross entropy 0.409128, f1(ave) 0.476598
+step 28000, validation accuracy 0.989599, cross entropy 0.398107, f1(ave) 0.504048
+step 29000, validation accuracy 0.979225, cross entropy 0.446979, f1(ave) 0.377368
+step 30000, validation accuracy 0.988815, cross entropy 0.403311, f1(ave) 0.493293
+step 31000, validation accuracy 0.988108, cross entropy 0.406367, f1(ave) 0.483125
+step 32000, validation accuracy 0.98243, cross entropy 0.431337, f1(ave) 0.406599
+step 33000, validation accuracy 0.985514, cross entropy 0.416267, f1(ave) 0.445161
+step 34000, validation accuracy 0.988609, cross entropy 0.402201, f1(ave) 0.495879
+step 35000, validation accuracy 0.9847, cross entropy 0.421245, f1(ave) 0.436261
+step 36000, validation accuracy 0.985787, cross entropy 0.41588, f1(ave) 0.452787
+step 37000, validation accuracy 0.984592, cross entropy 0.42362, f1(ave) 0.437522
+step 38000, validation accuracy 0.981271, cross entropy 0.43709, f1(ave) 0.399906
+step 39000, validation accuracy 0.981397, cross entropy 0.435247, f1(ave) 0.397559
+step 40000, validation accuracy 0.987802, cross entropy 0.406303, f1(ave) 0.484894
+step 41000, validation accuracy 0.979912, cross entropy 0.444561, f1(ave) 0.387624
+step 42000, validation accuracy 0.982486, cross entropy 0.434745, f1(ave) 0.414127
+step 43000, validation accuracy 0.985734, cross entropy 0.416855, f1(ave) 0.457038
+step 44000, validation accuracy 0.985867, cross entropy 0.416163, f1(ave) 0.459368
+step 45000, validation accuracy 0.98806, cross entropy 0.404091, f1(ave) 0.481698
+step 46000, validation accuracy 0.989706, cross entropy 0.397982, f1(ave) 0.515858
+step 47000, validation accuracy 0.987977, cross entropy 0.406925, f1(ave) 0.495702
+step 48000, validation accuracy 0.98207, cross entropy 0.432407, f1(ave) 0.406322
+step 49000, validation accuracy 0.988574, cross entropy 0.40361, f1(ave) 0.498094
+step 50000, validation accuracy 0.990297, cross entropy 0.39506, f1(ave) 0.533063
+step 51000, validation accuracy 0.985274, cross entropy 0.418941, f1(ave) 0.451374
+step 52000, validation accuracy 0.982801, cross entropy 0.431273, f1(ave) 0.421429
+step 53000, validation accuracy 0.986128, cross entropy 0.415189, f1(ave) 0.467262
+step 54000, validation accuracy 0.985005, cross entropy 0.419911, f1(ave) 0.447779
+step 55000, validation accuracy 0.988428, cross entropy 0.405448, f1(ave) 0.504084
+step 56000, validation accuracy 0.983841, cross entropy 0.42566, f1(ave) 0.434252
+step 57000, validation accuracy 0.987617, cross entropy 0.407467, f1(ave) 0.486355
+step 58000, validation accuracy 0.988721, cross entropy 0.402647, f1(ave) 0.501696
+step 59000, validation accuracy 0.98602, cross entropy 0.41486, f1(ave) 0.463254
+step 60000, validation accuracy 0.986379, cross entropy 0.414172, f1(ave) 0.467886
+step 61000, validation accuracy 0.985525, cross entropy 0.416644, f1(ave) 0.451672
+step 62000, validation accuracy 0.987455, cross entropy 0.407999, f1(ave) 0.485434
+step 63000, validation accuracy 0.989487, cross entropy 0.398361, f1(ave) 0.519337
+step 64000, validation accuracy 0.987559, cross entropy 0.408533, f1(ave) 0.491108
+step 65000, validation accuracy 0.989994, cross entropy 0.39631, f1(ave) 0.532927
+step 66000, validation accuracy 0.989386, cross entropy 0.399296, f1(ave) 0.520713
+step 67000, validation accuracy 0.987513, cross entropy 0.407939, f1(ave) 0.484857
+step 68000, validation accuracy 0.98419, cross entropy 0.424662, f1(ave) 0.445081
+step 69000, validation accuracy 0.988782, cross entropy 0.400874, f1(ave) 0.502798
+step 70000, validation accuracy 0.987372, cross entropy 0.408843, f1(ave) 0.485702
+step 71000, validation accuracy 0.984188, cross entropy 0.423668, f1(ave) 0.439543
+step 72000, validation accuracy 0.990187, cross entropy 0.395432, f1(ave) 0.532585
+step 73000, validation accuracy 0.987864, cross entropy 0.406634, f1(ave) 0.491714
+step 74000, validation accuracy 0.985404, cross entropy 0.417122, f1(ave) 0.449779
+step 75000, validation accuracy 0.984909, cross entropy 0.420281, f1(ave) 0.44913
+step 76000, validation accuracy 0.98648, cross entropy 0.411199, f1(ave) 0.467767
+step 77000, validation accuracy 0.990864, cross entropy 0.391884, f1(ave) 0.548928
+step 78000, validation accuracy 0.986636, cross entropy 0.410576, f1(ave) 0.470124
+step 79000, validation accuracy 0.990536, cross entropy 0.393028, f1(ave) 0.53142
+step 80000, validation accuracy 0.986534, cross entropy 0.413192, f1(ave) 0.472118
+step 81000, validation accuracy 0.987298, cross entropy 0.407782, f1(ave) 0.482021
+step 82000, validation accuracy 0.988331, cross entropy 0.404447, f1(ave) 0.501299
+step 83000, validation accuracy 0.989006, cross entropy 0.400192, f1(ave) 0.512893
+step 84000, validation accuracy 0.989074, cross entropy 0.399612, f1(ave) 0.509774
+step 85000, validation accuracy 0.988632, cross entropy 0.402812, f1(ave) 0.504919
+step 86000, validation accuracy 0.985674, cross entropy 0.416141, f1(ave) 0.46132
+step 87000, validation accuracy 0.985735, cross entropy 0.41556, f1(ave) 0.457742
+step 88000, validation accuracy 0.986695, cross entropy 0.411496, f1(ave) 0.477047
+step 89000, validation accuracy 0.987435, cross entropy 0.408228, f1(ave) 0.488487
+step 90000, validation accuracy 0.98497, cross entropy 0.418711, f1(ave) 0.448076
+step 91000, validation accuracy 0.988809, cross entropy 0.401913, f1(ave) 0.514718
+step 92000, validation accuracy 0.988885, cross entropy 0.401284, f1(ave) 0.514879
+step 93000, validation accuracy 0.988245, cross entropy 0.404061, f1(ave) 0.50223
+step 94000, validation accuracy 0.990842, cross entropy 0.392805, f1(ave) 0.556734
+step 95000, validation accuracy 0.986501, cross entropy 0.412206, f1(ave) 0.471338
+step 96000, validation accuracy 0.987797, cross entropy 0.406634, f1(ave) 0.495746
+step 97000, validation accuracy 0.987394, cross entropy 0.408033, f1(ave) 0.4857
+step 98000, validation accuracy 0.984567, cross entropy 0.420828, f1(ave) 0.443739
+step 99000, validation accuracy 0.991379, cross entropy 0.389828, f1(ave) 0.559392
+step 100000, validation accuracy 0.987797, cross entropy 0.405757, f1(ave) 0.490444
+step 101000, validation accuracy 0.987446, cross entropy 0.407738, f1(ave) 0.487911
+step 102000, validation accuracy 0.989761, cross entropy 0.397656, f1(ave) 0.533077
+step 103000, validation accuracy 0.985409, cross entropy 0.417648, f1(ave) 0.460254
+step 104000, validation accuracy 0.988417, cross entropy 0.403022, f1(ave) 0.502839
+step 105000, validation accuracy 0.990128, cross entropy 0.395646, f1(ave) 0.538307
+step 106000, validation accuracy 0.990514, cross entropy 0.393482, f1(ave) 0.545495
+step 107000, validation accuracy 0.98795, cross entropy 0.40518, f1(ave) 0.498155
+step 108000, validation accuracy 0.98815, cross entropy 0.404218, f1(ave) 0.499808
+step 109000, validation accuracy 0.987551, cross entropy 0.407375, f1(ave) 0.492808
+step 110000, validation accuracy 0.986633, cross entropy 0.411945, f1(ave) 0.479602
+step 111000, validation accuracy 0.989594, cross entropy 0.398055, f1(ave) 0.531127
+step 112000, validation accuracy 0.987108, cross entropy 0.408938, f1(ave) 0.48419
+step 113000, validation accuracy 0.987033, cross entropy 0.410358, f1(ave) 0.480741
+step 114000, validation accuracy 0.989167, cross entropy 0.39951, f1(ave) 0.517208
+step 115000, validation accuracy 0.988764, cross entropy 0.401833, f1(ave) 0.511646
+step 116000, validation accuracy 0.989495, cross entropy 0.398166, f1(ave) 0.52384
+step 117000, validation accuracy 0.989292, cross entropy 0.399176, f1(ave) 0.521299
+step 118000, validation accuracy 0.989805, cross entropy 0.397374, f1(ave) 0.535062
+step 119000, validation accuracy 0.984376, cross entropy 0.421972, f1(ave) 0.442825
+step 120000, validation accuracy 0.989773, cross entropy 0.397121, f1(ave) 0.531287
+step 121000, validation accuracy 0.988142, cross entropy 0.404963, f1(ave) 0.49975
+step 122000, validation accuracy 0.988154, cross entropy 0.405148, f1(ave) 0.503274
+step 123000, validation accuracy 0.988523, cross entropy 0.403215, f1(ave) 0.510438
+step 124000, validation accuracy 0.989958, cross entropy 0.396, f1(ave) 0.528085
+step 125000, validation accuracy 0.986355, cross entropy 0.412994, f1(ave) 0.472396
+step 126000, validation accuracy 0.988448, cross entropy 0.403282, f1(ave) 0.506849
+step 127000, validation accuracy 0.989318, cross entropy 0.399416, f1(ave) 0.526338
+step 128000, validation accuracy 0.988611, cross entropy 0.40215, f1(ave) 0.506217
+step 129000, validation accuracy 0.989086, cross entropy 0.400755, f1(ave) 0.515173
+step 130000, validation accuracy 0.9885, cross entropy 0.403539, f1(ave) 0.509642
+step 131000, validation accuracy 0.989119, cross entropy 0.400383, f1(ave) 0.517529
+step 132000, validation accuracy 0.990275, cross entropy 0.395022, f1(ave) 0.537112
+step 133000, validation accuracy 0.990955, cross entropy 0.391854, f1(ave) 0.551196
+step 134000, validation accuracy 0.987538, cross entropy 0.40782, f1(ave) 0.490748
+step 135000, validation accuracy 0.987549, cross entropy 0.407465, f1(ave) 0.493189
+step 136000, validation accuracy 0.989832, cross entropy 0.397642, f1(ave) 0.525487
+step 137000, validation accuracy 0.992205, cross entropy 0.385968, f1(ave) 0.571699
+step 138000, validation accuracy 0.988856, cross entropy 0.401791, f1(ave) 0.519687
+step 139000, validation accuracy 0.989973, cross entropy 0.396915, f1(ave) 0.534808
+step 140000, validation accuracy 0.98576, cross entropy 0.415839, f1(ave) 0.463293
+step 141000, validation accuracy 0.991941, cross entropy 0.387444, f1(ave) 0.578416
+step 142000, validation accuracy 0.986274, cross entropy 0.413374, f1(ave) 0.469573
+step 143000, validation accuracy 0.988387, cross entropy 0.403998, f1(ave) 0.507155
+step 144000, validation accuracy 0.990056, cross entropy 0.396017, f1(ave) 0.54004
+step 145000, validation accuracy 0.988691, cross entropy 0.402254, f1(ave) 0.511738
+step 146000, validation accuracy 0.991212, cross entropy 0.390744, f1(ave) 0.560657
+step 147000, validation accuracy 0.99022, cross entropy 0.3956, f1(ave) 0.541319
+step 148000, validation accuracy 0.989716, cross entropy 0.397784, f1(ave) 0.53056
+step 149000, validation accuracy 0.989168, cross entropy 0.400213, f1(ave) 0.514899
+step 150000, validation accuracy 0.988843, cross entropy 0.401732, f1(ave) 0.51262
+step 151000, validation accuracy 0.990142, cross entropy 0.395693, f1(ave) 0.534264
+step 152000, validation accuracy 0.990568, cross entropy 0.393487, f1(ave) 0.546077
+step 153000, validation accuracy 0.990185, cross entropy 0.395861, f1(ave) 0.540771
+step 154000, validation accuracy 0.990982, cross entropy 0.391888, f1(ave) 0.556727
+step 155000, validation accuracy 0.990065, cross entropy 0.39601, f1(ave) 0.533962
+step 156000, validation accuracy 0.989196, cross entropy 0.400452, f1(ave) 0.521443
+step 157000, validation accuracy 0.990062, cross entropy 0.396186, f1(ave) 0.53934
+step 158000, validation accuracy 0.989557, cross entropy 0.398517, f1(ave) 0.526126
+step 159000, validation accuracy 0.989648, cross entropy 0.398187, f1(ave) 0.52562
+step 160000, validation accuracy 0.988136, cross entropy 0.405237, f1(ave) 0.500449
+step 161000, validation accuracy 0.990144, cross entropy 0.395861, f1(ave) 0.540433
+step 162000, validation accuracy 0.990137, cross entropy 0.395776, f1(ave) 0.535768
+step 163000, validation accuracy 0.989615, cross entropy 0.39855, f1(ave) 0.530713
+step 164000, validation accuracy 0.988106, cross entropy 0.405437, f1(ave) 0.503756
+step 165000, validation accuracy 0.989295, cross entropy 0.399566, f1(ave) 0.519606
+step 166000, validation accuracy 0.986644, cross entropy 0.412773, f1(ave) 0.480665
+step 167000, validation accuracy 0.989893, cross entropy 0.397057, f1(ave) 0.535911
+step 168000, validation accuracy 0.988263, cross entropy 0.404521, f1(ave) 0.506647
+step 169000, validation accuracy 0.989606, cross entropy 0.398419, f1(ave) 0.528255
+step 170000, validation accuracy 0.988417, cross entropy 0.403848, f1(ave) 0.499406
+step 171000, validation accuracy 0.990621, cross entropy 0.393696, f1(ave) 0.544168
+step 172000, validation accuracy 0.991268, cross entropy 0.39081, f1(ave) 0.561876
+step 173000, validation accuracy 0.990502, cross entropy 0.39434, f1(ave) 0.544014
+step 174000, validation accuracy 0.98983, cross entropy 0.397357, f1(ave) 0.528022
+step 175000, validation accuracy 0.99186, cross entropy 0.388353, f1(ave) 0.576973
+step 176000, validation accuracy 0.991038, cross entropy 0.391743, f1(ave) 0.557149
+step 177000, validation accuracy 0.988316, cross entropy 0.40438, f1(ave) 0.502614
+step 178000, validation accuracy 0.992483, cross entropy 0.385348, f1(ave) 0.587481
+step 179000, validation accuracy 0.990628, cross entropy 0.393796, f1(ave) 0.55029
+step 180000, validation accuracy 0.991517, cross entropy 0.389798, f1(ave) 0.554912
+step 181000, validation accuracy 0.99161, cross entropy 0.389378, f1(ave) 0.565528
+step 182000, validation accuracy 0.985778, cross entropy 0.416157, f1(ave) 0.462719
+step 183000, validation accuracy 0.990548, cross entropy 0.394365, f1(ave) 0.544418
+step 184000, validation accuracy 0.990992, cross entropy 0.391769, f1(ave) 0.549772
+step 185000, validation accuracy 0.991483, cross entropy 0.389684, f1(ave) 0.564517
+step 186000, validation accuracy 0.989911, cross entropy 0.396846, f1(ave) 0.530087
+step 187000, validation accuracy 0.985345, cross entropy 0.41834, f1(ave) 0.456387
+step 188000, validation accuracy 0.990017, cross entropy 0.397013, f1(ave) 0.534837
+step 189000, validation accuracy 0.990401, cross entropy 0.394781, f1(ave) 0.542421
+step 190000, validation accuracy 0.989475, cross entropy 0.398899, f1(ave) 0.525754
+step 191000, validation accuracy 0.989853, cross entropy 0.397673, f1(ave) 0.526847
+step 192000, validation accuracy 0.989616, cross entropy 0.398519, f1(ave) 0.526754
+step 193000, validation accuracy 0.991256, cross entropy 0.390982, f1(ave) 0.559483
+step 194000, validation accuracy 0.988587, cross entropy 0.403584, f1(ave) 0.510715
+step 195000, validation accuracy 0.990797, cross entropy 0.39294, f1(ave) 0.545615
+step 196000, validation accuracy 0.989674, cross entropy 0.398336, f1(ave) 0.527525
+step 197000, validation accuracy 0.987319, cross entropy 0.409444, f1(ave) 0.488808
+step 198000, validation accuracy 0.991501, cross entropy 0.39027, f1(ave) 0.558939
+step 199000, validation accuracy 0.990857, cross entropy 0.392963, f1(ave) 0.544662
+step 200000, validation accuracy 0.990973, cross entropy 0.392175, f1(ave) 0.548817
+step 201000, validation accuracy 0.991406, cross entropy 0.390316, f1(ave) 0.561158
+step 202000, validation accuracy 0.989678, cross entropy 0.398323, f1(ave) 0.528188
+step 203000, validation accuracy 0.988599, cross entropy 0.403231, f1(ave) 0.510154
+step 204000, validation accuracy 0.991499, cross entropy 0.390018, f1(ave) 0.566714
+step 205000, validation accuracy 0.989579, cross entropy 0.39882, f1(ave) 0.527303
+step 206000, validation accuracy 0.99156, cross entropy 0.389758, f1(ave) 0.565064
+step 207000, validation accuracy 0.992965, cross entropy 0.383559, f1(ave) 0.594422
+step 208000, validation accuracy 0.990038, cross entropy 0.396633, f1(ave) 0.535297
+step 209000, validation accuracy 0.991269, cross entropy 0.391022, f1(ave) 0.557084
+step 210000, validation accuracy 0.989554, cross entropy 0.399202, f1(ave) 0.522928
+step 211000, validation accuracy 0.989718, cross entropy 0.398177, f1(ave) 0.529522
+step 212000, validation accuracy 0.987536, cross entropy 0.408121, f1(ave) 0.488538
+step 213000, validation accuracy 0.990893, cross entropy 0.393171, f1(ave) 0.552988
+step 214000, validation accuracy 0.987389, cross entropy 0.409162, f1(ave) 0.490245
+step 215000, validation accuracy 0.991574, cross entropy 0.389726, f1(ave) 0.565911
+step 216000, validation accuracy 0.991243, cross entropy 0.391478, f1(ave) 0.560839
+step 217000, validation accuracy 0.99133, cross entropy 0.391, f1(ave) 0.562737
+step 218000, validation accuracy 0.990552, cross entropy 0.394864, f1(ave) 0.548402
+step 219000, validation accuracy 0.991549, cross entropy 0.389902, f1(ave) 0.565576
+step 220000, validation accuracy 0.992146, cross entropy 0.387408, f1(ave) 0.576463
+step 221000, validation accuracy 0.990474, cross entropy 0.394971, f1(ave) 0.541169
+step 222000, validation accuracy 0.991861, cross entropy 0.388607, f1(ave) 0.570961
+step 223000, validation accuracy 0.989935, cross entropy 0.397508, f1(ave) 0.534361
+step 224000, validation accuracy 0.989238, cross entropy 0.400857, f1(ave) 0.519735
+step 225000, validation accuracy 0.991779, cross entropy 0.38886, f1(ave) 0.571619
+step 226000, validation accuracy 0.99175, cross entropy 0.389276, f1(ave) 0.573521
+step 227000, validation accuracy 0.989736, cross entropy 0.398472, f1(ave) 0.53188
+step 228000, validation accuracy 0.99039, cross entropy 0.395348, f1(ave) 0.536565
+step 229000, validation accuracy 0.991033, cross entropy 0.392679, f1(ave) 0.557947
+step 230000, validation accuracy 0.990861, cross entropy 0.393215, f1(ave) 0.551495
+step 231000, validation accuracy 0.989896, cross entropy 0.397564, f1(ave) 0.530624
+step 232000, validation accuracy 0.991088, cross entropy 0.39228, f1(ave) 0.552976
+step 233000, validation accuracy 0.989507, cross entropy 0.400119, f1(ave) 0.52329
+step 234000, validation accuracy 0.990074, cross entropy 0.396786, f1(ave) 0.538214
+step 235000, validation accuracy 0.9907, cross entropy 0.394332, f1(ave) 0.549096
+step 236000, validation accuracy 0.990215, cross entropy 0.396248, f1(ave) 0.533623
+step 237000, validation accuracy 0.99087, cross entropy 0.393185, f1(ave) 0.551885
+step 238000, validation accuracy 0.991118, cross entropy 0.392261, f1(ave) 0.549733
+step 239000, validation accuracy 0.992377, cross entropy 0.386658, f1(ave) 0.584683
+step 240000, validation accuracy 0.989518, cross entropy 0.399409, f1(ave) 0.524494
+step 241000, validation accuracy 0.991273, cross entropy 0.391403, f1(ave) 0.553859
+step 242000, validation accuracy 0.990135, cross entropy 0.397027, f1(ave) 0.535017
+step 243000, validation accuracy 0.991878, cross entropy 0.388675, f1(ave) 0.569956
+step 244000, validation accuracy 0.990197, cross entropy 0.396332, f1(ave) 0.539777
+step 245000, validation accuracy 0.99014, cross entropy 0.396444, f1(ave) 0.53626
+step 246000, validation accuracy 0.988822, cross entropy 0.402736, f1(ave) 0.512172
+step 247000, validation accuracy 0.991471, cross entropy 0.390647, f1(ave) 0.561265
+step 248000, validation accuracy 0.991531, cross entropy 0.390206, f1(ave) 0.565502
+step 249000, validation accuracy 0.989382, cross entropy 0.400441, f1(ave) 0.519886
+step 250000, validation accuracy 0.990475, cross entropy 0.395211, f1(ave) 0.541034
+step 251000, validation accuracy 0.988796, cross entropy 0.402932, f1(ave) 0.517214
+step 252000, validation accuracy 0.989824, cross entropy 0.398326, f1(ave) 0.534402
+step 253000, validation accuracy 0.990555, cross entropy 0.394911, f1(ave) 0.542216
+step 254000, validation accuracy 0.990638, cross entropy 0.394479, f1(ave) 0.544983
+step 255000, validation accuracy 0.989536, cross entropy 0.399205, f1(ave) 0.520425
+step 256000, validation accuracy 0.99011, cross entropy 0.397003, f1(ave) 0.532922
+step 257000, validation accuracy 0.989728, cross entropy 0.398915, f1(ave) 0.526567
+step 258000, validation accuracy 0.990654, cross entropy 0.394525, f1(ave) 0.546393
+step 259000, validation accuracy 0.991053, cross entropy 0.392446, f1(ave) 0.558556
+step 260000, validation accuracy 0.992411, cross entropy 0.386837, f1(ave) 0.581844
+step 261000, validation accuracy 0.990929, cross entropy 0.393109, f1(ave) 0.550925
+step 262000, validation accuracy 0.992638, cross entropy 0.385429, f1(ave) 0.584795
+step 263000, validation accuracy 0.99212, cross entropy 0.388498, f1(ave) 0.575577
+step 264000, validation accuracy 0.99046, cross entropy 0.395372, f1(ave) 0.537155
+step 265000, validation accuracy 0.99125, cross entropy 0.391635, f1(ave) 0.557376
+step 266000, validation accuracy 0.991405, cross entropy 0.390849, f1(ave) 0.565022
+step 267000, validation accuracy 0.993008, cross entropy 0.383631, f1(ave) 0.593693
+step 268000, validation accuracy 0.992163, cross entropy 0.387556, f1(ave) 0.580969
+step 269000, validation accuracy 0.99142, cross entropy 0.391304, f1(ave) 0.561942
+step 270000, validation accuracy 0.989918, cross entropy 0.398083, f1(ave) 0.533589
+step 271000, validation accuracy 0.989767, cross entropy 0.398654, f1(ave) 0.528005
+step 272000, validation accuracy 0.993199, cross entropy 0.383207, f1(ave) 0.599431
+step 273000, validation accuracy 0.991351, cross entropy 0.391552, f1(ave) 0.558235
+step 274000, validation accuracy 0.989482, cross entropy 0.399981, f1(ave) 0.523328
+step 275000, validation accuracy 0.98901, cross entropy 0.402589, f1(ave) 0.51652
+step 276000, validation accuracy 0.989258, cross entropy 0.401046, f1(ave) 0.515057
+step 277000, validation accuracy 0.988247, cross entropy 0.405733, f1(ave) 0.50139
+step 278000, validation accuracy 0.987505, cross entropy 0.409254, f1(ave) 0.487262
+step 279000, validation accuracy 0.992, cross entropy 0.388461, f1(ave) 0.574111
+step 280000, validation accuracy 0.991124, cross entropy 0.392085, f1(ave) 0.549294
+step 281000, validation accuracy 0.988678, cross entropy 0.403802, f1(ave) 0.504473
+step 282000, validation accuracy 0.991609, cross entropy 0.390148, f1(ave) 0.560457
+step 283000, validation accuracy 0.991712, cross entropy 0.389385, f1(ave) 0.566555
+step 284000, validation accuracy 0.991388, cross entropy 0.390958, f1(ave) 0.561663
+step 285000, validation accuracy 0.991863, cross entropy 0.388991, f1(ave) 0.575617
+step 286000, validation accuracy 0.989716, cross entropy 0.39845, f1(ave) 0.524153
+step 287000, validation accuracy 0.991452, cross entropy 0.390958, f1(ave) 0.565314
+step 288000, validation accuracy 0.992102, cross entropy 0.388301, f1(ave) 0.575159
+step 289000, validation accuracy 0.990847, cross entropy 0.39376, f1(ave) 0.546699
+step 290000, validation accuracy 0.990093, cross entropy 0.396902, f1(ave) 0.530663
+step 291000, validation accuracy 0.992303, cross entropy 0.38687, f1(ave) 0.580649
+step 292000, validation accuracy 0.991816, cross entropy 0.389437, f1(ave) 0.569193
+step 293000, validation accuracy 0.990803, cross entropy 0.393819, f1(ave) 0.549674
+step 294000, validation accuracy 0.989804, cross entropy 0.398726, f1(ave) 0.529572
+step 295000, validation accuracy 0.98961, cross entropy 0.399282, f1(ave) 0.518644
+step 296000, validation accuracy 0.989793, cross entropy 0.398838, f1(ave) 0.526291
+step 297000, validation accuracy 0.9909, cross entropy 0.393756, f1(ave) 0.551491
+step 298000, validation accuracy 0.989937, cross entropy 0.397866, f1(ave) 0.529788
+step 299000, validation accuracy 0.990516, cross entropy 0.395245, f1(ave) 0.541562
+step 300000, validation accuracy 0.990022, cross entropy 0.39763, f1(ave) 0.534921
+
+Average training step time: 0.056903 s 
+
+Validation accuracy using single best validated model, applied to whole of validation set: 
+
+	 Validation error: 0.993199
+	 Validation XEnt: 0.383207
+	 Validation F1: 0.599431
+	
+TESTING ALGORITHM
+Algorithm values saved at: VCNN-2_train_2017_10_12_10_31_19_0
+
+Average application time per frame: 0.434166 s 
+
+syn-train
+
+Precision:  0.908059 
+
+Recall:     0.655706 
+
+F1:         0.761521 
+
+
+Average application time per frame: 0.423202 s 
+
+syn-validation
+
+Precision:  0.707954 
+
+Recall:     0.531751 
+
+F1:         0.60733 
+
+
+Average application time per frame: 0.423204 s 
+
+syn-test
+
+Precision:  0.867733 
+
+Recall:     0.631502 
+
+F1:         0.731006 
+
