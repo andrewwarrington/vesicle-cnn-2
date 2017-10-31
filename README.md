@@ -13,4 +13,5 @@ TL;DR: An updated version of the synapse detector, VESICLE, presented by Roncal 
 ./evaluation contains a number of scripts and tools for use in MATLAB for evaluating the voxelwise and whole-synapse performance of each algorithm using the .h5 file format.
 
 ## Data availability
-Data soon to be made available at <http://www.robots.ox.ac.uk/~andreww/synapse_detection.html>
+More details and data is available for download at <http://www.robots.ox.ac.uk/~andreww/synapse_data.html>
+For this code to operate without adjustment, this data must be downloaded and unzipped into the root file of this repository so that the scripts can automatically grab the required data.
