@@ -71,7 +71,7 @@ convolutionalFilters = 48
 firstLayerDimensions = [5, 5, 1, convolutionalFilters]
 secondLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 thirdLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
-fcNeurons = 512
+fcNeurons = 1024
 fcLayerDimensions = [imSizeFC[0], imSizeFC[1], convolutionalFilters, fcNeurons]
 # dropoutProb = 1  # TODO - Not using dropout. 
 
@@ -179,7 +179,7 @@ config_opt.gpu_options.allow_growth = True
 sess = tf.InteractiveSession(config=config_opt)
 
 # TensorBoard debug view.
-file_writer = tf.summary.FileWriter('LOGS', sess.graph)
+file_writer = tf.summary.FileWriter('./' + fileOutputName + '/LOGS', sess.graph)
 
 # Create placeholders for independent and dependant variables.
 with tf.name_scope('Input_Image'):

@@ -1,5 +1,5 @@
 
-GPU := "0"
+GPU := "1"
 
 default: 
 	@echo "Please specify a target to make."
