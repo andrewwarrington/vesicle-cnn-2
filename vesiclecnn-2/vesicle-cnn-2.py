@@ -67,16 +67,16 @@ if args.gpu:
 # Configure network architecture parameters.
 patchSize = [67, 67]
 imSizeFC = [5, 5]
-convolutionalFilters = 48
+convolutionalFilters = 4#8
 firstLayerDimensions = [5, 5, 1, convolutionalFilters]
 secondLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 thirdLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
-fcNeurons = 1024
+fcNeurons = 10#24
 fcLayerDimensions = [imSizeFC[0], imSizeFC[1], convolutionalFilters, fcNeurons]
 # dropoutProb = 1  # TODO - Not using dropout. 
 
 # Configure training parameters.
-trainingSteps = 30#0000
+trainingSteps = 1#0000
 batch_size = 100
 pos_frac = float(args.train_fraction)
 pos_weight = float(args.positive_weight)
@@ -367,7 +367,7 @@ def apply_classifier(_sess, _func, _images):
 		startTime = timeit.default_timer()
 		_single_im = np.expand_dims(_images[i, :, :].astype(np.float32), axis=0)
 		startTimeGPU = timeit.default_timer()
-		predFlat = _sess.run([_func], feed_dict={x: _single_im})  # , keep_prob: 1.0}) # TODO - dropout removed.
+		predFlat = _sess.run(_func, feed_dict={x: _single_im})  # , keep_prob: 1.0}) # TODO - dropout removed.
 		elapsed = timeit.default_timer() - startTimeGPU
 		_gpu_times[i] = elapsed
 		
@@ -384,7 +384,7 @@ def apply_classifier(_sess, _func, _images):
 	
 	av = np.sum(_application_times) / _numFrames
 	gpu_av = np.sum(_gpu_times) / _numFrames
-        util.echo_to_file(reportLocation, "\nAverage time application time per frame: %g s (%g GPU s). \n\n" % (av, gpu_av))
+	util.echo_to_file(reportLocation, "\nAverage time application time per frame: %g s (%g GPU s). \n\n" % (av, gpu_av))
 
 	return volume_prediction
 
@@ -436,7 +436,7 @@ def application_speed_test(_sess, _func, _image):
 	for i in range(_image.size[0]):
 		_single_im = np.expand_dims(trainImage[i, :, :].astype(np.float32), axis=0)
 		startTime = timeit.default_timer()
-		_ = sess.run(_func, feed_dict={x: _single_im})  # , keep_prob: 1.0}) # TODO - removed dropout.
+		_ = _sess.run(_func, feed_dict={x: _single_im})  # , keep_prob: 1.0}) # TODO - removed dropout.
 		elapsed = timeit.default_timer() - startTime
 		_application_times[i] = elapsed
 	
