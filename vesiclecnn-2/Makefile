@@ -16,11 +16,11 @@ train-deploy-all:
 				--deploy_test \
 
 pretrained-deploy-all:
-	python vesicle-cnn-2.py --deploy_pretrained "VCNN-2_train_2017_10_19_16_17_25_0" \
+	python vesicle-cnn-2.py --deploy_pretrained "vesicle-cnn-2-example" \
 				--gpu ${GPU} \
 				--deploy_train \
                                 --deploy_validation \
-                                --deploy_test
+                                --deploy_test  # --deploy_pretrained "vesicle-cnn-2-example"
 
 
 
