@@ -76,12 +76,12 @@ fcLayerDimensions = [imSizeFC[0], imSizeFC[1], convolutionalFilters, fcNeurons]
 # dropoutProb = 1  # TODO - Not using dropout. 
 
 # Configure training parameters.
-trainingSteps = 30#0000
+trainingSteps = 300000
 batch_size = 100
 pos_frac = float(args.train_fraction)
 pos_weight = float(args.positive_weight)
 learningRate = 1e-04
-valRegularity = 30#00
+valRegularity = 3000
 
 # Define data locations.
 dataLocations = ['./../kasthuri_data/train/train.h5', './../kasthuri_data/validation/validation.h5', './../kasthuri_data/test/test.h5']
