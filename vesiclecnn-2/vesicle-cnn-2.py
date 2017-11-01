@@ -67,21 +67,21 @@ if args.gpu:
 # Configure network architecture parameters.
 patchSize = [67, 67]
 imSizeFC = [5, 5]
-convolutionalFilters = 4#8
+convolutionalFilters = 48
 firstLayerDimensions = [5, 5, 1, convolutionalFilters]
 secondLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 thirdLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
-fcNeurons = 10#24
+fcNeurons = 1024
 fcLayerDimensions = [imSizeFC[0], imSizeFC[1], convolutionalFilters, fcNeurons]
 # dropoutProb = 1  # TODO - Not using dropout. 
 
 # Configure training parameters.
-trainingSteps = 1#0000
+trainingSteps = 300000
 batch_size = 100
 pos_frac = float(args.train_fraction)
 pos_weight = float(args.positive_weight)
 learningRate = 1e-04
-valRegularity = 30#00
+valRegularity = 1000
 
 # Define data locations.
 dataLocations = ['./../kasthuri_data/train/train.h5', './../kasthuri_data/validation/validation.h5', './../kasthuri_data/test/test.h5']
@@ -219,7 +219,7 @@ with tf.name_scope('Output_Layer'):
 	# Now add a final output layer.
 	W_fccnn5 = util.weight_variable([1, 1, fcLayerDimensions[3], 2], "w_fccnn_5")
 	b_fccnn5 = util.bias_variable([2], "b_fccnn_5")
-	y_syn_logit = tf.nn.relu(util.conv2d(h_fccnn4, W_fccnn5, valid=True) + b_fccnn5)  # NOTE - removed ReLU from here.
+	y_syn_logit = util.conv2d(h_fccnn4, W_fccnn5, valid=True) + b_fccnn5  # NOTE - removed ReLU from here.
 	y_syn_soft = tf.nn.softmax(y_syn_logit)
 	y_syn_logit_flat = tf.reshape(y_syn_logit, [-1, 2])
 	y_syn_soft_flat = tf.reshape(y_syn_soft, [-1, 2])
