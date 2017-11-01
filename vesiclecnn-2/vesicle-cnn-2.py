@@ -208,7 +208,7 @@ with tf.name_scope('Third_Layer'):
 	h_conv3 = tf.nn.relu(util.atrous_conv2d(h_pool2, W_conv3, valid=True, rate=4) + b_conv3)    # Perform atrous convolution (with zero padding) and apply ReLU.
 	h_pool3 = util.atrous_max_pool(h_conv3, mask_size=2, rate=4)                                # Apply an atrous maxpool.
 
-with tf.name_scope('Fccnn_Layer'):
+with tf.name_scope('fccnn_Layer'):
 	# Create FC layer for final classification.
 	W_fccnn1 = util.weight_variable(fcLayerDimensions, "w_fccnn_1")                             # Weights for patch for FC.
 	b_fccnn1 = util.bias_variable([fcLayerDimensions[3]], "b_fccnn_1")                          # Biases for firstFCNeurons neurons.
@@ -220,8 +220,8 @@ with tf.name_scope('Fccnn_Layer'):
 
 with tf.name_scope('Output_Layer'):
 	# Now add a final output layer.
-	W_fccnn5 = util.weight_variable([1, 1, fcLayerDimensions[3], 2], "w_fccnn_2")
-	b_fccnn5 = util.bias_variable([2], "b_fccnn_2")
+	W_fccnn5 = util.weight_variable([1, 1, fcLayerDimensions[3], 2], "w_fccnn_5")
+	b_fccnn5 = util.bias_variable([2], "b_fccnn_5")
 	y_syn_logit = util.conv2d(h_fccnn4, W_fccnn5, valid=True) + b_fccnn5  # NOTE - removed ReLU from here.
 	y_syn_soft = tf.nn.softmax(y_syn_logit)
 	y_syn_logit_flat = tf.reshape(y_syn_logit, [-1, 2])
