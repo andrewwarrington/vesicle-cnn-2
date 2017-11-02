@@ -71,7 +71,7 @@ convolutionalFilters = 48
 firstLayerDimensions = [5, 5, 1, convolutionalFilters]
 secondLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 thirdLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
-fcNeurons = 102#4
+fcNeurons = 10#24
 fcLayerDimensions = [imSizeFC[0], imSizeFC[1], convolutionalFilters, fcNeurons]
 # dropoutProb = 1  # TODO - Not using dropout. 
 

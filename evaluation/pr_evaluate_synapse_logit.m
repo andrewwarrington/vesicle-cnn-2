@@ -219,11 +219,11 @@ metrics.maxSize2DOut = maxSize2DOut;
 metrics.minSliceOut = minSliceOut;
 
 t = toc(st);
-echo_to_file(sprintf('Synapse-level hyperparameter optimization complete, time elapsed: %0.2f.\n', t), outFile);
-
 save(strcat('./', path, '/', channel, '_synapse_metrics_full_', state), 'metrics');
 
-if val
+if val  
+   echo_to_file(sprintf('Synapse-level hyperparameter optimization complete, time elapsed: %0.2f.\n', t), outFile);
+
     [~, optimalBin] = max(metrics.F1);
     minSliceVals = [metrics.minSliceOut(optimalBin)];
     maxSize2DVals = [metrics.maxSize2DOut(optimalBin)];
