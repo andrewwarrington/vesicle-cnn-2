@@ -209,7 +209,7 @@ with tf.name_scope('fccnn_Layer'):
 	# Create FC layer for final classification.
 	W_fccnn1 = util.weight_variable(fcLayerDimensions, "w_fccnn_1")                             # Weights for patch for FC.
 	b_fccnn1 = util.bias_variable([fcLayerDimensions[3]], "b_fccnn_1")                          # Biases for firstFCNeurons neurons.
-	h_fccnn4 = tf.nn.relu(util.atrous_conv2d(h_pool3, W_fccnn1, valid=True, rate=8))            # Perform atrous convolution (with zero padding) and apply ReLU.
+	h_fccnn4 = tf.nn.relu(util.atrous_conv2d(h_pool3, W_fccnn1, valid=True, rate=8) + b_fccnn1) # Perform atrous convolution (with zero padding) and apply ReLU.
 	
 	# Throw some dropout in there for good measure.
 #	keep_prob = tf.placeholder(tf.float32)  # TODO - removed droupout.
@@ -263,7 +263,6 @@ with tf.name_scope('F-Metrics'):
 
 # Merge all summaries into a single "operation" which we can execute in a session.
 summary_op = tf.summary.merge_all()
-train_writer = tf.summary.FileWriter(fileOutputName + '/LOGS')
 
 # Use an interactive session for debugging.
 config_opt = tf.ConfigProto()
@@ -518,5 +517,9 @@ if deployTrain | deployValidation | deployTest | deployUnlabelled:
 		deploy_to_channel(sess, y_syn_logit, testImage, 'syn', 'unlabelled', h5f)  # Syn.
 		
 		h5f.close()
+
+# Now run the MATLAB accuracy evaluation script.
+# This makes a call to matlab and passes in the arguements to the evaluation script.
+os.system('matlab -r "addpath(genpath(\'../../evaluation\')); wrap_synapse_pr(\'./\'' + fileOutputName +'\' ,\'syn\'); exit')
 
 util.echo_to_file(reportLocation, "-- End of VESICLE-CNN-2 report. --")

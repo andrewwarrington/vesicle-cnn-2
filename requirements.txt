@@ -1,0 +1,6 @@
+tensorflow_gpu==1.0.1
+h5py==2.7.1
+ndio==1.0.0
+matplotlib==2.0.2
+numpy==1.13.1
+scikit_learn==0.19.1
