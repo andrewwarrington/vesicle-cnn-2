@@ -45,7 +45,7 @@ FP = zeros(evaluation_bins,1);
 FN = zeros(evaluation_bins,1);
 F1 = zeros(evaluation_bins,1);
 
-for i = 1:evaluation_bins
+parfor i = 1:evaluation_bins
     metricsTemp = pr_voxel(detectFileOnes>detectFileZeros+metrics.thresholds(i), sDataTest);
     
     precision(i) = metricsTemp.precision;
