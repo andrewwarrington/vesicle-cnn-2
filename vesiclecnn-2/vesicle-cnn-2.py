@@ -50,7 +50,7 @@ group.add_argument('--deploy_pretrained', help='File location of classifier to b
 
 parser.add_argument('--gpu', help='GPU ID to run computations on.', default=False)
 parser.add_argument('--train_fraction', help='Fraction of training batches that are positive instances.', default=0.1)
-parser.add_argument('--positive_weight', help='The balancing with used in weighted cross entropy calculations.', default=10)
+parser.add_argument('--positive_weight', help='The balancing weight used in weighted cross entropy calculations.', default=10)
 parser.add_argument('--deploy_train', help='Deploy network to train data set?', action='store_true')
 parser.add_argument('--deploy_validation', help='Deploy network to validation dataset', action='store_true')
 parser.add_argument('--deploy_test', help='Deploy network to test data set', action='store_true')
