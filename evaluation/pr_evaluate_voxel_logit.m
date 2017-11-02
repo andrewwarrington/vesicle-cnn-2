@@ -1,4 +1,4 @@
-function [metrics] = pr_evaluate_voxel_logit(path, h5File, channel, pp)
+function [metrics] = pr_evaluate_voxel_logit(path, h5File, channel, pp, fileOut)
 % Takes inputs of the predicted volume (matrix or location) and the truth
 % volume (matrix or location) and sweeps through thresholds of probability,
 % evalating F1 (and F1 related metrics) at each bin. Then saves this data
@@ -77,6 +77,9 @@ if val
     FP = [metrics.FP(optimalBin)];
     FN = [metrics.FN(optimalBin)];
     F1 = [metrics.F1(optimalBin)];
+
+    echo_to_file(sprintf('Validation complete.\n F1: %f\n Precision: %f\n Recall: %f\n Threshold %f\n',F1,precision,recall, thresholds), fileOut);
+
     save(strcat(path, '/', channel, '_voxel_metrics_optimized_val'), 'thresholds', 'precision', 'recall', 'F1');
 end
 

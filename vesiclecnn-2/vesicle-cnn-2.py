@@ -71,12 +71,12 @@ convolutionalFilters = 48
 firstLayerDimensions = [5, 5, 1, convolutionalFilters]
 secondLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 thirdLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
-fcNeurons = 1024
+fcNeurons = 102#4
 fcLayerDimensions = [imSizeFC[0], imSizeFC[1], convolutionalFilters, fcNeurons]
 # dropoutProb = 1  # TODO - Not using dropout. 
 
 # Configure training parameters.
-trainingSteps = 300000
+trainingSteps = 3#00000
 batch_size = 100
 pos_frac = float(args.train_fraction)
 pos_weight = float(args.positive_weight)
@@ -283,13 +283,13 @@ gpuTimes = np.zeros((trainingSteps, 1))
 
 
 # Function to automate application of a classifier to the validation volume.
-def validate_network(_sess, _f1s=[], _accs=[], _xents=[], final_val=False):
+def validate_network(_f1s=[], _accs=[], _xents=[], final_val=False):
 	val_cross_entropy, val_accuracy, val_fmeasure = np.zeros((validationImages, 8)), np.zeros((validationImages, 8)), np.zeros((validationImages, 8))
 	for j in range(validationImages):
 		for k in range(8):
 			val_batch = util.get_minibatch_image(validateImage, validateLabels, batch_size=1, valN=j, orientation=k, border=border)
 			reshaped = np.reshape(val_batch[0], [-1, windowSize[0], windowSize[1], 1])
-			val_cross_entropy[j, k], val_accuracy[j, k], val_fmeasure[j, k] = _sess.run([cross_entropy, accuracy, fmeasure], feed_dict={x: reshaped, y_syn: val_batch[1]['SYN']})  # , keep_prob: 1.0}) # TODO - removed droupout.
+			val_cross_entropy[j, k], val_accuracy[j, k], val_fmeasure[j, k] = sess.run([cross_entropy, accuracy, fmeasure], feed_dict={x: reshaped, y_syn: val_batch[1]['SYN']})  # , keep_prob: 1.0}) # TODO - removed droupout.
 	
 	validation_accuracy = np.average(np.average(val_accuracy))
 	validation_cross_entropy = np.average(np.average(val_cross_entropy))
@@ -320,7 +320,7 @@ if training:
 	for i in range(trainingSteps):
 		
 		if i % valRegularity == 0:
-			f1s, accs, xEnts = validate_network(sess, f1s, accs, xEnts)
+			f1s, accs, xEnts = validate_network(f1s, accs, xEnts)
 			
 		startTime = timeit.default_timer()
 		batch = util.get_minibatch_patch(trainImage, trainLabels['SYN'], batch_size, patchSize, pos_frac=pos_frac, pos_locs=positive_locations, neg_locs=negative_locations)
@@ -341,7 +341,7 @@ if training:
 	saver.restore(sess, fileOutputName + "/CNN.ckpt")
 	
 	# Do final validation on network.
-	validate_network(sess, final_val=True)
+	validate_network(final_val=True)
 
 else:
 	# Odd hack required. Deployment to GPU without taking at least a single training step causes memory error. TODO fix this.
@@ -354,7 +354,7 @@ else:
 
 
 # Apply the classifier (defined by _func) to the image stack (defined by _images).
-def apply_classifier(_sess, _func, _images):
+def apply_classifier(_func, _images):
 
 	_numFrames = _images.shape[0]
 	
@@ -366,7 +366,7 @@ def apply_classifier(_sess, _func, _images):
 		startTime = timeit.default_timer()
 		_single_im = np.expand_dims(_images[i, :, :].astype(np.float32), axis=0)
 		startTimeGPU = timeit.default_timer()
-		predFlat = _sess.run(_func, feed_dict={x: _single_im})  # , keep_prob: 1.0}) # TODO - dropout removed.
+		predFlat = sess.run(_func, feed_dict={x: _single_im})  # , keep_prob: 1.0}) # TODO - dropout removed.
 		elapsed = timeit.default_timer() - startTimeGPU
 		_gpu_times[i] = elapsed
 		
@@ -407,12 +407,12 @@ def evaluate_f1(volume_prediction, _labels, _channel):
 # Which channel to apply to is defined by _channel.
 # _set defines whether we are applying to train, validate or test set, and stores results inside _file.
 # _label then defines the ground truth stack (may not exist for new, unlabelled data).
-def deploy_to_channel(_sess, _logit_func, _image, _channel, _set, _file, _label=None):
+def deploy_to_channel(_logit_func, _image, _channel, _set, _file, _label=None):
 	print(_channel + " " + _set + " prediction.")
 	
 	_file.create_dataset('image', data=_image)
 	
-	logits = apply_classifier(_sess, _logit_func, _image)
+	logits = apply_classifier(_logit_func, _image)
 	# Now save output and truth values sed.
 	group = _file.create_group(_channel)
 	group.create_dataset('zeros', data=np.squeeze(logits[:, :, :, 0]))
@@ -430,12 +430,12 @@ def deploy_to_channel(_sess, _logit_func, _image, _channel, _set, _file, _label=
 
 
 # Script for testing speed of application of _func to _image.
-def application_speed_test(_sess, _func, _image):
+def application_speed_test(_func, _image):
 	_application_times = np.zeros((_image.size[0], 1))
 	for i in range(_image.size[0]):
 		_single_im = np.expand_dims(trainImage[i, :, :].astype(np.float32), axis=0)
 		startTime = timeit.default_timer()
-		_ = _sess.run(_func, feed_dict={x: _single_im})  # , keep_prob: 1.0}) # TODO - removed dropout.
+		_ = sess.run(_func, feed_dict={x: _single_im})  # , keep_prob: 1.0}) # TODO - removed dropout.
 		elapsed = timeit.default_timer() - startTime
 		_application_times[i] = elapsed
 	
@@ -467,7 +467,7 @@ if deployTrain | deployValidation | deployTest | deployUnlabelled:
 		h5f.attrs['Network_Location'] = load_path
 		h5f.attrs['Network'] = "VESICLE-CNN-2"
 		
-		deploy_to_channel(sess, y_syn_logit, trainImage, 'syn', 'train', h5f, trainLabels['SYN'])  # Syn.
+		deploy_to_channel(y_syn_logit, trainImage, 'syn', 'train', h5f, trainLabels['SYN'])  # Syn.
 		
 		h5f.close()
 	
@@ -481,7 +481,7 @@ if deployTrain | deployValidation | deployTest | deployUnlabelled:
 		h5f.attrs['Network_Location'] = load_path
 		h5f.attrs['Network'] = "VESICLE-CNN-2"
 		
-		deploy_to_channel(sess, y_syn_logit, validateImage, 'syn', 'validation', h5f, validateLabels['SYN'])  # Syn.
+		deploy_to_channel(y_syn_logit, validateImage, 'syn', 'validation', h5f, validateLabels['SYN'])  # Syn.
 		
 		h5f.close()
 	
@@ -495,7 +495,7 @@ if deployTrain | deployValidation | deployTest | deployUnlabelled:
 		h5f.attrs['Network_Location'] = load_path
 		h5f.attrs['Network'] = "VESICLE-CNN-2"
 		
-		deploy_to_channel(sess, y_syn_logit, testImage, 'syn', 'test', h5f, testLabels['SYN'])  # Syn.
+		deploy_to_channel(y_syn_logit, testImage, 'syn', 'test', h5f, testLabels['SYN'])  # Syn.
 		
 		h5f.close()
 
@@ -514,12 +514,20 @@ if deployTrain | deployValidation | deployTest | deployUnlabelled:
 		h5f.attrs['Network_Location'] = load_path
 		h5f.attrs['Network'] = "VESICLE-CNN-2"
 		
-		deploy_to_channel(sess, y_syn_logit, testImage, 'syn', 'unlabelled', h5f)  # Syn.
+		deploy_to_channel(y_syn_logit, testImage, 'syn', 'unlabelled', h5f)  # Syn.
 		
 		h5f.close()
 
 # Now run the MATLAB accuracy evaluation script.
 # This makes a call to matlab and passes in the arguements to the evaluation script.
-os.system('matlab -r "addpath(genpath(\'../../evaluation\')); wrap_synapse_pr(\'./\'' + fileOutputName +'\' ,\'syn\'); exit')
 
+# Close the TF session to release the resources.
+sess.close()
+del sess
+
+# Make the MATLAB call.
+os.system('matlab -r "addpath(genpath(\'../evaluation\')); wrap_synapse_pr(\'./' + fileOutputName +'\' ,\'syn\'); wrap_voxel_pr(\'./' + fileOutputName +'\' ,\'syn\'); exit"')
+
+
+## Finish up.
 util.echo_to_file(reportLocation, "-- End of VESICLE-CNN-2 report. --")

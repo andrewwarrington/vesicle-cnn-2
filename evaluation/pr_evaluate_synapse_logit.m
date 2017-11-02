@@ -1,4 +1,4 @@
-function [metrics] = pr_evaluate_synapse_logit(path, h5File, channel, pp)
+function [metrics] = pr_evaluate_synapse_logit(path, h5File, channel, pp, outFile)
 % Function to compute a precision recall curve across a wide range of parameters
 %
 % **Inputs**
@@ -43,15 +43,15 @@ if contains(h5File, 'test')
     test = true;
     state = 'test';
     
-    disp('Beginning application of synapse-level hyperparameters (pr_evaluate_synapse_logit.m; test).')
+    echo_to_file('Beginning application of synapse-level hyperparameters (pr_evaluate_synapse_logit.m; test).', outFile)
 
 else
     % 
     minSize2DVals = [0 50 100 150]; %[0, 10, 25, 50, 75, 100, 150];
     maxSize2DVals = [500 1000 2000]; %[500, 750, 1000, 1250, 1500, 2000]; 
     minSize3DVals = [250 750 1500]; %[250, 500, 750, 1000, 1250, 1500]; 
-    thresholdVals = -4:1:4; %-5:0.1:5;
-    minSliceVals = [1,2,3];
+    thresholdVals = -4:2:4; %-5:0.1:5;
+    minSliceVals = 1; %[1,2,3];
     if contains(h5File, 'train')
         train = true;
         state = 'train';
@@ -60,7 +60,7 @@ else
         state = 'val';
     end    
     
-    disp('Beginning synapse-level hyperparameter optimization (pr_evaluate_synapse_logit.m).')
+    echo_to_file('Beginning synapse-level hyperparameter optimization (pr_evaluate_synapse_logit.m).', outFile)
 
 end
 
@@ -219,7 +219,7 @@ metrics.maxSize2DOut = maxSize2DOut;
 metrics.minSliceOut = minSliceOut;
 
 t = toc(st);
-fprintf('Synapse-level hyperparameter optimization complete, time elapsed: %0.2f.\n', t);
+echo_to_file(sprintf('Synapse-level hyperparameter optimization complete, time elapsed: %0.2f.\n', t), outFile);
 
 save(strcat('./', path, '/', channel, '_synapse_metrics_full_', state), 'metrics');
 
@@ -234,6 +234,23 @@ if val
     recall = [metrics.recall(optimalBin)];
     F1 = [metrics.F1(optimalBin)];
 
+    echo_to_file(sprintf('Validation complete.\n F1: %f\n Precision: %f\n Recall: %f\n Threshold %f\n minSize2D %d\n minSize3D %d\n maxSize2D %d\n minSlice %d\n\n', F1, precision, recall, threshold, minSize2D, minSize3D, maxSize2D, minSlice), outFile);
+
     save(strcat('./', path, '/', channel, '_synapse_metrics_optimized_val'), 'minSliceVals', 'maxSize2DVals', 'minSize3DVals', 'thresholdVals', 'minSize2DVals', 'F1', 'recall', 'precision');
 end
 
+if test
+
+    [~, optimalBin] = max(metrics.F1);
+    minSliceVals = [metrics.minSliceOut(optimalBin)];
+    maxSize2DVals = [metrics.maxSize2DOut(optimalBin)];
+    minSize3DVals = [metrics.minSize3DOut(optimalBin)];
+    thresholdVals = [metrics.thresh(optimalBin)];
+    minSize2DVals = [metrics.minSize2DOut(optimalBin)];
+    precision = [metrics.precision(optimalBin)];
+    recall = [metrics.recall(optimalBin)];
+    F1 = [metrics.F1(optimalBin)];
+
+    echo_to_file(sprintf('Application to test volume complete.\n F1: %f\n Precision: %f\n Recall: %f\n Threshold %f\n minSize2D %d\n minSize3D %d\n maxSize2D %d\n minSlice %d\n\n', F1, precision, recall, threshold, minSize2D, minSize3D, maxSize2D, minSlice), outFile);
+
+end
