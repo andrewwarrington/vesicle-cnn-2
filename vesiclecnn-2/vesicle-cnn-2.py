@@ -71,12 +71,12 @@ convolutionalFilters = 48
 firstLayerDimensions = [5, 5, 1, convolutionalFilters]
 secondLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 thirdLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
-fcNeurons = 10#24
+fcNeurons = 1024
 fcLayerDimensions = [imSizeFC[0], imSizeFC[1], convolutionalFilters, fcNeurons]
 # dropoutProb = 1  # TODO - Not using dropout. 
 
 # Configure training parameters.
-trainingSteps = 3#00000
+trainingSteps = 300000
 batch_size = 100
 pos_frac = float(args.train_fraction)
 pos_weight = float(args.positive_weight)
@@ -166,7 +166,7 @@ util.echo_to_file(reportLocation, "\tConvolution layer 1: %s\n" % firstLayerDime
 util.echo_to_file(reportLocation, "\tConvolution layer 2: %s\n" % secondLayerDimensions)
 util.echo_to_file(reportLocation, "\tConvolution layer 3: %s\n" % thirdLayerDimensions)
 util.echo_to_file(reportLocation, "\tFC units: %f\n" % fcNeurons)
-util.echo_to_file(reportLocation, "\tDropout prob: CURRENTLY DISABLED")  #%f\n" % dropoutProb)  # TODO - disabled dropout.
+util.echo_to_file(reportLocation, "\tDropout prob: CURRENTLY DISABLED\n")  #%f\n" % dropoutProb)  # TODO - disabled dropout.
 util.echo_to_file(reportLocation, "\tInput patch size: %s\n" % patchSize)
 
 ''' Configure TensorFlow graph -------------------------------------------------------------------------------------'''
@@ -189,7 +189,8 @@ with tf.name_scope('First_Layer'):
 	W_conv1 = util.weight_variable(firstLayerDimensions, "w_conv_1")                            # Weights in first layer.
 	b_conv1 = util.bias_variable([firstLayerDimensions[3]], "b_conv_1")                         # Biases in first layer.
 	h_conv1 = tf.nn.relu(util.conv2d(x, W_conv1, valid=True, stride=1) + b_conv1)               # Perform convolution (with zero padding) and apply ReLU.
-	h_pool1 = util.max_pool(h_conv1, 1)  # NOTE removed in acordance with paper model. # , kernelWidth=2)
+	#h_pool1 = util.max_pool(h_conv1, 1)  # NOTE removed this maxpool layer as it fufilss no purpose at this level -- it just reduces the resolution, therefore just copy.
+	h_pool1 = h_conv1  
 
 with tf.name_scope('Second_Layer'):
 	# Create first convolutional layer.
@@ -299,7 +300,7 @@ def validate_network(_f1s=[], _accs=[], _xents=[], final_val=False):
 	_accs.append(validation_accuracy)
 	_xents.append(validation_fmeasure)
 	
-	if (np.nanmax(f1s) == validation_fmeasure) | (f1s != []):
+	if (np.nanmax(f1s) == validation_fmeasure) | (f1s == []):
 		saver.save(sess, fileOutputName + "/CNN.ckpt")
 	
 	if not final_val:
