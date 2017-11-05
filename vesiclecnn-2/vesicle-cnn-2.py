@@ -73,7 +73,7 @@ secondLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 thirdLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 fcNeurons = 1024
 fcLayerDimensions = [imSizeFC[0], imSizeFC[1], convolutionalFilters, fcNeurons]
-# dropoutProb = 1  # TODO - Not using dropout. 
+dropoutProb = 0.5   
 
 # Configure training parameters.
 trainingSteps = 300000
@@ -166,7 +166,7 @@ util.echo_to_file(reportLocation, "\tConvolution layer 1: %s\n" % firstLayerDime
 util.echo_to_file(reportLocation, "\tConvolution layer 2: %s\n" % secondLayerDimensions)
 util.echo_to_file(reportLocation, "\tConvolution layer 3: %s\n" % thirdLayerDimensions)
 util.echo_to_file(reportLocation, "\tFC units: %f\n" % fcNeurons)
-util.echo_to_file(reportLocation, "\tDropout prob: CURRENTLY DISABLED\n")  #%f\n" % dropoutProb)  # TODO - disabled dropout.
+util.echo_to_file(reportLocation, "\tDropout prob: %f\n" % dropoutProb)  
 util.echo_to_file(reportLocation, "\tInput patch size: %s\n" % patchSize)
 
 ''' Configure TensorFlow graph -------------------------------------------------------------------------------------'''
@@ -213,14 +213,14 @@ with tf.name_scope('fccnn_Layer'):
 	h_fccnn4 = tf.nn.relu(util.atrous_conv2d(h_pool3, W_fccnn1, valid=True, rate=8) + b_fccnn1) # Perform atrous convolution (with zero padding) and apply ReLU.
 	
 	# Throw some dropout in there for good measure.
-#	keep_prob = tf.placeholder(tf.float32)  # TODO - removed droupout.
-#	h_cnnfc1_drop = tf.nn.dropout(h_fccnn4, keep_prob)  # TODO - removed dropout.
+	keep_prob = tf.placeholder(tf.float32)  # TODO - removed droupout.
+	h_cnnfc1_drop = tf.nn.dropout(h_fccnn4, keep_prob)  # TODO - removed dropout.
 
 with tf.name_scope('Output_Layer'):
 	# Now add a final output layer.
 	W_fccnn5 = util.weight_variable([1, 1, fcLayerDimensions[3], 2], "w_fccnn_5")
 	b_fccnn5 = util.bias_variable([2], "b_fccnn_5")
-	y_syn_logit = util.conv2d(h_fccnn4, W_fccnn5, valid=True) + b_fccnn5  # NOTE - removed ReLU from here.
+	y_syn_logit = util.conv2d(h_cnnfc1_drop, W_fccnn5, valid=True) + b_fccnn5  # NOTE - removed ReLU from here.
 	y_syn_soft = tf.nn.softmax(y_syn_logit)
 	y_syn_logit_flat = tf.reshape(y_syn_logit, [-1, 2])
 	y_syn_soft_flat = tf.reshape(y_syn_soft, [-1, 2])
@@ -290,7 +290,7 @@ def validate_network(_f1s=[], _accs=[], _xents=[], final_val=False):
 		for k in range(8):
 			val_batch = util.get_minibatch_image(validateImage, validateLabels, batch_size=1, valN=j, orientation=k, border=border)
 			reshaped = np.reshape(val_batch[0], [-1, windowSize[0], windowSize[1], 1])
-			val_cross_entropy[j, k], val_accuracy[j, k], val_fmeasure[j, k] = sess.run([cross_entropy, accuracy, fmeasure], feed_dict={x: reshaped, y_syn: val_batch[1]['SYN']})  # , keep_prob: 1.0}) # TODO - removed droupout.
+			val_cross_entropy[j, k], val_accuracy[j, k], val_fmeasure[j, k] = sess.run([cross_entropy, accuracy, fmeasure], feed_dict={x: reshaped, y_syn: val_batch[1]['SYN'], keep_prob: 1.0})
 	
 	validation_accuracy = np.average(np.average(val_accuracy))
 	validation_cross_entropy = np.average(np.average(val_cross_entropy))
@@ -326,7 +326,7 @@ if training:
 		startTime = timeit.default_timer()
 		batch = util.get_minibatch_patch(trainImage, trainLabels['SYN'], batch_size, patchSize, pos_frac=pos_frac, pos_locs=positive_locations, neg_locs=negative_locations)
 		startTimeGPU = timeit.default_timer()
-		_, summary = sess.run([train_step, summary_op], feed_dict={x: batch[0], y_syn: batch[1]})  # TODO - removed droupout., keep_prob: dropoutProb})
+		_, summary = sess.run([train_step, summary_op], feed_dict={x: batch[0], y_syn: batch[1], keep_prob: dropoutProb})
 		elapsed = timeit.default_timer() - startTime
 		gpuElapsed = timeit.default_timer() - startTimeGPU
 		trainTimes[i] = elapsed
@@ -367,7 +367,7 @@ def apply_classifier(_func, _images):
 		startTime = timeit.default_timer()
 		_single_im = np.expand_dims(_images[i, :, :].astype(np.float32), axis=0)
 		startTimeGPU = timeit.default_timer()
-		predFlat = sess.run(_func, feed_dict={x: _single_im})  # , keep_prob: 1.0}) # TODO - dropout removed.
+		predFlat = sess.run(_func, feed_dict={x: _single_im, keep_prob: 1.0}) 
 		elapsed = timeit.default_timer() - startTimeGPU
 		_gpu_times[i] = elapsed
 		
@@ -436,7 +436,7 @@ def application_speed_test(_func, _image):
 	for i in range(_image.size[0]):
 		_single_im = np.expand_dims(trainImage[i, :, :].astype(np.float32), axis=0)
 		startTime = timeit.default_timer()
-		_ = sess.run(_func, feed_dict={x: _single_im})  # , keep_prob: 1.0}) # TODO - removed dropout.
+		_ = sess.run(_func, feed_dict={x: _single_im, keep_prob: 1.0}) 
 		elapsed = timeit.default_timer() - startTime
 		_application_times[i] = elapsed
 	
