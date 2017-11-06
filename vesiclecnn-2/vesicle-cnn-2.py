@@ -214,7 +214,7 @@ with tf.name_scope('fccnn_Layer'):
 	
 	# Throw some dropout in there for good measure.
 	keep_prob = tf.placeholder(tf.float32)  # TODO - removed droupout.
-	h_cnnfc1_drop = tf.nn.dropout(h_fccnn4, keep_prob)  # TODO - removed dropout.
+	h_cnnfc1_drop = tf.cond(keep_prob==1.0, lambda: h_fccnn4, lambda: tf.nn.dropout(h_fccnn4, keep_prob))
 
 with tf.name_scope('Output_Layer'):
 	# Now add a final output layer.
@@ -527,6 +527,7 @@ sess.close()
 del sess
 
 # Make the MATLAB call.
+# GPU resources dont seem to be properly released so this call `blocks' the GPU memory... need to fix this somehow.
 os.system('matlab -r "addpath(genpath(\'../evaluation\')); wrap_synapse_pr(\'./' + fileOutputName +'\' ,\'syn\'); wrap_voxel_pr(\'./' + fileOutputName +'\' ,\'syn\'); exit"')
 
 
