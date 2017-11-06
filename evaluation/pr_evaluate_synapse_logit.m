@@ -106,7 +106,7 @@ minSliceOut = zeros(maxCount, 1);
 
 st = tic;
 
-parfor i = 1:maxCount
+for i = 1:maxCount
     
     minSize2D = param_matrix(i,1);
     maxSize2D = param_matrix(i,2);
@@ -230,6 +230,7 @@ if val
     minSize3DVals = [metrics.minSize3DOut(optimalBin)];
     thresholdVals = [metrics.thresh(optimalBin)];
     minSize2DVals = [metrics.minSize2DOut(optimalBin)];
+    thresholdVals = [metrics.thresh(optimalBin)];
     precision = [metrics.precision(optimalBin)];
     recall = [metrics.recall(optimalBin)];
     F1 = [metrics.F1(optimalBin)];
@@ -247,6 +248,7 @@ if test
     minSize3DVals = [metrics.minSize3DOut(optimalBin)];
     thresholdVals = [metrics.thresh(optimalBin)];
     minSize2DVals = [metrics.minSize2DOut(optimalBin)];
+    thresholdVals = [metrics.thresh(optimalBin)];
     precision = [metrics.precision(optimalBin)];
     recall = [metrics.recall(optimalBin)];
     F1 = [metrics.F1(optimalBin)];
