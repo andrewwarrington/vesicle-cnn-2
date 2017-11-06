@@ -47,11 +47,11 @@ if contains(h5File, 'test')
 
 else
     % 
-    minSize2DVals = [0 50 100 150]; %[0, 10, 25, 50, 75, 100, 150];
-    maxSize2DVals = [500 1000 2000]; %[500, 750, 1000, 1250, 1500, 2000]; 
-    minSize3DVals = [250 750 1500]; %[250, 500, 750, 1000, 1250, 1500]; 
-    thresholdVals = -4:2:4; %-5:0.1:5;
-    minSliceVals = 1; %[1,2,3];
+    minSize2DVals = [0, 10, 25, 50, 75, 100, 150];
+    maxSize2DVals = [500, 750, 1000, 1250, 1500, 2000]; 
+    minSize3DVals = [250, 500, 750, 1000, 1250, 1500]; 
+    thresholdVals = -5:0.1:5;
+    minSliceVals = [1,2,3];
     if contains(h5File, 'train')
         train = true;
         state = 'train';

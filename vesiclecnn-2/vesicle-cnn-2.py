@@ -73,6 +73,7 @@ secondLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 thirdLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 fcNeurons = 1024
 fcLayerDimensions = [imSizeFC[0], imSizeFC[1], convolutionalFilters, fcNeurons]
+useDropout = True
 dropoutProb = 0.5   
 
 # Configure training parameters.
@@ -82,6 +83,7 @@ pos_frac = float(args.train_fraction)
 pos_weight = float(args.positive_weight)
 learningRate = 1e-04
 valRegularity = 1000
+valFirst = 150000
 
 # Define data locations.
 dataLocations = ['./../kasthuri_data/train/train.h5', './../kasthuri_data/validation/validation.h5', './../kasthuri_data/test/test.h5']
@@ -160,12 +162,14 @@ util.echo_to_file(reportLocation, "\tSelect best network from F1\n\n")
 util.echo_to_file(reportLocation, "\tTraining ratio: %f\n" % pos_frac)
 util.echo_to_file(reportLocation, "\tTraining weight: %f\n" % pos_weight)
 util.echo_to_file(reportLocation, "\tBatch size: %f\n" % batch_size)
+util.echo_to_file(reportLocation, "\tFirst validation at: %f\n" % valFirst)
 
 util.echo_to_file(reportLocation, "Architecture settings:\n")
 util.echo_to_file(reportLocation, "\tConvolution layer 1: %s\n" % firstLayerDimensions)
 util.echo_to_file(reportLocation, "\tConvolution layer 2: %s\n" % secondLayerDimensions)
 util.echo_to_file(reportLocation, "\tConvolution layer 3: %s\n" % thirdLayerDimensions)
 util.echo_to_file(reportLocation, "\tFC units: %f\n" % fcNeurons)
+util.echo_to_file(reportLocation, "\tUsing dropout/: %s\n" % useDropout)
 util.echo_to_file(reportLocation, "\tDropout prob: %f\n" % dropoutProb)  
 util.echo_to_file(reportLocation, "\tInput patch size: %s\n" % patchSize)
 
@@ -183,6 +187,8 @@ with tf.name_scope('Input_Image'):
 	x = tf.placeholder(tf.float32, shape=[None, None, None, 1], name='Image')   # Independent variables.
 with tf.name_scope('Input_Label'):
 	y_syn = tf.placeholder(tf.float32, shape=[None, 2])                         # Target values.
+
+tf_use_dropout = tf.placeholder_with_default(False, shape=[])
 
 with tf.name_scope('First_Layer'):
 	# Create first convolutional layer.
@@ -214,7 +220,8 @@ with tf.name_scope('fccnn_Layer'):
 	
 	# Throw some dropout in there for good measure.
 	keep_prob = tf.placeholder(tf.float32)  # TODO - removed droupout.
-	h_cnnfc1_drop = tf.cond(keep_prob==1.0, lambda: h_fccnn4, lambda: tf.nn.dropout(h_fccnn4, keep_prob))
+	h_cnnfc1_drop = tf.cond(tf_use_dropout, lambda: tf.nn.dropout(h_fccnn4, keep_prob), lambda: h_fccnn4)
+#	h_cnnfc1_drop = h_fccnn4
 
 with tf.name_scope('Output_Layer'):
 	# Now add a final output layer.
@@ -284,7 +291,7 @@ gpuTimes = np.zeros((trainingSteps, 1))
 
 
 # Function to automate application of a classifier to the validation volume.
-def validate_network(_f1s=[], _accs=[], _xents=[], final_val=False):
+def validate_network(_f1s=[], _accs=[], _xents=[], final_val=False, first_val=False):
 	val_cross_entropy, val_accuracy, val_fmeasure = np.zeros((validationImages, 8)), np.zeros((validationImages, 8)), np.zeros((validationImages, 8))
 	for j in range(validationImages):
 		for k in range(8):
@@ -300,7 +307,7 @@ def validate_network(_f1s=[], _accs=[], _xents=[], final_val=False):
 	_accs.append(validation_accuracy)
 	_xents.append(validation_fmeasure)
 	
-	if (np.nanmax(f1s) == validation_fmeasure) | (f1s == []):
+	if (np.nanmax(f1s) == validation_fmeasure) | first_val:
 		saver.save(sess, fileOutputName + "/CNN.ckpt")
 	
 	if not final_val:
@@ -321,12 +328,12 @@ if training:
 	for i in range(trainingSteps):
 		
 		if i % valRegularity == 0:
-			f1s, accs, xEnts = validate_network(f1s, accs, xEnts)
+			f1s, accs, xEnts = validate_network(f1s, accs, xEnts, first_val=(i==0))
 			
 		startTime = timeit.default_timer()
 		batch = util.get_minibatch_patch(trainImage, trainLabels['SYN'], batch_size, patchSize, pos_frac=pos_frac, pos_locs=positive_locations, neg_locs=negative_locations)
 		startTimeGPU = timeit.default_timer()
-		_, summary = sess.run([train_step, summary_op], feed_dict={x: batch[0], y_syn: batch[1], keep_prob: dropoutProb})
+		_, summary = sess.run([train_step, summary_op], feed_dict={x: batch[0], y_syn: batch[1], keep_prob: dropoutProb, tf_use_dropout: True})
 		elapsed = timeit.default_timer() - startTime
 		gpuElapsed = timeit.default_timer() - startTimeGPU
 		trainTimes[i] = elapsed
