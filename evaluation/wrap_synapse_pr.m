@@ -9,7 +9,9 @@ else
     pp = configure_parpool;
 end
 
-pr_evaluate_synapse_logit(path, '/validation_results.h5', channel, pp);
-pr_evaluate_synapse_logit(path, '/test_results.h5', channel, pp)
+outFile = strcat(path, '/report.txt');
+
+pr_evaluate_synapse_logit(path, '/validation_results.h5', channel, pp, outFile);
+pr_evaluate_synapse_logit(path, '/test_results.h5', channel, pp, outFile)
 
 end

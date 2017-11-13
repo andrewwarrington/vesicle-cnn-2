@@ -1,4 +1,4 @@
-function [metrics] = pr_evaluate_voxel_logit(path, h5File, channel, pp)
+function [metrics] = pr_evaluate_voxel_logit(path, h5File, channel, pp, fileOut)
 % Takes inputs of the predicted volume (matrix or location) and the truth
 % volume (matrix or location) and sweeps through thresholds of probability,
 % evalating F1 (and F1 related metrics) at each bin. Then saves this data
@@ -23,10 +23,10 @@ if contains(h5File, 'test')
     test = true;
     state = 'test';
     evaluation_bins = 1;
-    fprintf('Beginning voxel-level hyperparameter optimization (pr_evaluation_voxel_logit.m; test).\n');
+    echo_to_file(sprintf('Beginning application of optimized parameters to test set (pr_evaluation_voxel_logit.m; test).\n'), fileOut);
 else
     metrics.thresholds = linspace(-10,10,evaluation_bins);
-    fprintf('Beginning voxel-level hyperparameter optimization (pr_evaluation_voxel_logit.m; val).\n');
+    echo_to_file(sprintf('Beginning voxel-level hyperparameter optimization (pr_evaluation_voxel_logit.m; val).\n'), fileOut);
     if contains(h5File, 'train')
         train = true;
         state = 'train';
@@ -45,7 +45,7 @@ FP = zeros(evaluation_bins,1);
 FN = zeros(evaluation_bins,1);
 F1 = zeros(evaluation_bins,1);
 
-for i = 1:evaluation_bins
+parfor i = 1:evaluation_bins
     metricsTemp = pr_voxel(detectFileOnes>detectFileZeros+metrics.thresholds(i), sDataTest);
     
     precision(i) = metricsTemp.precision;
@@ -64,11 +64,12 @@ metrics.FN = FN;
 metrics.F1 = F1;
 
 t = toc(st);
-fprintf('Voxel-level hyperparameter optimization complete, time elapsed: %0.2f.\n', t);
 
 save(strcat(path, '/', channel, '_voxel_metrics_full_', state), 'metrics')
 
 if val
+    echo_to_file(sprintf('Voxel-level hyperparameter optimization complete, time elapsed: %0.2f.\n', t), fileOut);
+
     [~, optimalBin] = max(metrics.F1);
     thresholds = [metrics.thresholds(optimalBin)];
     precision = [metrics.precision(optimalBin)];
@@ -77,7 +78,24 @@ if val
     FP = [metrics.FP(optimalBin)];
     FN = [metrics.FN(optimalBin)];
     F1 = [metrics.F1(optimalBin)];
+
+    echo_to_file(sprintf('Validation complete.\n F1: %f\n Precision: %f\n Recall: %f\n Threshold %f\n\n\n',F1,precision,recall, thresholds), fileOut);
+
     save(strcat(path, '/', channel, '_voxel_metrics_optimized_val'), 'thresholds', 'precision', 'recall', 'F1');
+end
+
+if test
+    [~, optimalBin] = max(metrics.F1);
+    thresholds = [metrics.thresholds(optimalBin)];
+    precision = [metrics.precision(optimalBin)];
+    recall = [metrics.recall(optimalBin)];
+    TP = [metrics.TP(optimalBin)];
+    FP = [metrics.FP(optimalBin)];
+    FN = [metrics.FN(optimalBin)];
+    F1 = [metrics.F1(optimalBin)];
+
+    echo_to_file(sprintf('Application to test set complete.\n F1: %f\n Precision: %f\n Recall: %f\n Threshold %f\n\n\n',F1,precision,recall, thresholds), fileOut);
+
 end
 
 
