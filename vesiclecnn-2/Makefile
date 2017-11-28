@@ -9,7 +9,7 @@ train-only:
 				--gpu ${GPU} 
 
 train-deploy-all:
-	python vesicle-cnn-2-merged.py --train_new \
+	python vesicle-cnn-2.py --train_new \
 				--gpu ${GPU} \
 				--deploy_train \
 				--deploy_validation \

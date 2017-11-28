@@ -147,7 +147,7 @@ else:
 	# Copy current version of this script, as well as the makefile just to make sure we capture the experiment.
 	if not os.path.exists(fileOutputName + "/backup"):
 		os.makedirs(fileOutputName + "/backup")
-	copyfile('./vesicle-cnn-2-merged.py', fileOutputName + "/backup/vesicle-cnn-2.py")
+	copyfile('./vesicle-cnn-2.py', fileOutputName + "/backup/vesicle-cnn-2.py")
 	copyfile('./Makefile', fileOutputName + "/backup/Makefile")
 
 util.echo_to_file(reportLocation, "Experimental setup:\n")
@@ -214,7 +214,7 @@ with tf.name_scope('Output_Layer'):
         # Now add a final sigmoid layer for prediction of 0-1 probability and readout.
         W_fccnn2 = util.weight_variable([1, 1, fcLayerDimensions[3], 2], "w_fccnn_2")
         b_fccnn2 = util.bias_variable([2], "b_fccnn_2")
-        y_syn_logit = util.conv2d(h_fccnn1, W_fccnn2, valid=True) + b_fccnn2
+        y_syn_logit = tf.nn.relu(util.conv2d(h_fccnn1, W_fccnn2, valid=True) + b_fccnn2)
         y_syn_soft = tf.nn.softmax(y_syn_logit)
         y_syn_logit_flat = tf.reshape(y_syn_logit, [-1, 2])
         y_syn_soft_flat = tf.reshape(y_syn_soft, [-1, 2])
