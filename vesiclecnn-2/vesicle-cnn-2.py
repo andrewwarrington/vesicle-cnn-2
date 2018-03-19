@@ -73,8 +73,6 @@ secondLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 thirdLayerDimensions = [5, 5, convolutionalFilters, convolutionalFilters]
 fcNeurons = 1024
 fcLayerDimensions = [imSizeFC[0], imSizeFC[1], convolutionalFilters, fcNeurons]
-useDropout = True
-dropoutProb = 0.5   
 
 # Configure training parameters.
 trainingSteps = 300000
@@ -169,68 +167,57 @@ util.echo_to_file(reportLocation, "\tConvolution layer 1: %s\n" % firstLayerDime
 util.echo_to_file(reportLocation, "\tConvolution layer 2: %s\n" % secondLayerDimensions)
 util.echo_to_file(reportLocation, "\tConvolution layer 3: %s\n" % thirdLayerDimensions)
 util.echo_to_file(reportLocation, "\tFC units: %f\n" % fcNeurons)
-util.echo_to_file(reportLocation, "\tUsing dropout/: %s\n" % useDropout)
-util.echo_to_file(reportLocation, "\tDropout prob: %f\n" % dropoutProb)  
 util.echo_to_file(reportLocation, "\tInput patch size: %s\n" % patchSize)
 
 ''' Configure TensorFlow graph -------------------------------------------------------------------------------------'''
 
 util.echo_to_file(reportLocation, "\nConfiguring network.\n")
 
-# Use an interactive session for debugging.
-#config_opt = tf.ConfigProto()
-#config_opt.gpu_options.allow_growth = True
-#sess = tf.InteractiveSession(config=config_opt)
-
-# Create placeholders for independent and dependant variables.
+# Create placeholders for independent and dependant variables once batch has been selected.
 with tf.name_scope('Input_Image'):
-	x = tf.placeholder(tf.float32, shape=[None, None, None, 1], name='Image')   # Independent variables.
-with tf.name_scope('Input_Label'):
-	y_syn = tf.placeholder(tf.float32, shape=[None, 2])                         # Target values.
-
-tf_use_dropout = tf.placeholder_with_default(False, shape=[])
+        x = tf.placeholder(tf.float32, shape=[None, None, None, 1], name='Image')  # Independent variables.
+        # Reshape to amenable shape.
+        # x_image = tf.reshape(x, [-1, windowSize[0], windowSize[1], 1])
+with tf.name_scope('Input_Synapse'):
+        y_syn = tf.placeholder(tf.float32, shape=[None, 2])  # Target values.
 
 with tf.name_scope('First_Layer'):
-	# Create first convolutional layer.
-	W_conv1 = util.weight_variable(firstLayerDimensions, "w_conv_1")                            # Weights in first layer.
-	b_conv1 = util.bias_variable([firstLayerDimensions[3]], "b_conv_1")                         # Biases in first layer.
-	h_conv1 = tf.nn.relu(util.conv2d(x, W_conv1, valid=True, stride=1) + b_conv1)               # Perform convolution (with zero padding) and apply ReLU.
-	#h_pool1 = util.max_pool(h_conv1, 1)  # NOTE removed this maxpool layer as it fufilss no purpose at this level -- it just reduces the resolution, therefore just copy.
-	h_pool1 = h_conv1  
+        # Create first convolutional layer. (No pooling.)
+        W_conv1 = util.weight_variable(firstLayerDimensions, "w_conv_1")  # Weights in first layer.
+        b_conv1 = util.bias_variable([firstLayerDimensions[3]], "b_conv_1")  # Biases in first layer.
+        h_conv1 = tf.nn.relu(util.conv2d(x, W_conv1, valid=True, stride=1) + b_conv1)  # Perform convolution (with zero padding) and apply ReLU.
+        h_pool1 = util.max_pool(h_conv1, 1, kernelWidth=2)
 
 with tf.name_scope('Second_Layer'):
-	# Create first convolutional layer.
-	W_conv2 = util.weight_variable(secondLayerDimensions, "w_conv_2")                           # Weights in second layer.
-	b_conv2 = util.bias_variable([secondLayerDimensions[3]], "b_conv_2")                        # Biases in second layer.
-	h_conv2 = tf.nn.relu(util.atrous_conv2d(h_pool1, W_conv2, valid=True, rate=2) + b_conv2)    # Perform atrous convolution (with zero padding) and apply ReLU.
-	h_pool2 = util.atrous_max_pool(h_conv2, mask_size=2, rate=2)                                # Apply an atrous maxpool.
+        # Create first convolutional layer. (No pooling.)
+        W_conv2 = util.weight_variable(secondLayerDimensions, "w_conv_2")  # Weights in first layer.
+        b_conv2 = util.bias_variable([secondLayerDimensions[3]], "b_conv_2")  # Biases in first layer.
+        h_conv2 = tf.nn.relu(util.atrous_conv2d(h_pool1, W_conv2, valid=True, rate=2) + b_conv2)  # Perform convolution (with zero padding) and apply ReLU.
+        h_pool2 = util.atrous_max_pool(h_conv2, mask_size=2, rate=2)
 
 with tf.name_scope('Third_Layer'):
-	# Create first convolutional layer.
-	W_conv3 = util.weight_variable(thirdLayerDimensions, "w_conv_3")                            # Weights in third layer.
-	b_conv3 = util.bias_variable([thirdLayerDimensions[3]], "b_conv_3")                         # Biases in third layer.
-	h_conv3 = tf.nn.relu(util.atrous_conv2d(h_pool2, W_conv3, valid=True, rate=4) + b_conv3)    # Perform atrous convolution (with zero padding) and apply ReLU.
-	h_pool3 = util.atrous_max_pool(h_conv3, mask_size=2, rate=4)                                # Apply an atrous maxpool.
+        # Create first convolutional layer. (No pooling.)
+        W_conv3 = util.weight_variable(thirdLayerDimensions, "w_conv_3")  # Weights in first layer.
+        b_conv3 = util.bias_variable([thirdLayerDimensions[3]], "b_conv_3")  # Biases in first layer.
+        h_conv3 = tf.nn.relu(util.atrous_conv2d(h_pool2, W_conv3, valid=True, rate=4) + b_conv3)  # Perform convolution (with zero padding) and apply ReLU.
+        h_pool3 = util.atrous_max_pool(h_conv3, mask_size=2, rate=4)
 
 with tf.name_scope('fccnn_Layer'):
-	# Create FC layer for final classification.
-	W_fccnn1 = util.weight_variable(fcLayerDimensions, "w_fccnn_1")                             # Weights for patch for FC.
-	b_fccnn1 = util.bias_variable([fcLayerDimensions[3]], "b_fccnn_1")                          # Biases for firstFCNeurons neurons.
-	h_fccnn4 = tf.nn.relu(util.atrous_conv2d(h_pool3, W_fccnn1, valid=True, rate=8) + b_fccnn1) # Perform atrous convolution (with zero padding) and apply ReLU.
-	
-	# Throw some dropout in there for good measure.
-	keep_prob = tf.placeholder(tf.float32)  # TODO - removed droupout.
-	h_cnnfc1_drop = tf.cond(tf_use_dropout, lambda: tf.nn.dropout(h_fccnn4, keep_prob), lambda: h_fccnn4)
-#	h_cnnfc1_drop = h_fccnn4
+        # Create FC layer for final classification.
+        W_fccnn1 = util.weight_variable(fcLayerDimensions, "w_fccnn_1")  # Image patch for FC, with firstFCNeurons neurons.
+        b_fccnn1 = util.bias_variable([fcLayerDimensions[3]], "b_fccnn_1")  # Biases for firstFCNeurons neurons.
+        h_fccnn1 = tf.nn.relu(util.atrous_conv2d(h_pool3, W_fccnn1, valid=True, rate=8) + b_fccnn1)  # Perform convolution (with zero padding) and apply ReLU.
+
+# Insert more FC layers here.
 
 with tf.name_scope('Output_Layer'):
-	# Now add a final output layer.
-	W_fccnn5 = util.weight_variable([1, 1, fcLayerDimensions[3], 2], "w_fccnn_5")
-	b_fccnn5 = util.bias_variable([2], "b_fccnn_5")
-	y_syn_logit = util.conv2d(h_cnnfc1_drop, W_fccnn5, valid=True) + b_fccnn5  # NOTE - removed ReLU from here.
-	y_syn_soft = tf.nn.softmax(y_syn_logit)
-	y_syn_logit_flat = tf.reshape(y_syn_logit, [-1, 2])
-	y_syn_soft_flat = tf.reshape(y_syn_soft, [-1, 2])
+        # Now add a final sigmoid layer for prediction of 0-1 probability and readout.
+        W_fccnn2 = util.weight_variable([1, 1, fcLayerDimensions[3], 2], "w_fccnn_2")
+        b_fccnn2 = util.bias_variable([2], "b_fccnn_2")
+        y_syn_logit = tf.nn.relu(util.conv2d(h_fccnn1, W_fccnn2, valid=True) + b_fccnn2)
+        y_syn_soft = tf.nn.softmax(y_syn_logit)
+        y_syn_logit_flat = tf.reshape(y_syn_logit, [-1, 2])
+        y_syn_soft_flat = tf.reshape(y_syn_soft, [-1, 2])
 	
 # Add ops to save and restore all the variables.
 saver = tf.train.Saver()
@@ -297,7 +284,7 @@ def validate_network(_f1s=[], _accs=[], _xents=[], final_val=False, first_val=Fa
 		for k in range(8):
 			val_batch = util.get_minibatch_image(validateImage, validateLabels, batch_size=1, valN=j, orientation=k, border=border)
 			reshaped = np.reshape(val_batch[0], [-1, windowSize[0], windowSize[1], 1])
-			val_cross_entropy[j, k], val_accuracy[j, k], val_fmeasure[j, k] = sess.run([cross_entropy, accuracy, fmeasure], feed_dict={x: reshaped, y_syn: val_batch[1]['SYN'], keep_prob: 1.0})
+			val_cross_entropy[j, k], val_accuracy[j, k], val_fmeasure[j, k] = sess.run([cross_entropy, accuracy, fmeasure], feed_dict={x: reshaped, y_syn: val_batch[1]['SYN']})
 	
 	validation_accuracy = np.average(np.average(val_accuracy))
 	validation_cross_entropy = np.average(np.average(val_cross_entropy))
@@ -327,13 +314,13 @@ if training:
 	
 	for i in range(trainingSteps):
 		
-		if i % valRegularity == 0:
+		if ((i % valRegularity) == 0) and ((i >= valFirst) or (i == 0)):
 			f1s, accs, xEnts = validate_network(f1s, accs, xEnts, first_val=(i==0))
 			
 		startTime = timeit.default_timer()
 		batch = util.get_minibatch_patch(trainImage, trainLabels['SYN'], batch_size, patchSize, pos_frac=pos_frac, pos_locs=positive_locations, neg_locs=negative_locations)
 		startTimeGPU = timeit.default_timer()
-		_, summary = sess.run([train_step, summary_op], feed_dict={x: batch[0], y_syn: batch[1], keep_prob: dropoutProb, tf_use_dropout: True})
+		_, summary = sess.run([train_step, summary_op], feed_dict={x: batch[0], y_syn: batch[1]})
 		elapsed = timeit.default_timer() - startTime
 		gpuElapsed = timeit.default_timer() - startTimeGPU
 		trainTimes[i] = elapsed
@@ -374,7 +361,7 @@ def apply_classifier(_func, _images):
 		startTime = timeit.default_timer()
 		_single_im = np.expand_dims(_images[i, :, :].astype(np.float32), axis=0)
 		startTimeGPU = timeit.default_timer()
-		predFlat = sess.run(_func, feed_dict={x: _single_im, keep_prob: 1.0}) 
+		predFlat = sess.run(_func, feed_dict={x: _single_im}) 
 		elapsed = timeit.default_timer() - startTimeGPU
 		_gpu_times[i] = elapsed
 		

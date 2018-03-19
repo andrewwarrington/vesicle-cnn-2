@@ -106,7 +106,7 @@ minSliceOut = zeros(maxCount, 1);
 
 st = tic;
 
-for i = 1:maxCount
+parfor i = 1:maxCount
     
     minSize2D = param_matrix(i,1);
     maxSize2D = param_matrix(i,2);
