@@ -4,7 +4,7 @@ Please cite Warrington, Andrew and Wood, Frank "Updating the VESICLE-CNN Synapse
 Please cite Kasthuri, Narayanan, et al. "Saturated reconstruction of a volume of neocortex." Cell 162.3 (2015): 648-661 ([link](http://www.cell.com/abstract/S0092-8674(15)00824-7)) for the data used in this work.
 
 ## Repo struture
-./vesiclecnn-2 contains scripts and examples for the updated classifier we present.
+./vesicle-cnn-2 contains scripts and examples for the updated classifier we present.
 
 ./vesiclerf-2 contains scripts for a slightly reworked version of the RF classifier to make use of multithreading and out data formatting. Development code still.
 
@@ -16,7 +16,7 @@ Please cite Kasthuri, Narayanan, et al. "Saturated reconstruction of a volume of
 Before running the code, the datafile must be downloaded and unpacked. This is done automatically by calling the `download_data.sh` script. 
 From there, navigating to ./vesiclecnn-2 will place you in the directory containing all of the scripts for training and deployment. 
 
-We recommend however running the code from a Docker container for reproducibility and portability. Docker images are maintained on the Docker Hub, both for CPU and GPU training. The CPU version is considered stable, although the GPU version is not (the CUDA installation seems system dependent...). Therefore, for GPU training, we recommend building the docker image locally using the command `docker build -t ajwarringtion/vcnn2 -f Dockerfile.gpu .`. The image is then deployed using the command `nvidia-docker run -it ajwarrington/vcnn2`. Of course, CUDA, docker and nvidia-docker must be installed and configured for this to work.
+We recommend however running the code from a Docker container for reproducibility and portability. Docker images are maintained on the Docker Hub, both for ([CPU](https://hub.docker.com/r/ajwarrington/vcnn2-cpu/)) and ([GPU](https://hub.docker.com/r/ajwarrington/vcnn2/)) training. The CPU version is considered stable, although the GPU version is not (the CUDA installation seems system dependent...). Therefore, for GPU training, we recommend building the docker image locally using the command `docker build -t ajwarringtion/vcnn2 -f Dockerfile.gpu .`. The image is then deployed using the command `nvidia-docker run -it ajwarrington/vcnn2`. Of course, CUDA, docker and nvidia-docker must be installed and configured for this to work. We use a modified version of the ([Deepo docker image](https://hub.docker.com/r/ufoym/deepo/)) as the baseimage for this. Deepo is a great, lightweight docker image that we found to be pretty usable for deep learning related tasks.
 
 Most of the functionality is in the `vesicle-cnn-2.py` script, with a collection of utilities defined in `util.py`.
 The default architecture is predefined in the main script. Modifications to the main architecture require changing the variables defined near the start of `vesicle-cnn-2.py`.
